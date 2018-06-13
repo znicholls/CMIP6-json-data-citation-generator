@@ -4,6 +4,13 @@ ROOT_DIR=$(shell pwd)
 DEV_REQUIREMENTS=$(ROOT_DIR)/dev-requirements.txt
 VIRTUAL_ENV_DIR=$(ROOT_DIR)/venv
 
+.PHONY : test
+test : $(VIRTUAL_ENV_DIR)
+	( \
+		$(call activate_venv,); \
+		pytest \
+	)
+
 define activate_venv
 	source $(VIRTUAL_ENV_DIR)/bin/activate
 endef
