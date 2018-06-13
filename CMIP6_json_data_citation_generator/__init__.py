@@ -57,8 +57,8 @@ class jsonGenerator():
                     source_id = self.split_CMIP6_filename(file_name)['source_id']
                     if source_id not in self.unique_scenario_ids:
                         self.unique_scenario_ids.append(source_id)
-                except Exception:
-                    pass
+                except ValueError as invalid_name_exception:
+                    print(invalid_name_exception)
 
     def split_CMIP6_filename(self, file_name=None):
         PathHandler = CMIPPathHandler()

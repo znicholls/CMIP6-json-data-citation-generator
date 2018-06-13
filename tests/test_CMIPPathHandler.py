@@ -42,5 +42,8 @@ def test_get_split_CMIP6_filename():
     assert actual_split == expected_split
 
     junk_file_name = 'junk_file_name-missing-stuff_everywhere.txt'
-    with raises(ValueError, match=re.escape('Unable to split filename: {}'.format(junk_file_name))):
+    expected_error_msg = re.escape(
+        'Unable to split filename: {}'.format(junk_file_name)
+    )
+    with raises(ValueError, match=expected_error_msg):
         PathHandler.get_split_CMIP6_filename(junk_file_name)

@@ -1,6 +1,8 @@
 from os.path import join
+import re
 
 from pytest import raises
+from unittest.mock import patch
 
 from CMIP6_json_data_citation_generator import jsonGenerator
 
@@ -24,7 +26,19 @@ def test_get_unique_source_ids_in_dir():
     test_file_unique_source_ids.sort()
     assert unique_ids == test_file_unique_source_ids
 
-    with raises(ValueError):
+    junk_dir = 'junk-dir-hjlkj'
+    expected_msg = re.escape(
+        "[Errno 2] No such file or directory: '{}'".format(junk_dir)
+    )
+    with raises(FileNotFoundError, match=expected_msg):
         Generator.get_unique_source_ids_in_dir(
-            dir_to_search='junk-dir-hjlkj'
+            dir_to_search = junk_dir
         )
+
+def test_get_unique_source_ids_in_dir_only_acts_on_nc_files():
+    Generator = jsonGenerator()
+    with patch.object(Generator, 'split_CMIP6_filename') as mock_split_filename:
+        Generator.get_unique_source_ids_in_dir(
+            dir_to_search='.' # safe to use because if there's nc files in top level, something is wrong
+        )
+        mock_split_filename.assert_not_called()
