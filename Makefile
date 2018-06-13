@@ -8,13 +8,18 @@ define activate_venv
 	source $(VIRTUAL_ENV_DIR)/bin/activate
 endef
 
+.PHONY : remove_venv
+remove_venv :
+	rm -rf $(VIRTUAL_ENV_DIR)
+
 .PHONY : make_venv
 make_venv : $(VIRTUAL_ENV_DIR)
 $(VIRTUAL_ENV_DIR) : $(DEV_REQUIREMENTS)
-	python -m venv venv
+	python3 -m venv venv
 	( \
 		$(call activate_venv,); \
 		which python; \
+		python --version; \
 		pip install --upgrade pip; \
 		pip install -Ur dev-requirements.txt \
 	)
