@@ -42,3 +42,6 @@ def test_get_unique_source_ids_in_dir_only_acts_on_nc_files():
             dir_to_search='.' # safe to use because if there's nc files in top level, something is wrong
         )
         mock_split_filename.assert_not_called()
+
+def test_yaml_read_in():
+    return None
