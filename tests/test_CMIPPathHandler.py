@@ -19,7 +19,7 @@ def test_get_split_CMIP6_filename():
         'institution_id': 'UoM',
         'scenario_id': 'ssp245',
         'version_number': '1-1-0',
-        'file_type': 'nc',
+        'file_type': '.nc',
     }
     assert actual_split == expected_split
 
@@ -37,7 +37,7 @@ def test_get_split_CMIP6_filename():
         'institution_id': 'UoM',
         'scenario_id': 'N/A',
         'version_number': '1-2-0',
-        'file_type': 'nc',
+        'file_type': '.nc',
     }
     assert actual_split == expected_split
 
