@@ -1,5 +1,5 @@
-from os import listdir
-from os.path import split, splitext, basename, join
+from os import listdir, makedirs
+from os.path import split, splitext, basename, join, isdir
 
 import yaml
 import json
@@ -139,11 +139,14 @@ class jsonGenerator():
 
     def write_json_to_file(self, json_dict=None, file_name=None):
         with open(file_name, 'w') as file_name:
-            json.dump(json_dict, file_name)
+            json.dump(json_dict, file_name, indent=4)
 
-    def write_json_for_filename_with_template(self, file_name=None, yaml_template=None):
+    def write_json_for_filename_with_template(self, file_name=None, yaml_template=None, output_path=None):
+        if not isdir(output_path):
+            print('Made dir: {}'.format(output_path))
+            makedirs(output_path)
         yaml_template = self.return_template_yaml_from(in_file=file_name)
-        self.check_all_values_valid(
+        self.check_yaml_template(
             yaml_template=yaml_template,
             original_file=file_name
         )
@@ -151,7 +154,11 @@ class jsonGenerator():
             raw_yml = yaml_template,
             file_name = file_name
         )
-        file_to_write = self.split_CMIP6_filename(file_name=file_name)['source_id']  + '.json'
+        file_to_write = join(
+            output_path,
+            self.split_CMIP6_filename(file_name=file_name)['source_id'] + '.json'
+        )
+
         print('Writing json file: {}\nfor file: {}'.format(file_to_write, file_name))
         self.write_json_to_file(
             json_dict=yaml_substituded,

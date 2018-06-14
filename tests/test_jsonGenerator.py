@@ -237,24 +237,30 @@ def test_check_yaml_replace_values():
         assert subbed_yml['subjects'][0]['subject'] == [value]
 
 
+@patch('CMIP6_json_data_citation_generator.isdir', return_value=False)
+@patch('CMIP6_json_data_citation_generator.makedirs')
 @patch.object(jsonGenerator, 'return_template_yaml_from')
-@patch.object(jsonGenerator, 'check_all_values_valid')
+@patch.object(jsonGenerator, 'check_yaml_template')
 @patch.object(jsonGenerator, 'get_yaml_with_filename_values_substituted')
 @patch.object(jsonGenerator, 'write_json_to_file')
 @patch('CMIP6_json_data_citation_generator.print')
-def test_writing_steps_called(mock_print, mock_writer, mock_substitute, mock_checker, mock_loader):
+def test_writing_steps_called(mock_print, mock_writer, mock_substitute, mock_checker, mock_loader, mock_makedirs, mock_isdir):
     file_name = listdir(test_file_path_empty_files)[0]
     PathHandler = CMIPPathHandler()
     source_id = PathHandler.get_split_CMIP6_filename(
         file_name=file_name
     )['source_id']
+    file_name_to_write = source_id + '.json'
 
     Generator = jsonGenerator()
-
     Generator.write_json_for_filename_with_template(
         file_name=file_name,
         yaml_template=test_data_citation_template_yaml,
+        output_path=test_output_path,
     )
+    mock_isdir.assert_called_with(test_output_path)
+    mock_print.assert_any_call('Made dir: {}'.format(test_output_path))
+    mock_makedirs.assert_called_with(test_output_path)
     mock_loader.assert_called_with(in_file=file_name)
     mock_checker.assert_called_with(
         yaml_template=mock_loader(),
@@ -266,6 +272,24 @@ def test_writing_steps_called(mock_print, mock_writer, mock_substitute, mock_che
     )
     mock_writer.assert_called_with(
         json_dict=mock_substitute(),
-        file_name= source_id + '.json'
+        file_name=join(test_output_path, file_name_to_write)
     )
-    mock_print.assert_called_once()
+    expected_file = join(test_output_path, file_name_to_write)
+    mock_print.assert_any_call(
+        'Writing json file: {}\nfor file: {}'.format(expected_file,
+                                                      file_name)
+    )
+    assert mock_print.call_count == 2
+
+    with patch('CMIP6_json_data_citation_generator.isdir', return_value=True) as mock_isdir:
+        Generator.write_json_for_filename_with_template(
+            file_name=file_name,
+            yaml_template=test_data_citation_template_yaml,
+            output_path=test_output_path,
+        )
+        assert mock_isdir.call_count == 1
+        assert mock_loader.call_count == 3
+        assert mock_checker.call_count == 1
+        assert mock_substitute.call_count == 2
+        assert mock_writer.call_count == 1
+        assert mock_print.call_count == 2
