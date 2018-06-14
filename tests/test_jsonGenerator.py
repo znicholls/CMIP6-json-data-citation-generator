@@ -160,7 +160,7 @@ def test_check_yaml_template():
     )
 
     key_to_exclude = 'titles'
-    missing_title_yml = {
+    missing_compulsory_field_yml = {
         key: value for key, value in valid_yml.items()
         if key not in key_to_exclude
     }
@@ -170,9 +170,28 @@ def test_check_yaml_template():
     )
     with raises(KeyError, match=re.escape(error_msg)):
         Generator.check_yaml_template(
-            yaml_template=missing_title_yml,
+            yaml_template=missing_compulsory_field_yml,
             original_file=test_data_citation_template_yaml,
         )
+
+    key_to_exclude = 'relatedIdentifiers'
+    missing_optional_field_yml = {
+        key: value for key, value in valid_yml.items()
+        if key not in key_to_exclude
+    }
+    msg = 'The key, {}, is missing in your yaml file: {}\nDo you want to add it?'.format(
+        key_to_exclude,
+        test_data_citation_template_yaml
+    )
+    with patch('CMIP6_json_data_citation_generator.print') as mock_print:
+        Generator.check_yaml_template(
+            yaml_template=missing_optional_field_yml,
+            original_file=test_data_citation_template_yaml,
+        )
+        if sys.version.startswith('3'):
+            # for some reason mocking print is not happy with Python2
+            assert mock_print.call_count == 1
+            mock_print.assert_called_with(msg)
 
     key_to_add = 'extra key'
     extra_key_yml = valid_yml.copy()
@@ -228,12 +247,12 @@ def test_check_yaml_replace_values():
         assert subbed_yml['titles'] == [value]
 
     for key, value in PathHandler.get_split_CMIP6_filename(file_name=file_name).items():
-        valid_yml['subjects'][0]['subject'] = ['<' + key + '>']
+        valid_yml['fundingReferences'][0]['funderName'] = ['<' + key + '>']
         subbed_yml = Generator.get_yaml_with_filename_values_substituted(
             raw_yml=valid_yml,
             file_name=file_name,
         )
-        assert subbed_yml['subjects'][0]['subject'] == [value]
+        assert subbed_yml['fundingReferences'][0]['funderName'] == [value]
 
 def test_write_json_to_file():
     with patch('CMIP6_json_data_citation_generator.open') as mock_open:
