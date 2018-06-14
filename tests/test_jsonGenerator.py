@@ -1,5 +1,6 @@
 from os import listdir
 from os.path import join
+from shutil import rmtree
 import re
 import datetime
 import sys
@@ -247,72 +248,104 @@ def test_write_json_to_file():
             mock_open.assert_called_with(test_fn, 'w')
             mock_json_dump.assert_called_once()
 
-@patch('CMIP6_json_data_citation_generator.isdir', return_value=False)
-@patch('CMIP6_json_data_citation_generator.makedirs')
 @patch.object(jsonGenerator, 'return_template_yaml_from')
 @patch.object(jsonGenerator, 'check_yaml_template')
 @patch.object(jsonGenerator, 'get_yaml_with_filename_values_substituted')
 @patch.object(jsonGenerator, 'write_json_to_file')
-@patch('CMIP6_json_data_citation_generator.print')
-def test_writing_steps(mock_print, mock_writer, mock_substitute, mock_checker, mock_loader, mock_makedirs, mock_isdir):
-    file_name = listdir(test_file_path_empty_files)[0]
+def test_writing_steps(mock_writer, mock_substitute, mock_checker, mock_loader):
+    test_file = listdir(test_file_path_empty_files)[0]
     PathHandler = CMIPPathHandler()
     source_id = PathHandler.get_split_CMIP6_filename(
-        file_name=file_name
+        file_name=test_file
     )['source_id']
     file_name_to_write = source_id + '.json'
+    yaml_template = test_data_citation_template_yaml
+    out_dir = 'not/used'
+    expected_out_file = join(out_dir, file_name_to_write)
 
     Generator = jsonGenerator()
-    Generator.write_json_for_filename_with_template(
-        file_name=file_name,
+    Generator.write_json_for_filename_to_file_with_template(
+        file_name=test_file,
         yaml_template=test_data_citation_template_yaml,
-        output_path=test_output_path,
+        output_file=expected_out_file,
     )
-    mock_isdir.assert_called_with(test_output_path)
-    if sys.version.startswith('3'):
-        # for some reason mocking print is not happy with Python2
-        mock_print.assert_any_call('Made dir: {}'.format(test_output_path))
-    mock_makedirs.assert_called_with(test_output_path)
-    mock_loader.assert_called_with(in_file=file_name)
+    mock_loader.assert_called_with(in_file=yaml_template)
     mock_checker.assert_called_with(
         yaml_template=mock_loader(),
-        original_file=file_name
+        original_file=test_file
     )
     mock_substitute.assert_called_with(
         raw_yml=mock_loader(),
-        file_name=file_name
+        file_name=test_file
     )
     mock_writer.assert_called_with(
         json_dict=mock_substitute(),
-        file_name=join(test_output_path, file_name_to_write)
+        file_name=expected_out_file
     )
-    expected_file = join(test_output_path, file_name_to_write)
-    if sys.version.startswith('3'):
-        # for some reason mocking print is not happy with Python2
-        mock_print.assert_any_call(
-            'Writing json file: {}\nfor file: {}'.format(expected_file,
-                                                          file_name)
-        )
-        assert mock_print.call_count == 2
 
-    with patch('CMIP6_json_data_citation_generator.isfile', return_value=True) as mock_isfile:
-        Generator.write_json_for_filename_with_template(
-            file_name=file_name,
-            yaml_template=test_data_citation_template_yaml,
-            output_path=test_output_path,
+@patch('CMIP6_json_data_citation_generator.listdir')
+@patch('CMIP6_json_data_citation_generator.isfile', return_value=False)
+@patch('CMIP6_json_data_citation_generator.makedirs')
+@patch('CMIP6_json_data_citation_generator.isdir', return_value=False)
+@patch('CMIP6_json_data_citation_generator.print')
+def test_generate_json_for_all_unique_scenario_ids(mock_print, mock_isdir, mock_makedirs, mock_isfile, mock_listdir):
+    test_file = listdir(test_file_path_empty_files)[0]
+    PathHandler = CMIPPathHandler()
+    source_id = PathHandler.get_split_CMIP6_filename(
+        file_name=test_file
+    )['source_id']
+    file_name_to_write = source_id + '.json'
+    in_dir = 'patched/over'
+    out_dir = 'not/used'
+    yaml_template = 'not used'
+    expected_out_file = join(out_dir, file_name_to_write)
+
+    mock_listdir.return_value = [test_file]
+    with patch.object(jsonGenerator, 'write_json_for_filename_to_file_with_template') as mock_write_json:
+        Generator = jsonGenerator()
+        Generator.generate_json_for_all_unique_scenario_ids(
+            in_dir=in_dir,
+            out_dir=out_dir,
+            yaml_template=yaml_template,
         )
-        assert mock_isfile.call_count == 1
-        assert mock_isdir.call_count == 1
-        assert mock_loader.call_count == 3
-        assert mock_checker.call_count == 1
-        assert mock_substitute.call_count == 2
-        assert mock_writer.call_count == 1
+        mock_listdir.assert_called_with(in_dir)
+        mock_isfile.assert_called_with(expected_out_file)
+        mock_isdir.assert_called_with(out_dir)
+        if sys.version.startswith('3'):
+            # for some reason mocking print is not happy with Python2
+            mock_print.assert_any_call('Made dir: {}'.format(out_dir))
+        if sys.version.startswith('3'):
+            # for some reason mocking print is not happy with Python2
+            mock_print.assert_any_call(
+                'Writing json file: {}\nfor file: {}'.format(expected_out_file,
+                                                             test_file)
+            )
+            assert mock_print.call_count == 2
+        mock_write_json.assert_called_with(
+            file_name=test_file,
+            yaml_template=yaml_template,
+            output_file=expected_out_file,
+        )
+
+    mock_isfile.return_value = True
+    with patch.object(jsonGenerator, 'write_json_for_filename_to_file_with_template') as mock_write_json:
+        Generator = jsonGenerator()
+        Generator.generate_json_for_all_unique_scenario_ids(
+            in_dir=in_dir,
+            out_dir=out_dir,
+            yaml_template=yaml_template,
+        )
+        mock_listdir.assert_called_with(in_dir)
+        mock_isfile.assert_called_with(expected_out_file)
         if sys.version.startswith('3'):
             # for some reason mocking print is not happy with Python2
             assert mock_print.call_count == 3
             mock_print.assert_any_call(
                 'json file already exists for source_id, see file: {}\nskipping file: {}'.format(
-                    expected_file,
-                    file_name
+                    expected_out_file,
+                    test_file
                 )
-        )
+            )
+        mock_isdir.assert_called_once()
+        mock_write_json.assert_not_called()
+

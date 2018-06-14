@@ -141,20 +141,8 @@ class jsonGenerator():
         with open(file_name, 'w') as file_name:
             json.dump(json_dict, file_name, indent=4)
 
-    def write_json_for_filename_with_template(self, file_name=None, yaml_template=None, output_path=None):
-        file_to_write = join(
-            output_path,
-            self.split_CMIP6_filename(file_name=file_name)['source_id'] + '.json'
-        )
-        if isfile(file_to_write):
-            print('json file already exists for source_id, see file: {}\nskipping file: {}'.format(file_to_write, file_name))
-            return
-
-        if not isdir(output_path):
-            print('Made dir: {}'.format(output_path))
-            makedirs(output_path)
-
-        yaml_template = self.return_template_yaml_from(in_file=file_name)
+    def write_json_for_filename_to_file_with_template(self, file_name=None, yaml_template=None, output_file=None):
+        yaml_template = self.return_template_yaml_from(in_file=yaml_template)
         self.check_yaml_template(
             yaml_template=yaml_template,
             original_file=file_name
@@ -163,10 +151,28 @@ class jsonGenerator():
             raw_yml = yaml_template,
             file_name = file_name
         )
-
-
-        print('Writing json file: {}\nfor file: {}'.format(file_to_write, file_name))
         self.write_json_to_file(
             json_dict=yaml_substituded,
-            file_name=file_to_write
+            file_name=output_file
         )
+
+    def generate_json_for_all_unique_scenario_ids(self, in_dir=None, out_dir=None, yaml_template=None):
+        for file_name in listdir(in_dir):
+            file_to_write = join(
+                out_dir,
+                self.split_CMIP6_filename(file_name=file_name)['source_id'] + '.json'
+            )
+            if isfile(file_to_write):
+                print('json file already exists for source_id, see file: {}\nskipping file: {}'.format(file_to_write, file_name))
+                continue
+
+            if not isdir(out_dir):
+                print('Made dir: {}'.format(out_dir))
+                makedirs(out_dir)
+
+            print('Writing json file: {}\nfor file: {}'.format(file_to_write, file_name))
+            self.write_json_for_filename_to_file_with_template(
+                file_name=file_name,
+                yaml_template=yaml_template,
+                output_file=file_to_write,
+            )
