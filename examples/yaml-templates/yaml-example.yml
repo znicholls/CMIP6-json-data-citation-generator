@@ -18,11 +18,11 @@ creators:
       pid: "9876-5432-1098-7654"
     affiliation: "Another university"
 titles:
-  - "<activityid>.CMIP6.<target_mip>.<institution_id>.<source_id>"
+  - "<activity_id>.CMIP6.<target_mip>.<institution_id>.<source_id>"
 fundingReferences:
   - funderName: "Funder name 1"
   - funderName: "Funder name 2"
 relatedIdentifiers:
   - relatedIdentifier: "doi-link"
-  - relatedIdentifierType: "DOI"
-  - relationType: "IsDocumentedBy"
+    relatedIdentifierType: "DOI"
+    relationType: "IsDocumentedBy"
