@@ -42,7 +42,8 @@ def test_get_unique_source_ids_in_dir_only_acts_on_nc_files():
     Generator = jsonGenerator()
     with patch.object(Generator, 'split_CMIP6_filename') as mock_split_filename:
         Generator.get_unique_source_ids_in_dir(
-            dir_to_search='.' # safe to use because if there's nc files in top level, something is wrong
+            dir_to_search='.'
+            # safe to use because if there's nc files in top level, something is wrong
         )
         mock_split_filename.assert_not_called()
 
@@ -93,3 +94,70 @@ def test_yaml_read_in():
         'single-line-text': 'Late afternoon is best. Backup contact is Nancy Billsmer @ 338-4338.\n'
     }
     assert actual_result == expected_result
+
+def test_read_yaml_template():
+    Generator = jsonGenerator()
+    yaml_template = join(test_file_path_yaml, 'test-data-citation-template.yml')
+    actual_result = Generator.return_template_yml_from(in_file=yaml_template)
+    expected_result = {
+        'creators': [
+            {
+                'creatorName': "Last, First A. B.",
+                'givenName': "First A. B.",
+                'familyName': "Last",
+                'email': "email@test.com",
+                'nameIdentifier': {
+                    'schemeURI': "http://orcid.org/",
+                    'nameIdentifierScheme': "ORCID",
+                    'pid': "0000-1111-2222-3333",
+                },
+            },
+            {
+                'creatorName': "La, Fir",
+                'givenName': "Fir",
+                'familyName': "La",
+                'email': "email2@test.com",
+                'nameIdentifier': {
+                    'schemeURI': "http://orcid.org/",
+                    'nameIdentifierScheme': "ORCID",
+                    'pid': "9876-5432-1098-7654",
+                },
+            },
+        ],
+        'titles': [
+            "activity-id.CMIP-era.targetMIP.institutionID.source-id",
+        ],
+        'subjects': [
+            {
+                'subject': "activity-id.CMIP-era.targetMIP.institutionID.source-id",
+                'schemeURI': "http://github.com/WCRP-CMIP/CMIP6_CVs",
+                'subjectScheme': "DRS",
+            },
+            {'subject': "forcing data"},
+            {'subject': "CMIP6"},
+            {'subject': "climate"},
+        ],
+        'descriptions': [
+            {
+                'descriptionType': "Abstract",
+                'text': 'A bunch of text can go here on multiple lines and will be joined together\n',
+            }
+        ]
+    }
+    assert actual_result == expected_result
+
+def test_check_yaml_template():
+    Generator = jsonGenerator()
+    yaml_template = join(test_file_path_yaml, 'test-yaml.yml')
+    valid_yml = Generator.return_template_yml_from(in_file=yaml_template)
+
+    # something missing
+    # something extra
+    # wrong format
+    missing_title_yml = {
+        key: value for key, value in valid_yml.items()
+        if key not in ['titles']
+    }
+    error_msg = 'Your yaml does not look right, please compare it to {} and if necessary, start again'.format(yaml_template)
+    with raises(KeyError, match=re.escape(error_msg)):
+        Generator.check_yaml_template(yaml_template=missing_title_yml)
