@@ -158,6 +158,10 @@ class jsonGenerator():
 
     def generate_json_for_all_unique_scenario_ids(self, in_dir=None, out_dir=None, yaml_template=None):
         for file_name in listdir(in_dir):
+            if not file_name.endswith('.nc'):
+                print('Skipping non-nc file: {}'.format(file_name))
+                continue
+
             file_to_write = join(
                 out_dir,
                 self.split_CMIP6_filename(file_name=file_name)['source_id'] + '.json'

@@ -289,7 +289,10 @@ def test_writing_steps(mock_writer, mock_substitute, mock_checker, mock_loader):
 @patch('CMIP6_json_data_citation_generator.isdir', return_value=False)
 @patch('CMIP6_json_data_citation_generator.print')
 def test_generate_json_for_all_unique_scenario_ids(mock_print, mock_isdir, mock_makedirs, mock_isfile, mock_listdir):
-    test_file = listdir(test_file_path_empty_files)[0]
+    test_file = [
+        fn for fn in listdir(test_file_path_empty_files)
+        if fn.endswith('.nc')
+    ][0]
     PathHandler = CMIPPathHandler()
     source_id = PathHandler.get_split_CMIP6_filename(
         file_name=test_file
@@ -349,7 +352,8 @@ def test_generate_json_for_all_unique_scenario_ids(mock_print, mock_isdir, mock_
         mock_isdir.assert_called_once()
         mock_write_json.assert_not_called()
 
-def test_write_json_to_file_only_runs_on_nc_file():
+@patch('CMIP6_json_data_citation_generator.print')
+def test_write_json_to_file_only_runs_on_nc_file(mock_print):
     test_files = [
         'mole-fraction-of-c2f6-in-air_input4MIPs_GHGConcentrations_ScenarioMIP_UoM-ssp585-1-1-0_gr1-GMNHSH_2015-2500.csv',
         'mole-fraction-of-so2f2-in-air_input4MIPs_GHGConcentrations_ScenarioMIP_UoM-ssp585-1-1-0_gr1-GMNHSH_2015-2500.mat'
@@ -363,3 +367,12 @@ def test_write_json_to_file_only_runs_on_nc_file():
                 yaml_template='not/used',
             )
             mock_write_json.assert_not_called()
+            if sys.version.startswith('3'):
+                # for some reason mocking print is not happy with Python2
+                assert mock_print.call_count == 2
+                for test_file in test_files:
+                    mock_print.assert_any_call(
+                        'Skipping non-nc file: {}'.format(
+                            test_file
+                        )
+                    )
