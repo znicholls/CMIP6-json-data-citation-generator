@@ -8,5 +8,8 @@ python:
 before_install:
   - sudo apt-get update
   - sudo apt-get install --no-install-recommends -y
+  - pip install --upgrade pip
+  - pip install -Ur dev-requirements.txt
+  - python setup.py develop
 script:
-  - make test
+  - pytest
