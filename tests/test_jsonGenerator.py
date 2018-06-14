@@ -121,6 +121,7 @@ def test_read_yaml_template():
                     'nameIdentifierScheme': "ORCID",
                     'pid': "0000-1111-2222-3333",
                 },
+                'affiliation': 'Some university',
             },
             {
                 'creatorName': "La, Fir",
@@ -132,25 +133,21 @@ def test_read_yaml_template():
                     'nameIdentifierScheme': "ORCID",
                     'pid': "9876-5432-1098-7654",
                 },
+                'affiliation': 'Other university',
             },
         ],
         'titles': [
             "activity-id.CMIP-era.targetMIP.institutionID.source-id",
         ],
-        'subjects': [
-            {
-                'subject': "activity-id.CMIP-era.targetMIP.institutionID.source-id",
-                'schemeURI': "http://github.com/WCRP-CMIP/CMIP6_CVs",
-                'subjectScheme': "DRS",
-            },
-            {'subject': "forcing data"},
-            {'subject': "CMIP6"},
-            {'subject': "climate"},
+        'fundingReferences': [
+            {'funderName': 'Funder name 1'},
+            {'funderName': 'Funder name 2'},
         ],
-        'descriptions': [
+        'relatedIdentifiers': [
             {
-                'descriptionType': "Abstract",
-                'text': 'A bunch of text can go here on multiple lines and will be joined together\n',
+                'relatedIdentifier': 'doi-link',
+                'relatedIdentifierType': 'DOI',
+                'relationType': 'IsDocumentedBy',
             }
         ]
     }

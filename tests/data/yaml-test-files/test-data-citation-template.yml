@@ -24,5 +24,5 @@ fundingReferences:
   - funderName: "Funder name 2"
 relatedIdentifiers:
   - relatedIdentifier: "doi-link"
-  - relatedIdentifierType: "DOI"
-  - relationType: "IsDocumentedBy"
+    relatedIdentifierType: "DOI"
+    relationType: "IsDocumentedBy"
