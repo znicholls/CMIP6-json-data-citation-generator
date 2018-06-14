@@ -7,8 +7,6 @@ VIRTUAL_ENV_DIR=$(ROOT_DIR)/venv
 
 VIRTUAL_ENV_DIR_PY2=$(ROOT_DIR)/venv2
 
-@echo VIRTUAL_ENV_DIR_PY2: $(VIRTUAL_ENV_DIR_PY2)
-
 .PHONY : test
 test : $(VIRTUAL_ENV_DIR) $(VIRTUAL_ENV_DIR_PY2)
 	$(call activate_venv,); pytest
@@ -61,3 +59,5 @@ variables :
 	@echo DEV_REQUIREMENTS: $(DEV_REQUIREMENTS)
 	@echo SETUP_PY: $(SETUP_PY)
 	@echo VIRTUAL_ENV_DIR: $(VIRTUAL_ENV_DIR)
+
+	@echo VIRTUAL_ENV_DIR_PY2: $(VIRTUAL_ENV_DIR_PY2)
