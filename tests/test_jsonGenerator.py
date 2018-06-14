@@ -6,7 +6,7 @@ from mock import patch
 
 from CMIP6_json_data_citation_generator import jsonGenerator
 
-test_file_path = join('.', 'data', 'empty-test-files/')
+test_file_path = join('.', 'tests', 'data', 'empty-test-files')
 test_file_unique_source_ids = [
     'UoM-ssp119-1-1-0',
     'UoM-ssp245-1-1-0',
