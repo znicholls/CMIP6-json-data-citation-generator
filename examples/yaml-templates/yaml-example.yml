@@ -16,7 +16,7 @@ creators:
       nameIdentifierScheme: "ORCID"
       pid: "9876-5432-1098-7654"
 titles:
-  - "<activity_id>.CMIP6.<target_mip>.<institution_id>.<source_id>"
+  - "<activityid>.CMIP6.<target_mip>.<institution_id>.<source_id>"
 subjects:
   - subject: "<activity_id>.CMIP6.<target_mip>.<institution_id>.<source_id>"
     schemeURI: "http://github.com/WCRP-CMIP/CMIP6_CVs"

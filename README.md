@@ -87,16 +87,32 @@ You will notice that in that file, the `titles` field has a few strings which ar
 - version_number
 - extension
 
-For a filename such as, `mole-fraction-of-c2f6-in-air_input4MIPs_GHGConcentrations_ScenarioMIP_UoM-ssp119-1-1-0_gn-15x360deg_201501-250012.csv`, the substitutions that will be made are:
+This expects filenames of the form, `variable-id_activity-id_dataset-category_target-mip_source-id_grid-label_time-idextension`, where `source-id` is composed of `institution-id-scenario-id-version-number`. Two illustrative examples are given below:
 
-- <variable_id> -->
-- <activity_id> -->
-- <dataset_category> -->
-- <target_mip> -->
-- <source_id> -->
-- <grid_label> -->
-- <time_id> -->
-- <institution_id> -->
-- <scenario_id> -->
-- <version_number> -->
-- <extension> -->
+For a filename such as, `mole-fraction-of-c2f6-in-air_input4MIPs_GHGConcentrations_ScenarioMIP_UoM-ssp119-1-1-0_gn-15x360deg_201501-250012.nc`, the substitutions that will be made are:
+
+- <variable_id> --> mole-fraction-of-c2f6-in-air
+- <activity_id> --> input4MIPs
+- <dataset_category> --> GHGConcentrations
+- <target_mip> --> ScenarioMIP
+- <source_id> --> UoM-ssp119-1-1-0
+- <grid_label> --> gn-15x360deg
+- <time_id> --> 201501-250012
+- <institution_id> --> UoM
+- <scenario_id> --> ssp119
+- <version_number> --> 1-1-0
+- <extension> --> .nc
+
+For a filename such as, `mole-fraction-of-methyl-chloride-in-air_input4MIPs_GHGConcentrations_CMIP_UoM-1-1-0_gr1-GMNHSH_000001-201412.nc`, the substitutions that will be made are:
+
+- <variable_id> --> mole-fraction-of-methyl-chloride-in-air
+- <activity_id> --> input4MIPs
+- <dataset_category> --> GHGConcentrations
+- <target_mip> --> CMIP
+- <source_id> --> UoM-1-1-0
+- <grid_label> --> gr1-GMNHSH
+- <time_id> --> 000001-201412
+- <institution_id> --> UoM
+- <scenario_id> --> N/A
+- <version_number> --> 1-1-0
+- <extension> --> .nc
