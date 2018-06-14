@@ -1,6 +1,8 @@
 from os import listdir
 from os.path import splitext, basename
 
+import yaml
+
 class CMIPPathHandler():
     def __init__(self):
         self._path_to_handle = ''

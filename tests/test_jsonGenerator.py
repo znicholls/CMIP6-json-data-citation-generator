@@ -6,7 +6,7 @@ from mock import patch
 
 from CMIP6_json_data_citation_generator import jsonGenerator
 
-test_file_path = join('.', 'tests', 'data', 'empty-test-files')
+test_file_path_empty_files = join('.', 'tests', 'data', 'empty-test-files')
 test_file_unique_source_ids = [
     'UoM-ssp119-1-1-0',
     'UoM-ssp245-1-1-0',
@@ -17,10 +17,12 @@ test_file_unique_source_ids = [
 ]
 test_output_path = join('.', 'test-json-output-path')
 
+test_file_path_yaml = join('.', 'tests', 'data', 'yaml-test-files')
+
 def test_get_unique_source_ids_in_dir():
     Generator = jsonGenerator()
     unique_ids = Generator.get_unique_source_ids_in_dir(
-        dir_to_search=test_file_path
+        dir_to_search=test_file_path_empty_files
     )
     unique_ids.sort()
     test_file_unique_source_ids.sort()
@@ -44,4 +46,10 @@ def test_get_unique_source_ids_in_dir_only_acts_on_nc_files():
         mock_split_filename.assert_not_called()
 
 def test_yaml_read_in():
-    return None
+    Generator = jsonGenerator()
+    yaml_template = join(test_file_path_yaml, 'test-yaml.yml')
+    actual_result = Generator.get_template_yml(in_file=yaml_template)
+    expected_result = {
+        'hi': 'bye'
+    }
+    assert actual_result == expected_result
