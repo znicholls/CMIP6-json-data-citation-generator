@@ -12,6 +12,7 @@
     - [Summary](#summary)
     - [Example](#example)
     - [Details](#details)
+        - [Text Substitutions in yaml Files](#text-substitutions-in-yaml-files)
 
 <!-- /MarkdownTOC -->
 
@@ -72,6 +73,11 @@ python ./scripts/generate_CMIP6_json_files.py ./examples/yaml-templates/yaml-exa
 ### Details
 
 The script loads a template yaml file, which it then uses to write out the `json` files. An example of what this yaml file should look like is in `CMIP6-json-data-citation-generator/examples/yaml-templates/yaml-example.yml`.
+
+*Note:* as explained in the tutorial, you must first use the online GUI to add people and institutions before your `json` files can be used directy with the API. Having said that, the files may be useful in and of themselves if you need a hand from the data citation team.
+
+<a id="text-substitutions-in-yaml-files"></a>
+#### Text Substitutions in yaml Files
 
 You will notice that in that file, the `titles` field has a few strings which are wrapped in `<>`. Such strings can be replaced with information from the filename. The available substitutions are:
 
