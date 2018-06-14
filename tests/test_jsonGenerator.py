@@ -1,9 +1,12 @@
+from os import listdir
 from os.path import join
 import re
 import datetime
 
 from pytest import raises
 from mock import patch
+
+from CMIP6_json_data_citation_generator import CMIPPathHandler
 
 from CMIP6_json_data_citation_generator import jsonGenerator
 
@@ -157,9 +160,6 @@ def test_check_yaml_template():
         in_file=test_data_citation_template_yaml
     )
 
-    # something missing
-    # something extra
-    # wrong format
     key_to_exclude = 'titles'
     missing_title_yml = {
         key: value for key, value in valid_yml.items()
@@ -203,3 +203,21 @@ def test_check_yaml_template():
             yaml_template=wrong_format_yml,
             original_file=test_data_citation_template_yaml,
         )
+
+def test_check_yaml_replace_values():
+    Generator = jsonGenerator()
+    valid_yml = Generator.return_template_yaml_from(
+        in_file=test_data_citation_template_yaml
+    )
+
+    file_name = listdir(test_file_path_empty_files)[0]
+    PathHandler = CMIPPathHandler()
+
+    for key, value in PathHandler.get_split_CMIP6_filename(file_name=file_name).items():
+        valid_yml['titles'] = [key]
+        subbed_yml = Generator.get_yaml_with_filename_values_substituted(
+            valid_yml
+        )
+        assert subbed_yml['titles'] == [value]
+
+# check that check_all_values_valid called before writing
