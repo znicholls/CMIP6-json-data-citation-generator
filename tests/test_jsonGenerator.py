@@ -236,4 +236,36 @@ def test_check_yaml_replace_values():
         )
         assert subbed_yml['subjects'][0]['subject'] == [value]
 
-# check that check_all_values_valid called before writing
+
+@patch.object(jsonGenerator, 'return_template_yaml_from')
+@patch.object(jsonGenerator, 'check_all_values_valid')
+@patch.object(jsonGenerator, 'get_yaml_with_filename_values_substituted')
+@patch.object(jsonGenerator, 'write_json_to_file')
+@patch('CMIP6_json_data_citation_generator.print')
+def test_writing_steps_called(mock_print, mock_writer, mock_substitute, mock_checker, mock_loader):
+    file_name = listdir(test_file_path_empty_files)[0]
+    PathHandler = CMIPPathHandler()
+    source_id = PathHandler.get_split_CMIP6_filename(
+        file_name=file_name
+    )['source_id']
+
+    Generator = jsonGenerator()
+
+    Generator.write_json_for_filename_with_template(
+        file_name=file_name,
+        yaml_template=test_data_citation_template_yaml,
+    )
+    mock_loader.assert_called_with(in_file=file_name)
+    mock_checker.assert_called_with(
+        yaml_template='yaml_template',
+        original_file=file_name
+    )
+    mock_substitute.assert_called_with(
+        raw_yml='yaml_template',
+        file_name=file_name
+    )
+    mock_writer.assert_called_with(
+        json_dict='yaml_substituted',
+        file_name= source_id + '.json'
+    )
+    mock_print.assert_called_once()
