@@ -2,4 +2,101 @@
 
 [![Build Status](https://img.shields.io/travis/znicholls/CMIP6-json-data-citation-generator.svg)](https://travis-ci.org/znicholls/CMIP6-json-data-citation-generator)
 
-Simple scripts to automatically generate json data citations for CMIP6 data files
+<!-- MarkdownTOC autolink="true" autoanchor="true" markdown_preview="github" -->
+
+- [Notation](#notation)
+- [Installation](#installation)
+    - [Use](#use)
+    - [Development](#development)
+- [Usage](#usage)
+    - [Summary](#summary)
+    - [Example](#example)
+    - [Details](#details)
+
+<!-- /MarkdownTOC -->
+
+
+Simple scripts to automatically generate json data citations for CMIP6 data files.
+
+<a id="notation"></a>
+## Notation
+
+To be written, need to mention that `<name>` indicates that you should replace `<name>` including the `<>` with the appropriate file, variable, path etc.
+
+<a id="installation"></a>
+## Installation
+
+<a id="use"></a>
+### Use
+
+```
+python2 -m virtualenv venv # python3 will also work
+source venv/bin/activate
+pip install --upgrade pip
+pip install -Ur dev-requirements.txt
+python setup.py install
+```
+
+<a id="development"></a>
+### Development
+
+```
+make test
+```
+
+This will install the virtual environments (both python2 and python3) and run the tests.
+
+<a id="usage"></a>
+## Usage
+
+<a id="summary"></a>
+### Summary
+
+`json` files for files in the directory, `<input_dir>`, can be generated in the output directory, `<output_dir>`, using a yaml template file, `<yaml_template>` as shown
+
+```
+python generate_CMIP6_json_files.py <yaml_template> <input_dir> <output_dir>
+```
+
+<a id="example"></a>
+### Example
+
+The script will only generate one `json` file for each unique source id it finds in the `<input_dir>`. To see an example, run the following whilst your working directory is `CMIP6-json-data-citation-generator`
+
+```
+source venv/bin/activate # if you haven't already
+python ./scripts/generate_CMIP6_json_files.py ./examples/yaml-templates/yaml-example.yml ./examples/data/empty-test-files/ ./examples/outputs
+```
+
+<a id="details"></a>
+### Details
+
+The script loads a template yaml file, which it then uses to write out the `json` files. An example of what this yaml file should look like is in `CMIP6-json-data-citation-generator/examples/yaml-templates/yaml-example.yml`.
+
+You will notice that in that file, the `titles` field has a few strings which are wrapped in `<>`. Such strings can be replaced with information from the filename. The available substitutions are:
+
+- variable_id
+- activity_id
+- dataset_category
+- target_mip
+- source_id
+- grid_label
+- time_id
+- institution_id
+- scenario_id
+- version_number
+- extension
+
+For a filename such as, `mole-fraction-of-c2f6-in-air_input4MIPs_GHGConcentrations_ScenarioMIP_UoM-ssp119-1-1-0_gn-15x360deg_201501-250012.csv`, the substitutions that will be made are:
+
+- <variable_id> -->
+- <activity_id> -->
+- <dataset_category> -->
+- <target_mip> -->
+- <source_id> -->
+- <grid_label> -->
+- <time_id> -->
+- <institution_id> -->
+- <scenario_id> -->
+- <version_number> -->
+- <extension> -->

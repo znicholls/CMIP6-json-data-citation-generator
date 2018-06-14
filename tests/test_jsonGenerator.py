@@ -349,3 +349,17 @@ def test_generate_json_for_all_unique_scenario_ids(mock_print, mock_isdir, mock_
         mock_isdir.assert_called_once()
         mock_write_json.assert_not_called()
 
+def test_write_json_to_file_only_runs_on_nc_file():
+    test_files = [
+        'mole-fraction-of-c2f6-in-air_input4MIPs_GHGConcentrations_ScenarioMIP_UoM-ssp585-1-1-0_gr1-GMNHSH_2015-2500.csv',
+        'mole-fraction-of-so2f2-in-air_input4MIPs_GHGConcentrations_ScenarioMIP_UoM-ssp585-1-1-0_gr1-GMNHSH_2015-2500.mat'
+    ]
+    with patch('CMIP6_json_data_citation_generator.listdir', return_value=test_files) as mock_listdir:
+        with patch.object(jsonGenerator, 'write_json_for_filename_to_file_with_template') as mock_write_json:
+            Generator = jsonGenerator()
+            Generator.generate_json_for_all_unique_scenario_ids(
+                in_dir='not/used',
+                out_dir='not/used',
+                yaml_template='not/used',
+            )
+            mock_write_json.assert_not_called()

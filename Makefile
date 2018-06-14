@@ -7,6 +7,17 @@ VIRTUAL_ENV_DIR=$(ROOT_DIR)/venv
 
 VIRTUAL_ENV_DIR_PY2=$(ROOT_DIR)/venv2
 
+EXAMPLE_ROOT_DIR=$(ROOT_DIR)/examples
+EXAMPLE_FILE_DIR=$(EXAMPLE_ROOT_DIR)/data/empty-test-files/
+EXAMPLE_YML=$(EXAMPLE_ROOT_DIR)/yaml-templates/yaml-example.yml
+MAKE_JSON_SRC=$(ROOT_DIR)/scripts/generate_CMIP6_json_files.py
+MAKE_JSON_LANG=python
+EXAMPLE_OUTPUT_DIR=$(EXAMPLE_ROOT_DIR)/outputs
+
+.PHONY : make_example_jsons
+make_example_jsons : $(VIRTUAL_ENV_DIR) $(EXAMPLE_FILE_DIR) $(EXAMPLE_YML)
+	$(call activate_venv,); $(MAKE_JSON_LANG) $(MAKE_JSON_SRC) $(EXAMPLE_YML) $(EXAMPLE_FILE_DIR) $(EXAMPLE_OUTPUT_DIR)
+
 .PHONY : test
 test : $(VIRTUAL_ENV_DIR) $(VIRTUAL_ENV_DIR_PY2)
 	$(call activate_venv,); pytest
@@ -26,6 +37,8 @@ remove_venvs :
 
 .PHONY : make_venvs
 make_venvs : $(VIRTUAL_ENV_DIR) $(VIRTUAL_ENV_DIR_PY2)
+.PHONY : make_venv
+make_venv : $(VIRTUAL_ENV_DIR)
 $(VIRTUAL_ENV_DIR) : $(DEV_REQUIREMENTS) $(SETUP_PY)
 	python3 -m venv $(VIRTUAL_ENV_DIR)
 	( \
@@ -38,6 +51,8 @@ $(VIRTUAL_ENV_DIR) : $(DEV_REQUIREMENTS) $(SETUP_PY)
 	)
 	touch $(VIRTUAL_ENV_DIR)
 
+.PHONY : make_venv2
+make_venv : $(VIRTUAL_ENV_DIR_PY2)
 $(VIRTUAL_ENV_DIR_PY2) : $(DEV_REQUIREMENTS) $(SETUP_PY)
 	pip install virtualenv
 	python2 -m virtualenv $(VIRTUAL_ENV_DIR_PY2)
@@ -51,6 +66,11 @@ $(VIRTUAL_ENV_DIR_PY2) : $(DEV_REQUIREMENTS) $(SETUP_PY)
 	)
 	touch $(VIRTUAL_ENV_DIR_PY2)
 
+.PHONY : clean
+clean :
+	make remove_venvs
+
+
 .PHONY : variables
 variables :
 	@echo SHELL: $(SHELL)
@@ -61,3 +81,10 @@ variables :
 	@echo VIRTUAL_ENV_DIR: $(VIRTUAL_ENV_DIR)
 
 	@echo VIRTUAL_ENV_DIR_PY2: $(VIRTUAL_ENV_DIR_PY2)
+
+	@echo EXAMPLE_ROOT_DIR: $(EXAMPLE_ROOT_DIR)
+	@echo EXAMPLE_FILE_DIR: $(EXAMPLE_FILE_DIR)
+	@echo EXAMPLE_YML: $(EXAMPLE_YML)
+	@echo MAKE_JSON_SRC: $(MAKE_JSON_SRC)
+	@echo MAKE_JSON_LANG: $(MAKE_JSON_LANG)
+	@echo EXAMPLE_OUTPUT_DIR: $(EXAMPLE_OUTPUT_DIR)
