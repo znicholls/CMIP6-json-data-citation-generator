@@ -1,5 +1,6 @@
 from os.path import join
 import re
+import datetime
 
 from pytest import raises
 from mock import patch
@@ -48,8 +49,47 @@ def test_get_unique_source_ids_in_dir_only_acts_on_nc_files():
 def test_yaml_read_in():
     Generator = jsonGenerator()
     yaml_template = join(test_file_path_yaml, 'test-yaml.yml')
-    actual_result = Generator.get_template_yml(in_file=yaml_template)
+    actual_result = Generator.return_template_yml_from(in_file=yaml_template)
     expected_result = {
-        'hi': 'bye'
+        'list-field': ['item1', 'item2'],
+        'dict-field-1': 34843,
+        'date': datetime.date(2001, 1, 23),
+        'nested-dict-1': {
+            'given': 'Chris',
+            'family': 'Dumars',
+            'address': {
+                'multi-line-field': '458 Walkman Dr.\nSuite #292\n',
+                'city': 'Royal Oak',
+                'state': 'MI',
+                'postal': 48046,
+            },
+        },
+        'shortcut-copy-of-nested-dict-1-using-id': {
+            'given': 'Chris',
+            'family': 'Dumars',
+            'address': {
+                'multi-line-field': '458 Walkman Dr.\nSuite #292\n',
+                'city': 'Royal Oak',
+                'state': 'MI',
+                'postal': 48046
+            },
+        },
+        'list-field-2': [
+            {
+                'dict-ent-1': 'BL394D',
+                'dict-ent-2': 4,
+                'description': 'Basketball',
+                'price': 450.00
+            },
+            {
+                'dict-ent-1': 'BL4438H',
+                'dict-ent-2': 1,
+                'description': 'Super Hoop',
+                'price': 2392.00
+            },
+        ],
+        'tax': 251.42,
+        'total': 4443.52,
+        'single-line-text': 'Late afternoon is best. Backup contact is Nancy Billsmer @ 338-4338.\n'
     }
     assert actual_result == expected_result

@@ -65,3 +65,6 @@ class jsonGenerator():
     def split_CMIP6_filename(self, file_name=None):
         PathHandler = CMIPPathHandler()
         return PathHandler.get_split_CMIP6_filename(file_name=file_name)
+
+    def return_template_yml_from(self, in_file=None):
+        return yaml.load(open(in_file, 'r'))
