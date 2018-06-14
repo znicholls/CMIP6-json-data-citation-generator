@@ -86,13 +86,21 @@ class jsonGenerator():
         )
 
     def check_all_values_valid(self, yaml_to_check=None, yaml_correct=None, original_file=None):
+        optional_keys = ['fundingReferences', 'relatedIdentifiers']
         for key in yaml_correct:
             if key not in yaml_to_check:
-                error_msg = 'The key, {}, is missing in your yaml file: {}'.format(
-                    key,
-                    original_file,
-                )
-                raise KeyError(error_msg)
+                if key in optional_keys:
+                    msg = 'The key, {}, is missing in your yaml file: {}\nDo you want to add it?'.format(
+                        key,
+                        original_file,
+                    )
+                    print(msg)
+                else:
+                    error_msg = 'The key, {}, is missing in your yaml file: {}'.format(
+                        key,
+                        original_file,
+                    )
+                    raise KeyError(error_msg)
 
         for key, value in yaml_to_check.items():
             if key not in yaml_correct:
