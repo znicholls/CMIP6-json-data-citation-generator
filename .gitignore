@@ -1,6 +1,10 @@
 # virtual environments
 venv*
 venv2*
+
+# Apple stuff
+*.DS_Store
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
