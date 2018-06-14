@@ -237,6 +237,15 @@ def test_check_yaml_replace_values():
         )
         assert subbed_yml['subjects'][0]['subject'] == [value]
 
+def test_write_json_to_file():
+    with patch('CMIP6_json_data_citation_generator.open') as mock_open:
+        with patch('CMIP6_json_data_citation_generator.json.dump') as mock_json_dump:
+            Generator = jsonGenerator()
+            test_fn = 'UoM-ssp119-1-1-0'
+            test_dict = {'hi': 'test', 'bye': 'another test'}
+            Generator.write_json_to_file(json_dict=test_dict, file_name=test_fn)
+            mock_open.assert_called_with(test_fn, 'w')
+            mock_json_dump.assert_called_once()
 
 @patch('CMIP6_json_data_citation_generator.isdir', return_value=False)
 @patch('CMIP6_json_data_citation_generator.makedirs')
@@ -245,7 +254,7 @@ def test_check_yaml_replace_values():
 @patch.object(jsonGenerator, 'get_yaml_with_filename_values_substituted')
 @patch.object(jsonGenerator, 'write_json_to_file')
 @patch('CMIP6_json_data_citation_generator.print')
-def test_writing_steps_called(mock_print, mock_writer, mock_substitute, mock_checker, mock_loader, mock_makedirs, mock_isdir):
+def test_writing_steps(mock_print, mock_writer, mock_substitute, mock_checker, mock_loader, mock_makedirs, mock_isdir):
     file_name = listdir(test_file_path_empty_files)[0]
     PathHandler = CMIPPathHandler()
     source_id = PathHandler.get_split_CMIP6_filename(
