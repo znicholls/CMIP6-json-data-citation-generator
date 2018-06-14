@@ -257,15 +257,15 @@ def test_writing_steps_called(mock_print, mock_writer, mock_substitute, mock_che
     )
     mock_loader.assert_called_with(in_file=file_name)
     mock_checker.assert_called_with(
-        yaml_template='yaml_template',
+        yaml_template=mock_loader(),
         original_file=file_name
     )
     mock_substitute.assert_called_with(
-        raw_yml='yaml_template',
+        raw_yml=mock_loader(),
         file_name=file_name
     )
     mock_writer.assert_called_with(
-        json_dict='yaml_substituted',
+        json_dict=mock_substitute(),
         file_name= source_id + '.json'
     )
     mock_print.assert_called_once()

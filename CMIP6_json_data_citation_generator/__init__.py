@@ -118,6 +118,7 @@ class jsonGenerator():
 
     def get_yaml_with_filename_values_substituted(self, raw_yml=None, file_name=None):
         def make_substitutions(item):
+            filename_bits = self.split_CMIP6_filename(file_name=file_name)
             if isinstance(item, str):
                 for key, value in filename_bits.items():
                     item = item.replace(
@@ -130,8 +131,6 @@ class jsonGenerator():
             elif isinstance(item, dict):
                 return {key: make_substitutions(value) for key, value in item.items()}
 
-        PathHandler = CMIPPathHandler()
-        filename_bits = PathHandler.get_split_CMIP6_filename(file_name)
         updated_yml = {}
         for key, value in raw_yml.items():
             updated_yml[key] = make_substitutions(value)
@@ -143,4 +142,18 @@ class jsonGenerator():
             json.dump(json_dict, file_name)
 
     def write_json_for_filename_with_template(self, file_name=None, yaml_template=None):
-        return None
+        yaml_template = self.return_template_yaml_from(in_file=file_name)
+        self.check_all_values_valid(
+            yaml_template=yaml_template,
+            original_file=file_name
+        )
+        yaml_substituded = self.get_yaml_with_filename_values_substituted(
+            raw_yml = yaml_template,
+            file_name = file_name
+        )
+        file_to_write = self.split_CMIP6_filename(file_name=file_name)['source_id']  + '.json'
+        print('Writing json file: {}\nfor file: {}'.format(file_to_write, file_name))
+        self.write_json_to_file(
+            json_dict=yaml_substituded,
+            file_name=file_to_write
+        )
