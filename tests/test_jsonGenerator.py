@@ -19,6 +19,10 @@ test_file_unique_source_ids = [
 test_output_path = join('.', 'test-json-output-path')
 
 test_file_path_yaml = join('.', 'tests', 'data', 'yaml-test-files')
+test_data_citation_template_yaml = join(
+    test_file_path_yaml,
+    'test-data-citation-template.yml'
+)
 
 def test_get_unique_source_ids_in_dir():
     Generator = jsonGenerator()
@@ -50,7 +54,7 @@ def test_get_unique_source_ids_in_dir_only_acts_on_nc_files():
 def test_yaml_read_in():
     Generator = jsonGenerator()
     yaml_template = join(test_file_path_yaml, 'test-yaml.yml')
-    actual_result = Generator.return_template_yml_from(in_file=yaml_template)
+    actual_result = Generator.return_template_yaml_from(in_file=yaml_template)
     expected_result = {
         'list-field': ['item1', 'item2'],
         'dict-field-1': 34843,
@@ -97,8 +101,9 @@ def test_yaml_read_in():
 
 def test_read_yaml_template():
     Generator = jsonGenerator()
-    yaml_template = join(test_file_path_yaml, 'test-data-citation-template.yml')
-    actual_result = Generator.return_template_yml_from(in_file=yaml_template)
+    actual_result = Generator.return_template_yaml_from(
+        in_file=test_data_citation_template_yaml
+    )
     expected_result = {
         'creators': [
             {
@@ -148,16 +153,53 @@ def test_read_yaml_template():
 
 def test_check_yaml_template():
     Generator = jsonGenerator()
-    yaml_template = join(test_file_path_yaml, 'test-yaml.yml')
-    valid_yml = Generator.return_template_yml_from(in_file=yaml_template)
+    valid_yml = Generator.return_template_yaml_from(
+        in_file=test_data_citation_template_yaml
+    )
 
     # something missing
     # something extra
     # wrong format
+    key_to_exclude = 'titles'
     missing_title_yml = {
         key: value for key, value in valid_yml.items()
-        if key not in ['titles']
+        if key not in key_to_exclude
     }
-    error_msg = 'Your yaml does not look right, please compare it to {} and if necessary, start again'.format(yaml_template)
+    error_msg = 'The key, {}, is missing in your yaml file: {}'.format(
+        key_to_exclude,
+        test_data_citation_template_yaml
+    )
     with raises(KeyError, match=re.escape(error_msg)):
-        Generator.check_yaml_template(yaml_template=missing_title_yml)
+        Generator.check_yaml_template(
+            yaml_template=missing_title_yml,
+            original_file=test_data_citation_template_yaml,
+        )
+
+    key_to_add = 'extra key'
+    extra_key_yml = valid_yml.copy()
+    extra_key_yml[key_to_add] = 15
+    error_msg = 'The key, {}, looks wrong (either it should not be there or is a typo) in your yaml file: {}'.format(
+        key_to_add,
+        test_data_citation_template_yaml
+    )
+    with raises(KeyError, match=re.escape(error_msg)):
+        Generator.check_yaml_template(
+            yaml_template=extra_key_yml,
+            original_file=test_data_citation_template_yaml,
+        )
+
+    key_to_alter = 'titles'
+    altered_value = "title string"
+    wrong_format_yml = valid_yml.copy()
+    wrong_format_yml[key_to_alter] = altered_value
+    error_msg = 'The type ({}) of key, {}, looks wrong in your yaml file: {}\nI think it should be a {}'.format(
+        type(altered_value),
+        key_to_alter,
+        test_data_citation_template_yaml,
+        type(valid_yml[key_to_alter])
+    )
+    with raises(ValueError, match=re.escape(error_msg)):
+        Generator.check_yaml_template(
+            yaml_template=wrong_format_yml,
+            original_file=test_data_citation_template_yaml,
+        )
