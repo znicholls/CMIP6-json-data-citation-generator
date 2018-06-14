@@ -2,7 +2,7 @@ from os.path import join
 import re
 
 from pytest import raises
-from unittest.mock import patch
+from mock import patch
 
 from CMIP6_json_data_citation_generator import jsonGenerator
 
