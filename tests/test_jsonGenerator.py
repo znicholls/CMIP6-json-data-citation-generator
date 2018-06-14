@@ -30,7 +30,7 @@ def test_get_unique_source_ids_in_dir():
     expected_msg = re.escape(
         "[Errno 2] No such file or directory: '{}'".format(junk_dir)
     )
-    with raises(FileNotFoundError, match=expected_msg):
+    with raises(IOError, match=expected_msg):
         Generator.get_unique_source_ids_in_dir(
             dir_to_search = junk_dir
         )
