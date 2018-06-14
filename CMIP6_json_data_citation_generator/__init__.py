@@ -114,3 +114,25 @@ class jsonGenerator():
                         type(yaml_correct[key]),
                     )
                     raise ValueError(error_msg)
+
+    def get_yaml_with_filename_values_substituted(self, raw_yml=None, file_name=None):
+        def make_substitutions(item):
+            if isinstance(item, str):
+                for key, value in filename_bits.items():
+                    item = item.replace(
+                        '<' + key + '>',
+                        value
+                    )
+                return item
+            elif isinstance(item, list):
+                return [make_substitutions(value) for value in item]
+            elif isinstance(item, dict):
+                return {key: make_substitutions(value) for key, value in item.items()}
+
+        PathHandler = CMIPPathHandler()
+        filename_bits = PathHandler.get_split_CMIP6_filename(file_name)
+        updated_yml = {}
+        for key, value in raw_yml.items():
+            updated_yml[key] = make_substitutions(value)
+
+        return updated_yml

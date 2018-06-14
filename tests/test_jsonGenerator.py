@@ -213,11 +213,27 @@ def test_check_yaml_replace_values():
     file_name = listdir(test_file_path_empty_files)[0]
     PathHandler = CMIPPathHandler()
 
+    # no substitutions if they're not there
+    subbed_yml = Generator.get_yaml_with_filename_values_substituted(
+        raw_yml=valid_yml,
+        file_name=file_name,
+    )
+    assert subbed_yml == valid_yml
+
     for key, value in PathHandler.get_split_CMIP6_filename(file_name=file_name).items():
-        valid_yml['titles'] = [key]
+        valid_yml['titles'] = ['<' + key + '>']
         subbed_yml = Generator.get_yaml_with_filename_values_substituted(
-            valid_yml
+            raw_yml=valid_yml,
+            file_name=file_name,
         )
         assert subbed_yml['titles'] == [value]
+
+    for key, value in PathHandler.get_split_CMIP6_filename(file_name=file_name).items():
+        valid_yml['subjects'][0]['subject'] = ['<' + key + '>']
+        subbed_yml = Generator.get_yaml_with_filename_values_substituted(
+            raw_yml=valid_yml,
+            file_name=file_name,
+        )
+        assert subbed_yml['subjects'][0]['subject'] == [value]
 
 # check that check_all_values_valid called before writing
