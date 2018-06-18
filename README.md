@@ -121,4 +121,4 @@ For a filename such as, `mole-fraction-of-methyl-chloride-in-air_input4MIPs_GHGC
 - <institution_id> --> UoM
 - <scenario_id> --> N/A
 - <version_number> --> 1-1-0
-- <extension> --> .nc
+- \<extension\> --> .nc
