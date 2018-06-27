@@ -1,6 +1,10 @@
 import argparse
 
-def upload(input_dir, all=False):
+def get_files_to_upload(input_dir, find_all=False):
+    return None
+
+def upload(input_dir, upload_all=False):
+    files = get_files_to_upload(input_dir, find_all=upload_all)
     return None
 
 def main():
@@ -20,7 +24,7 @@ def main():
 
     args = parser.parse_args()
     print(args)
-    upload(input_dir=args.input, all=args.all)
+    upload(input_dir=args.input, upload_all=args.all)
 
 if __name__ == '__main__':
     main()
