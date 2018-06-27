@@ -7,10 +7,6 @@ from mock import patch
 from CMIP6_json_data_citation_generator.upload_CMIP6_json_files import main
 
 command_line_command = "upload_CMIP6_json_files"
-# mock sys.argv
-# mock list
-# mock uploader
-# ensure called and print did as expected
 
 @pytest.fixture
 def mock_sys_argv():
