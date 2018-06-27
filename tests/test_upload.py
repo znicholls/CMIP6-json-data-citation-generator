@@ -20,11 +20,7 @@ def mock_sys_argv():
     return _mock_sys
 
 @patch('CMIP6_json_data_citation_generator.upload_CMIP6_json_files.upload')
-def test_upload(mock_upload, mock_sys_argv):
-    # mock_sys_argv.argv = []
-    # main()
-    # mock_upload.assert_called_with([])
-    # with patch.object(sys, 'argv', ['all']):
+def test_upload_command_line_interface(mock_upload, mock_sys_argv):
     with mock_sys_argv([command_line_command, "test/input"]):
         main()
         mock_upload.assert_called_with(input_dir="test/input", all=False)
