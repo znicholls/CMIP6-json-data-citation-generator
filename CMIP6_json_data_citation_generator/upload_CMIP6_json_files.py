@@ -48,12 +48,29 @@ def main():
         help="Upload all files in input directory"
     )
     parser.add_argument(
+        "-q",
+        action='store_true',
+        help="Turn off warning about uploading data via the GUI as preparation"
+    )
+    parser.add_argument(
         "input",
         type=str,
         help="Directory from which to upload files"
     )
 
     args = parser.parse_args()
+
+    if not args.q:
+        print(
+            '------------------------ Warning ------------------------\n'
+            "If you have not yet done so, add the people, institutes \n"
+            "and paper references you use in your yaml files to the \n"
+            "data via the GUI as described in section 1.5 (people and\n"
+            "institutes) and section 1.6 (paper references) of\n" +
+            "http://cera-www.dkrz.de/docs/pdf/CMIP6_Citation_Userguide.pdf\n"
+            "To silence this message, use the -q flag\n"
+            '----------------------------------------------------------'
+        )
 
     if not args.all:
         print(
@@ -63,6 +80,8 @@ def main():
             'To upload all your files, use the --all flag.\n'
             '----------------------------------------------------------\n'
         )
+
+
 
     upload(input_dir=args.input, upload_all=args.all)
 

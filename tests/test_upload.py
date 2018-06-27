@@ -12,6 +12,7 @@ from CMIP6_json_data_citation_generator.upload_CMIP6_json_files import upload
 from CMIP6_json_data_citation_generator.upload_CMIP6_json_files import get_files_to_upload
 
 command_line_command = "upload_CMIP6_json_files"
+doc_url = "http://cera-www.dkrz.de/docs/pdf/CMIP6_Citation_Userguide.pdf"
 
 @pytest.fixture
 def mock_sys_argv():
@@ -94,11 +95,22 @@ def test_upload_call(mock_subprocess, mock_get_files_to_upload, mock_isfile):
             ])
 
 @patch('CMIP6_json_data_citation_generator.upload_CMIP6_json_files.upload')
-def test_warning(mock_upload, mock_sys_argv):
+def test_warnings(mock_upload, mock_sys_argv):
+    warning_GUI_upload =(
+        '------------------------ Warning ------------------------\n'
+        "If you have not yet done so, add the people, institutes \n"
+        "and paper references you use in your yaml files to the \n"
+        "data via the GUI as described in section 1.5 (people and\n"
+        "institutes) and section 1.6 (paper references) of\n" +
+        doc_url + "\n"
+        "To silence this message, use the -q flag\n"
+        '----------------------------------------------------------\n'
+    )
     with captured_output() as (out, err):
         with mock_sys_argv([command_line_command, "test/input"]):
             main()
     expected_output = (
+        warning_GUI_upload +
         '-------------------------- Note --------------------------\n'
         'By default, this script only uploads one file.\n'
         'This acts as a test before you upload all your citations.\n'
@@ -111,12 +123,17 @@ def test_warning(mock_upload, mock_sys_argv):
     with captured_output() as (out, err):
         with mock_sys_argv([command_line_command, '--all', 'test/input']):
             main()
+    assert warning_GUI_upload.strip() == out.getvalue().strip()
+
+    with captured_output() as (out, err):
+        with mock_sys_argv([command_line_command, '--all', '-q', 'test/input']):
+            main()
     assert '' == out.getvalue().strip()
 
 @patch('CMIP6_json_data_citation_generator.upload_CMIP6_json_files.isfile')
 def test_error_if_no_credentials(mock_isfile):
     mock_isfile.return_value = False
-    expected_error = re.escape('You need a credentials file before you can upload files, see section 2.1 of http://cera-www.dkrz.de/docs/pdf/CMIP6_Citation_Userguide.pdf')
+    expected_error = re.escape('You need a credentials file before you can upload files, see section 2.1 of ' + doc_url)
     with raises(ValueError, match=expected_error):
         upload('irrelevant')
 
