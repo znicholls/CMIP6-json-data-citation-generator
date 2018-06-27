@@ -128,7 +128,7 @@ For a filename such as, `mole-fraction-of-methyl-chloride-in-air_input4MIPs_GHGC
 <a id="uploading"></a>
 ## Uploading
 
-To do: write instructions re uploads
+The files can be uploaded using `upload_CMIP6_json_files input_dir [--all]` from the command line. This uploads all the `.json` files in
 
 <a id="other-resources"></a>
 ## Other Resources

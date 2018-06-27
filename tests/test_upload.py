@@ -41,7 +41,7 @@ def test_upload_passing(mock_get_files_to_upload, mock_isfile):
 @patch('CMIP6_json_data_citation_generator.upload_CMIP6_json_files.listdir')
 def test_get_files_to_upload(mock_listdir):
     test_dir = 'input/dir'
-    test_files = ['a', 'b', 'c']
+    test_files = ['a.json', 'b.csv', 'c.json']
     def mock_listdir_return(in_dir):
         if in_dir == test_dir:
             return test_files
@@ -49,8 +49,8 @@ def test_get_files_to_upload(mock_listdir):
             return []
 
     mock_listdir.side_effect = mock_listdir_return
-    assert test_files == get_files_to_upload(test_dir, find_all=True)
-    assert ['a'] == get_files_to_upload(test_dir, find_all=False)
+    assert ['a.json', 'c.json'] == get_files_to_upload(test_dir, find_all=True)
+    assert ['a.json'] == get_files_to_upload(test_dir, find_all=False)
 
     junk_dir = './junk/dir'
     assert not isdir(junk_dir)
