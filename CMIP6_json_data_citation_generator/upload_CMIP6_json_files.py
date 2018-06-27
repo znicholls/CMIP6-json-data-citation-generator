@@ -1,5 +1,5 @@
 from os import listdir
-from os.path import abspath, join, isfile, expanduser
+from os.path import abspath, join, isfile, expanduser, dirname
 import argparse
 import sys
 import subprocess
@@ -28,7 +28,7 @@ def upload(input_dir, upload_all=False):
 
     files_to_upload = get_files_to_upload(input_dir, find_all=upload_all)
     client_file = join(
-        abspath(__file__),
+        dirname(abspath(__file__)),
         '../dkrz_citation_api_client/citation_client.py',
     )
     for file_to_upload in files_to_upload:

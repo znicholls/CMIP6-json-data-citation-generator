@@ -1,4 +1,4 @@
-from os.path import join, isdir
+from os.path import join, isdir, dirname
 import sys
 
 import pytest
@@ -76,9 +76,9 @@ def test_get_files_to_upload(mock_listdir, mock_check_json_format):
 def test_upload_call(mock_subprocess, mock_get_files_to_upload, mock_isfile):
     test_files = ['a', 'b', 'c']
     mock_get_files_to_upload.return_value = test_files
-    expected_client_file = __file__.replace(
-        join('tests', 'test_upload.py'),
-        join('CMIP6_json_data_citation_generator', 'upload_CMIP6_json_files.py', '..', 'dkrz_citation_api_client', 'citation_client.py')
+    expected_client_file = dirname(__file__).replace(
+        'tests',
+        join('CMIP6_json_data_citation_generator', '..', 'dkrz_citation_api_client', 'citation_client.py')
     )
 
     if sys.version.startswith('3'):
