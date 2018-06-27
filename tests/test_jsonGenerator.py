@@ -221,6 +221,7 @@ def test_check_yaml_template():
             original_file=test_data_citation_template_yaml,
         )
 
+
     sub_field_tests = {
         'fundingReferences': {
             'all_or_none': ['funderIdentifier', 'funderIdentifierType'],
