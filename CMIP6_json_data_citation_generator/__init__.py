@@ -158,12 +158,12 @@ class jsonGenerator():
             yaml_template=yaml_template,
             original_file=file_name
         )
-        yaml_substituded = self.get_yaml_with_filename_values_substituted(
+        yaml_substituted = self.get_yaml_with_filename_values_substituted(
             raw_yml = yaml_template,
             file_name = file_name
         )
         self.write_json_to_file(
-            json_dict=yaml_substituded,
+            json_dict=yaml_substituted,
             file_name=output_file
         )
 

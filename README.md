@@ -65,7 +65,7 @@ generate_CMIP6_json_files <yaml_template> <input_dir> <output_dir>
 <a id="example"></a>
 ### Example
 
-The script will only generate one `json` file for each unique source id it finds in the `<input_dir>`. To see an example, run the following
+The script will only generate one `json` file for each unique source id it finds in the `<input_dir>`. To see an example, run the following from the `CMIP6-json-data-citation-generator` directory
 
 ```
 source venv/bin/activate # if you haven't already

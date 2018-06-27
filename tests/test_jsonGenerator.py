@@ -277,10 +277,16 @@ def test_write_json_to_file():
 def test_writing_steps(mock_writer, mock_substitute, mock_checker, mock_loader):
     test_file = get_test_file()
     PathHandler = CMIPPathHandler()
-    source_id = PathHandler.get_split_CMIP6_filename(
+    filename_bits = PathHandler.get_split_CMIP6_filename(
         file_name=test_file
-    )['source_id']
-    file_name_to_write = source_id + '.json'
+    )
+
+    file_name_to_write = '_'.join([
+        filename_bits['institution_id'],
+        filename_bits['source_id'],
+        filename_bits['activity_id'],
+        filename_bits['target_mip'] + '.json',
+    ])
     yaml_template = test_data_citation_template_yaml
     out_dir = 'not/used'
     expected_out_file = join(out_dir, file_name_to_write)
@@ -316,10 +322,16 @@ def test_generate_json_for_all_unique_scenario_ids(mock_print, mock_isdir, mock_
         if fn.endswith('.nc')
     ][0]
     PathHandler = CMIPPathHandler()
-    source_id = PathHandler.get_split_CMIP6_filename(
+    filename_bits = PathHandler.get_split_CMIP6_filename(
         file_name=test_file
-    )['source_id']
-    file_name_to_write = source_id + '.json'
+    )
+
+    file_name_to_write = '_'.join([
+        filename_bits['institution_id'],
+        filename_bits['source_id'],
+        filename_bits['activity_id'],
+        filename_bits['target_mip'] + '.json',
+    ])
     in_dir = 'patched/over'
     out_dir = 'not/used'
     yaml_template = 'not used'
@@ -346,10 +358,15 @@ def test_generate_json_for_all_unique_scenario_ids(mock_print, mock_isdir, mock_
                                                              test_file)
             )
             assert mock_print.call_count == 2
-        mock_write_json.assert_called_with(
+        mock_write_json.assert_any_call(
             file_name=test_file,
             yaml_template=yaml_template,
             output_file=expected_out_file,
+        )
+        mock_write_json.assert_any_call(
+            file_name=test_file,
+            yaml_template=yaml_template,
+            output_file=expected_out_file.replace(filename_bits['target_mip'], ''),
         )
 
     mock_isfile.return_value = True
