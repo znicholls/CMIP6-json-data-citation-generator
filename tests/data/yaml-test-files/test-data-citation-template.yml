@@ -17,6 +17,7 @@ creators:
       nameIdentifierScheme: "ORCID"
       pid: "9876-5432-1098-7654"
     affiliation: "Other university"
+  - creatorName: "Another university"
 titles:
   - "activity-id.CMIP-era.targetMIP.institutionID.source-id"
 fundingReferences:

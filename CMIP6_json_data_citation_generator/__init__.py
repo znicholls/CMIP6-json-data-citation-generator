@@ -88,8 +88,15 @@ class jsonGenerator():
             original_file=original_file
         )
 
-    def check_all_values_valid(self, yaml_to_check=None, yaml_correct=None, original_file=None):
-        optional_keys = ['fundingReferences', 'relatedIdentifiers']
+    def check_all_values_valid(
+        self,
+        yaml_to_check=None,
+        yaml_correct=None,
+        original_file=None,
+        optional_keys=['fundingReferences', 'relatedIdentifiers', 'contributors'],
+        mutually_required_optional_keys=False,
+        upper_level_str=None,
+    ):
         for key in yaml_correct:
             if key not in yaml_to_check:
                 if key in optional_keys:
@@ -97,6 +104,22 @@ class jsonGenerator():
                         key,
                         original_file,
                     )
+
+                    if upper_level_str is not None:
+                        msg = msg.replace(
+                            key,
+                            '{}-{}'.format(upper_level_str, key)
+                        )
+                    if mutually_required_optional_keys:
+                        other_required_keys = [
+                            okey for okey in optional_keys
+                            if okey != key
+                        ]
+                        msg = msg.replace(
+                            '?',
+                            ' (Note, if you do you must also include {})?'.format("'" + "', '".join(other_required_keys) + "'")
+                        )
+
                     print(msg)
                 else:
                     error_msg = 'The key, {}, is missing in your yaml file: {}'.format(
@@ -104,6 +127,19 @@ class jsonGenerator():
                         original_file,
                     )
                     raise KeyError(error_msg)
+
+            else:
+                for item in yaml_to_check[key]:
+                    if isinstance(item, dict):
+                        if key == 'fundingReferences':
+                            self.check_all_values_valid(
+                                yaml_to_check=item,
+                                yaml_correct=yaml_correct[key][0],
+                                original_file=original_file,
+                                optional_keys=['funderIdentifier', 'funderIdentifierType'],
+                                mutually_required_optional_keys=True,
+                                upper_level_str=key,
+                            )
 
         for key, value in yaml_to_check.items():
             if key not in yaml_correct:

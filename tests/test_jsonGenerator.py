@@ -5,6 +5,7 @@ import re
 import datetime
 import sys
 from tempfile import mkstemp
+from copy import deepcopy
 
 import pytest
 from pytest import raises
@@ -144,6 +145,9 @@ def test_read_yaml_template():
                 },
                 'affiliation': 'Other university',
             },
+            {
+                'creatorName': "Another university",
+            },
         ],
         'titles': [
             "activity-id.CMIP-era.targetMIP.institutionID.source-id",
@@ -161,6 +165,40 @@ def test_read_yaml_template():
         ]
     }
     assert actual_result == expected_result
+
+# use a fixture to fix this
+# For each field you need to define:
+#   - field (semi-colon separated)
+#   - compulsory or not
+#   - depends on other fields or not
+#   - fixed or not
+# and do a test for:
+#   - what happens if removed
+#   - what happens if modified
+#   - what happens if type changes
+
+def contributorType_dependencies(field_value):
+    base = ['contributorName']
+    if field_value == 'ContactPerson':
+        return base + ['givenName', 'familyName', 'email', 'affiliation']
+    return base
+
+(   # field(semi-colon separated for multiple levels) compulsory dependencies fixed
+    ('creators', True, None, False),
+    ('creators-creatorName', True, contributorType_dependencies, False),
+)
+
+"""
+Tests look like:
+- remove field
+    - if compulsory, check error thrown
+    - otherwise, check message printed including any dependencies
+- modify field
+    - if fixed, check error thrown
+    - otherwise do nothing
+- modify type
+    - check error thrown
+"""
 
 def test_check_yaml_template():
     Generator = jsonGenerator()
@@ -183,24 +221,47 @@ def test_check_yaml_template():
             original_file=test_data_citation_template_yaml,
         )
 
-    key_to_exclude = 'relatedIdentifiers'
-    missing_optional_field_yml = {
-        key: value for key, value in valid_yml.items()
-        if key not in key_to_exclude
+    sub_field_tests = {
+        'fundingReferences': {
+            'all_or_none': ['funderIdentifier', 'funderIdentifierType'],
+            'required': ['funderName'],
+        },
+        'creators': {
+            'all_or_none': ['givenName', 'familyName', 'email', 'affiliation', 'nameIdentifier'],
+            'required': ['creatorName'],
+        },
+        'contributors': {
+            'all_or_none': ['givenName', 'familyName', 'email', 'affiliation', 'nameIdentifier'],
+            'required': ['contributorName', 'contributorType'],
+        },
     }
-    msg = 'The key, {}, is missing in your yaml file: {}\nDo you want to add it?'.format(
-        key_to_exclude,
-        test_data_citation_template_yaml
-    )
-    with patch('CMIP6_json_data_citation_generator.print') as mock_print:
-        Generator.check_yaml_template(
-            yaml_template=missing_optional_field_yml,
-            original_file=test_data_citation_template_yaml,
-        )
-        if sys.version.startswith('3'):
-            # for some reason mocking print is not happy with Python2
-            assert mock_print.call_count == 1
-            mock_print.assert_called_with(msg)
+    for top_field in sub_field_tests:
+        all_or_none_fields = sub_field_tests[top_field]['all_or_none']
+        for all_or_none_field in all_or_none_fields:
+            all_or_none_other_fields = [
+                field for field in all_or_none_fields
+                if field != all_or_none_field
+            ]
+            missing_optional_field_yml = deepcopy(valid_yml)
+
+            del missing_optional_field_yml[top_field][0][all_or_none_field]
+
+            msg = 'The key, {}-{}, is missing in your yaml file: {}\nDo you want to add it (Note, if you do you must also include {})?'.format(
+                top_field,
+                all_or_none_field,
+                test_data_citation_template_yaml,
+                "'" + "', '".join(all_or_none_other_fields) + "'"
+            )
+            with patch('CMIP6_json_data_citation_generator.print') as mock_print:
+                Generator.check_yaml_template(
+                    yaml_template=missing_optional_field_yml,
+                    original_file=test_data_citation_template_yaml,
+                )
+                if sys.version.startswith('3'):
+                    # for some reason mocking print is not happy with Python2
+                    assert mock_print.call_count == 1
+                    mock_print.assert_called_with(msg)
+                    del mock_print
 
     key_to_add = 'extra key'
     extra_key_yml = valid_yml.copy()
