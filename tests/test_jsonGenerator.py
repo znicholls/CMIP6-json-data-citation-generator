@@ -357,7 +357,7 @@ def test_generate_json_for_all_unique_scenario_ids(mock_print, mock_isdir, mock_
                 'Writing json file: {}\nfor file: {}'.format(expected_out_file,
                                                              test_file)
             )
-            assert mock_print.call_count == 2
+            assert mock_print.call_count == 3
         mock_write_json.assert_any_call(
             file_name=test_file,
             yaml_template=yaml_template,
@@ -366,7 +366,7 @@ def test_generate_json_for_all_unique_scenario_ids(mock_print, mock_isdir, mock_
         mock_write_json.assert_any_call(
             file_name=test_file,
             yaml_template=yaml_template,
-            output_file=expected_out_file.replace(filename_bits['target_mip'], ''),
+            output_file=expected_out_file.replace('_' + filename_bits['target_mip'], ''),
         )
 
     mock_isfile.return_value = True
@@ -381,7 +381,7 @@ def test_generate_json_for_all_unique_scenario_ids(mock_print, mock_isdir, mock_
         mock_isfile.assert_called_with(expected_out_file)
         if sys.version.startswith('3'):
             # for some reason mocking print is not happy with Python2
-            assert mock_print.call_count == 3
+            assert mock_print.call_count == 4
             mock_print.assert_any_call(
                 'json file already exists for source_id, see file: {}\nskipping file: {}'.format(
                     expected_out_file,

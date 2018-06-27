@@ -173,10 +173,15 @@ class jsonGenerator():
                 print('Skipping non-nc file: {}'.format(file_name))
                 continue
 
-            file_to_write = join(
-                out_dir,
-                self.split_CMIP6_filename(file_name=file_name)['source_id'] + '.json'
-            )
+            filename_bits = self.split_CMIP6_filename(file_name=file_name)
+            file_name_to_write = '_'.join([
+                filename_bits['institution_id'],
+                filename_bits['source_id'],
+                filename_bits['activity_id'],
+                filename_bits['target_mip'] + '.json',
+            ])
+            file_to_write = join(out_dir, file_name_to_write)
+
             if isfile(file_to_write):
                 print('json file already exists for source_id, see file: {}\nskipping file: {}'.format(file_to_write, file_name))
                 continue
@@ -185,12 +190,17 @@ class jsonGenerator():
                 print('Made dir: {}'.format(out_dir))
                 makedirs(out_dir)
 
-            print('Writing json file: {}\nfor file: {}'.format(file_to_write, file_name))
-            self.write_json_for_filename_to_file_with_template(
-                file_name=file_name,
-                yaml_template=yaml_template,
-                output_file=file_to_write,
-            )
+            files_to_write = [
+                file_to_write,
+                file_to_write.replace('_' + filename_bits['target_mip'], '')
+            ]
+            for fn in files_to_write:
+                print('Writing json file: {}\nfor file: {}'.format(fn, file_name))
+                self.write_json_for_filename_to_file_with_template(
+                    file_name=file_name,
+                    yaml_template=yaml_template,
+                    output_file=fn,
+                )
 
     def check_json_format(self):
         return None
