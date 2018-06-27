@@ -16,6 +16,10 @@ EXAMPLE_OUTPUT_DIR=$(EXAMPLE_ROOT_DIR)/outputs
 make_example_jsons : $(VIRTUAL_ENV_DIR) $(EXAMPLE_FILE_DIR) $(EXAMPLE_YML)
 	$(call activate_venv,); $(MAKE_JSON_COMMAND) $(EXAMPLE_YML) $(EXAMPLE_FILE_DIR) $(EXAMPLE_OUTPUT_DIR)
 
+.PHONY: clean_example
+clean_example:
+	rm -rf $(EXAMPLE_OUTPUT_DIR)
+
 .PHONY : test
 test : $(VIRTUAL_ENV_DIR) $(VIRTUAL_ENV_DIR_PY2)
 	$(call activate_venv,); pytest --cov
