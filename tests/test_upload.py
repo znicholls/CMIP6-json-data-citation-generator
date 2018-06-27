@@ -33,10 +33,14 @@ def test_upload_command_line_interface(mock_upload, mock_sys_argv):
 @patch('CMIP6_json_data_citation_generator.upload_CMIP6_json_files.isfile', return_value=True)
 @patch('CMIP6_json_data_citation_generator.upload_CMIP6_json_files.get_files_to_upload')
 def test_upload_passing(mock_get_files_to_upload, mock_isfile):
-    upload('test/input')
-    mock_get_files_to_upload.assert_called_with("test/input", find_all=False)
-    upload('test/input', upload_all=True)
-    mock_get_files_to_upload.assert_called_with("test/input", find_all=True)
+    if sys.version.startswith('3'):
+        with raises(NotImplementedError, match='dkrz_citation_api_client is not python3 compatible'):
+            upload('irrelevant')
+    else:
+        upload('test/input')
+        mock_get_files_to_upload.assert_called_with("test/input", find_all=False)
+        upload('test/input', upload_all=True)
+        mock_get_files_to_upload.assert_called_with("test/input", find_all=True)
 
 @patch('CMIP6_json_data_citation_generator.jsonGenerator.check_json_format')
 @patch('CMIP6_json_data_citation_generator.upload_CMIP6_json_files.listdir')
@@ -76,14 +80,18 @@ def test_upload_call(mock_subprocess, mock_get_files_to_upload, mock_isfile):
         join('CMIP6_json_data_citation_generator', 'upload_CMIP6_json_files.py', '..', 'dkrz_citation_api_client', 'citation_client.py')
     )
 
-    upload('irrelevant')
-    assert mock_subprocess.check_call.call_count == 3
-    for test_file in test_files:
-        mock_subprocess.check_call.assert_any_call([
-            'python',
-            expected_client_file,
-            test_file,
-        ])
+    if sys.version.startswith('3'):
+        with raises(NotImplementedError, match='dkrz_citation_api_client is not python3 compatible'):
+            upload('irrelevant')
+    else:
+        upload('irrelevant')
+        assert mock_subprocess.check_call.call_count == 3
+        for test_file in test_files:
+            mock_subprocess.check_call.assert_any_call([
+                'python',
+                expected_client_file,
+                test_file,
+            ])
 
 @patch('CMIP6_json_data_citation_generator.upload_CMIP6_json_files.upload')
 def test_warning(mock_upload, mock_sys_argv):
@@ -111,3 +119,13 @@ def test_error_if_no_credentials(mock_isfile):
     expected_error = re.escape('You need a credentials file before you can upload files, see section 2.1 of http://cera-www.dkrz.de/docs/pdf/CMIP6_Citation_Userguide.pdf')
     with raises(ValueError, match=expected_error):
         upload('irrelevant')
+
+@patch('CMIP6_json_data_citation_generator.upload_CMIP6_json_files.isfile')
+def test_error_if_python3(mock_isfile):
+    mock_isfile.return_value = True
+    if sys.version.startswith('3'):
+        with raises(NotImplementedError, match='dkrz_citation_api_client is not python3 compatible'):
+            upload('irrelevant')
+    else:
+        with raises(OSError):
+            upload('irrelevant')

@@ -45,7 +45,6 @@ $(VIRTUAL_ENV_DIR) : $(SETUP_PY)
 		which python; \
 		python --version; \
 		pip install --upgrade pip; \
-		pip install -Ur dev-requirements.txt; \
 		python $(SETUP_PY) develop \
 	)
 	touch $(VIRTUAL_ENV_DIR)
@@ -60,7 +59,6 @@ $(VIRTUAL_ENV_DIR_PY2) : $(SETUP_PY)
 		which python; \
 		python --version; \
 		pip install --upgrade pip; \
-		pip install -Ur dev-requirements.txt; \
 		python $(SETUP_PY) develop \
 	)
 	touch $(VIRTUAL_ENV_DIR_PY2)
