@@ -1,5 +1,5 @@
 from os import listdir
-from os.path import join
+from os.path import join, isfile, dirname
 from shutil import rmtree
 import re
 import datetime
@@ -29,6 +29,12 @@ test_data_citation_template_yaml = join(
     'test-data-citation-template.yml'
 )
 
+def get_test_file():
+    for test_file in listdir(test_file_path_empty_files):
+        if isfile(test_file):
+            break
+    return test_file
+
 def test_get_unique_source_ids_in_dir():
     Generator = jsonGenerator()
     unique_ids = Generator.get_unique_source_ids_in_dir(
@@ -51,8 +57,8 @@ def test_get_unique_source_ids_in_dir_only_acts_on_nc_files():
     Generator = jsonGenerator()
     with patch.object(Generator, 'split_CMIP6_filename') as mock_split_filename:
         Generator.get_unique_source_ids_in_dir(
-            dir_to_search='.'
-            # safe to use because if there's nc files in top level, something is wrong
+            dir_to_search=join(dirname(__file__), '..', 'CMIP6_json_data_citation_generator')
+            # safe to use because if there's nc files in the source, something is wrong
         )
         mock_split_filename.assert_not_called()
 
@@ -228,7 +234,7 @@ def test_check_yaml_replace_values():
         in_file=test_data_citation_template_yaml
     )
 
-    file_name = listdir(test_file_path_empty_files)[0]
+    file_name = get_test_file()
     PathHandler = CMIPPathHandler()
 
     # no substitutions if they're not there
@@ -269,7 +275,7 @@ def test_write_json_to_file():
 @patch.object(jsonGenerator, 'get_yaml_with_filename_values_substituted')
 @patch.object(jsonGenerator, 'write_json_to_file')
 def test_writing_steps(mock_writer, mock_substitute, mock_checker, mock_loader):
-    test_file = listdir(test_file_path_empty_files)[0]
+    test_file = get_test_file()
     PathHandler = CMIPPathHandler()
     source_id = PathHandler.get_split_CMIP6_filename(
         file_name=test_file
