@@ -7,8 +7,6 @@ VIRTUAL_ENV_DIR=$(ROOT_DIR)/venv
 
 VIRTUAL_ENV_DIR_PY2=$(ROOT_DIR)/venv2
 
-PACKAGE_DIR=CMIP6_json_data_citation_generator
-
 EXAMPLE_ROOT_DIR=$(ROOT_DIR)/examples
 EXAMPLE_FILE_DIR=$(EXAMPLE_ROOT_DIR)/data/empty-test-files/
 EXAMPLE_YML=$(EXAMPLE_ROOT_DIR)/yaml-templates/yaml-example.yml
@@ -21,8 +19,8 @@ make_example_jsons : $(VIRTUAL_ENV_DIR) $(EXAMPLE_FILE_DIR) $(EXAMPLE_YML)
 
 .PHONY : test
 test : $(VIRTUAL_ENV_DIR) $(VIRTUAL_ENV_DIR_PY2)
-	$(call activate_venv,); pytest --cov=$(PACKAGE_DIR)
-	$(call activate_venv2,); pytest --cov=$(PACKAGE_DIR)
+	$(call activate_venv,); pytest --cov
+	$(call activate_venv2,); pytest --cov
 
 define activate_venv
 	source $(VIRTUAL_ENV_DIR)/bin/activate
@@ -82,8 +80,6 @@ variables :
 	@echo VIRTUAL_ENV_DIR: $(VIRTUAL_ENV_DIR)
 
 	@echo VIRTUAL_ENV_DIR_PY2: $(VIRTUAL_ENV_DIR_PY2)
-
-	@echo PACKAGE_DIR: $(PACKAGE_DIR)
 
 	@echo EXAMPLE_ROOT_DIR: $(EXAMPLE_ROOT_DIR)
 	@echo EXAMPLE_FILE_DIR: $(EXAMPLE_FILE_DIR)
