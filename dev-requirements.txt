@@ -1,4 +1,1 @@
-pytest
-httplib2
-mock
-pyyaml
+
