@@ -1,4 +1,4 @@
-from os import listdir, makedirs
+from os import listdir, makedirs, walk
 from os.path import split, splitext, basename, join, isdir, isfile
 
 import yaml
@@ -58,15 +58,18 @@ class jsonGenerator():
         self.add_unique_source_ids_in_dir_to_unique_scenario_ids(dir_to_add=dir_to_search)
         return self.unique_scenario_ids
 
-    def add_unique_source_ids_in_dir_to_unique_scenario_ids(self, dir_to_add=None):
-        for file_name in listdir(dir_to_add):
-            if file_name.endswith('.nc'):
-                try:
-                    source_id = self.split_CMIP6_filename(file_name)['source_id']
-                    if source_id not in self.unique_scenario_ids:
-                        self.unique_scenario_ids.append(source_id)
-                except ValueError as invalid_name_exception:
-                    print(invalid_name_exception)
+    def add_unique_source_ids_in_dir_to_unique_scenario_ids(self, dir_to_add):
+        if not isdir(dir_to_add):
+            raise OSError("[Errno 2] No such file or directory: '{}'".format(dir_to_add))
+        for root, dirs, files in walk(dir_to_add):
+            for file_name in files:
+                if file_name.endswith('.nc'):
+                    try:
+                        source_id = self.split_CMIP6_filename(file_name)['source_id']
+                        if source_id not in self.unique_scenario_ids:
+                            self.unique_scenario_ids.append(source_id)
+                    except ValueError as invalid_name_exception:
+                        print(invalid_name_exception)
 
     def split_CMIP6_filename(self, file_name=None):
         PathHandler = CMIPPathHandler()
