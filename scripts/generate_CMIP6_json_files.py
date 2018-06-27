@@ -1,15 +1,7 @@
 import argparse
 from CMIP6_json_data_citation_generator import jsonGenerator
 
-def main(yaml_file, input_path, output_path):
-    Generator = jsonGenerator()
-    Generator.generate_json_for_all_unique_scenario_ids(
-        in_dir=input_path,
-        out_dir=output_path,
-        yaml_template=yaml_file,
-    )
-
-if __name__ == '__main__':
+def main():
     description = 'Generate json files for CMIP6 GHG concentration projection files'
     parser = argparse.ArgumentParser(description=description)
 
@@ -19,4 +11,18 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    main(args.yamlfile, args.inputpath, args.outputpath)
+    yaml_file = args.yamlfile
+    input_path = args.inputpath
+    output_path = args.outputpath
+
+    Generator = jsonGenerator()
+    Generator.generate_json_for_all_unique_scenario_ids(
+        in_dir=input_path,
+        out_dir=output_path,
+        yaml_template=yaml_file,
+    )
+
+if __name__ == '__main__':
+
+
+    main()
