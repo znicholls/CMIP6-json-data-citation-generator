@@ -38,18 +38,26 @@ def test_upload_passing(mock_get_files_to_upload, mock_isfile):
     upload('test/input', upload_all=True)
     mock_get_files_to_upload.assert_called_with("test/input", find_all=True)
 
-
+@patch('CMIP6_json_data_citation_generator.jsonGenerator.check_json_format')
 @patch('CMIP6_json_data_citation_generator.upload_CMIP6_json_files.listdir')
-def test_get_files_to_upload(mock_listdir):
+def test_get_files_to_upload(mock_listdir, mock_check_json_format):
     test_dir = 'input/dir'
-    test_files = ['a.json', 'b.csv', 'c.json']
-    def mock_listdir_return(in_dir):
+    test_files = ['a.json', 'b.csv', 'c.json', 'd.json']
+    def mock_listdir_side_effect(in_dir):
         if in_dir == test_dir:
             return test_files
         else:
             return []
 
-    mock_listdir.side_effect = mock_listdir_return
+    mock_listdir.side_effect = mock_listdir_side_effect
+
+    def mock_check_json_format_side_effect(in_file):
+        if in_file in [join(test_dir, 'a.json'), join(test_dir, 'c.json')]:
+            return True
+        else:
+            return False
+    mock_check_json_format.side_effect = mock_check_json_format_side_effect
+
     assert ['a.json', 'c.json'] == get_files_to_upload(test_dir, find_all=True)
     assert ['a.json'] == get_files_to_upload(test_dir, find_all=False)
 

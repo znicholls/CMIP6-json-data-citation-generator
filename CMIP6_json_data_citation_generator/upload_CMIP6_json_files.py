@@ -3,8 +3,15 @@ from os.path import abspath, join, isfile, expanduser
 import argparse
 import subprocess
 
+from CMIP6_json_data_citation_generator import jsonGenerator
+
 def get_files_to_upload(input_dir, find_all=False):
-    files_in_dir = listdir(input_dir)
+    checker = jsonGenerator
+    files_in_dir = [
+        f for f in listdir(input_dir)
+        if checker.check_json_format(join(input_dir, f))
+    ]
+
     if find_all:
         return files_in_dir
     else:
