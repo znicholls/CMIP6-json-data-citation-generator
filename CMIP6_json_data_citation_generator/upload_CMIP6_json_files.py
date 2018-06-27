@@ -1,3 +1,4 @@
+from os import listdir
 import argparse
 
 def get_files_to_upload(input_dir, find_all=False):
