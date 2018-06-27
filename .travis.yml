@@ -8,7 +8,10 @@ python:
 before_install:
   - sudo apt-get update
   - sudo apt-get install --no-install-recommends -y
+install:
   - pip install --upgrade pip
   - python setup.py develop
 script:
-  - pytest
+  - pytest --cov
+after_success:
+- codecov
