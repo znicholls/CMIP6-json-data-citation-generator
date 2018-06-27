@@ -10,13 +10,13 @@ def get_files_to_upload(input_dir, find_all=False):
         return files_in_dir[:1]
 
 def upload(input_dir, upload_all=False):
-    files = get_files_to_upload(input_dir, find_all=upload_all)
-    subprocess.check_call([
-        drive_call,
-        test_file_path_yaml,
-        test_file_path,
-        test_output_path
-    ])
+    files_to_upload = get_files_to_upload(input_dir, find_all=upload_all)
+    for file_to_upload in files_to_upload:
+        subprocess.check_call([
+            'python',
+            test_file_path_yaml,
+            file_to_upload
+        ])
 
 def main():
     description = 'Upload json files for CMIP6 GHG concentration projection files to data citation server'
