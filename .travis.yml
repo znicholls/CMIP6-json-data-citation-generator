@@ -8,12 +8,11 @@ python:
 before_install:
   - sudo apt-get update
   - sudo apt-get install --no-install-recommends -y
-  - sudo apt-get install python3-venv -y
 install:
   - pip install --upgrade pip
   - python setup.py develop
 script:
   - pytest --cov
-  - make example_jsons
+  - generate_CMIP6_json_files ./yaml-templates/yaml-example.yml ./data/empty-test-files/ ./outputs
 after_success:
 - codecov
