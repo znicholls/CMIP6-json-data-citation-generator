@@ -13,5 +13,6 @@ install:
   - python setup.py develop
 script:
   - pytest --cov
+  - make example_jsons
 after_success:
 - codecov
