@@ -1,5 +1,6 @@
 from os import listdir
 import argparse
+import subprocess
 
 def get_files_to_upload(input_dir, find_all=False):
     files_in_dir = listdir(input_dir)
@@ -10,7 +11,12 @@ def get_files_to_upload(input_dir, find_all=False):
 
 def upload(input_dir, upload_all=False):
     files = get_files_to_upload(input_dir, find_all=upload_all)
-    return None
+    subprocess.check_call([
+        drive_call,
+        test_file_path_yaml,
+        test_file_path,
+        test_output_path
+    ])
 
 def main():
     description = 'Upload json files for CMIP6 GHG concentration projection files to data citation server'

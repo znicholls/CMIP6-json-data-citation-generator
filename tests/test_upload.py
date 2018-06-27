@@ -51,3 +51,16 @@ def test_get_files_to_upload(mock_listdir):
     junk_dir = './junk/dir'
     assert not isdir(junk_dir)
     assert [] == get_files_to_upload(junk_dir, find_all=True)
+
+@patch('CMIP6_json_data_citation_generator.upload_CMIP6_json_files.get_files_to_upload')
+@patch('CMIP6_json_data_citation_generator.upload_CMIP6_json_files.subprocess')
+def test_upload_call(mock_subprocess, mock_get_files_to_upload):
+    test_files = ['a', 'b', 'c']
+    mock_get_files_to_upload.return_value = test_files
+    upload('irrelevant')
+    for test_file in test_files:
+        mock_subprocess.check_call.assert_called_with([
+            'python',
+            '../dkrz_citation_api_client/citation_client.py',
+            test_file,
+        ])
