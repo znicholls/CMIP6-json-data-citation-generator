@@ -2,7 +2,9 @@ from os.path import join, isdir
 import sys
 
 import pytest
+from pytest import raises
 from mock import patch
+import re
 
 from utils import captured_output
 from CMIP6_json_data_citation_generator.upload_CMIP6_json_files import main
@@ -91,3 +93,10 @@ def test_warning(mock_upload, mock_sys_argv):
         with mock_sys_argv([command_line_command, '--all', 'test/input']):
             main()
     assert '' == out.getvalue().strip()
+
+@patch('CMIP6_json_data_citation_generator.upload_CMIP6_json_files.isfile')
+def test_error_if_no_credentials(mock_isfile):
+    mock_isfile.return_value = False
+    expected_error = re.escape('You need a credentials file before you can upload files, see section 2.1 of http://cera-www.dkrz.de/docs/pdf/CMIP6_Citation_Userguide.pdf')
+    with raises(ValueError):
+        upload('irrelevant')

@@ -1,5 +1,5 @@
 from os import listdir
-from os.path import abspath, join
+from os.path import abspath, join, isfile
 import argparse
 import subprocess
 
