@@ -8,6 +8,7 @@ python:
 before_install:
   - sudo apt-get update
   - sudo apt-get install --no-install-recommends -y
+  - sudo apt-get install python3-venv -y
 install:
   - pip install --upgrade pip
   - python setup.py develop
