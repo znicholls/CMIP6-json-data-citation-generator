@@ -39,7 +39,16 @@ def main():
     )
 
     args = parser.parse_args()
-    print(args)
+
+    if not args.all:
+        print(
+            '-------------------------- Note --------------------------\n'
+            'By default, this script only uploads one file.\n'
+            'This acts as a test before you upload all your citations.\n'
+            'To upload all your files, use the --all flag.\n'
+            '----------------------------------------------------------\n'
+        )
+
     upload(input_dir=args.input, upload_all=args.all)
 
 if __name__ == '__main__':

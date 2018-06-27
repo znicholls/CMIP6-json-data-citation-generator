@@ -4,6 +4,7 @@ import sys
 import pytest
 from mock import patch
 
+from utils import captured_output
 from CMIP6_json_data_citation_generator.upload_CMIP6_json_files import main
 from CMIP6_json_data_citation_generator.upload_CMIP6_json_files import upload
 from CMIP6_json_data_citation_generator.upload_CMIP6_json_files import get_files_to_upload
@@ -70,3 +71,23 @@ def test_upload_call(mock_subprocess, mock_get_files_to_upload):
             expected_client_file,
             test_file,
         ])
+
+@patch('CMIP6_json_data_citation_generator.upload_CMIP6_json_files.upload')
+def test_warning(mock_upload, mock_sys_argv):
+    with captured_output() as (out, err):
+        with mock_sys_argv([command_line_command, "test/input"]):
+            main()
+    expected_output = (
+        '-------------------------- Note --------------------------\n'
+        'By default, this script only uploads one file.\n'
+        'This acts as a test before you upload all your citations.\n'
+        'To upload all your files, use the --all flag.\n'
+        '----------------------------------------------------------'
+    )
+    print(out.getvalue().strip())
+    assert expected_output == out.getvalue().strip()
+
+    with captured_output() as (out, err):
+        with mock_sys_argv([command_line_command, '--all', 'test/input']):
+            main()
+    assert '' == out.getvalue().strip()
