@@ -40,4 +40,8 @@ setup(
         'Topic :: Scientific/Engineering :: Atmospheric Science'
     ],
     keywords='CMIP6 climate reformatting',
+    entry_points={
+        'console_scripts':
+            ['generate_CMIP6_json_files = CMIP6_json_data_citation_generator.generate_CMIP6_json_files:main']
+    },
 )

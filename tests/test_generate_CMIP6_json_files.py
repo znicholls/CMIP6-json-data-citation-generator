@@ -2,7 +2,7 @@ from os.path import join, isfile
 from shutil import rmtree
 import subprocess
 
-drive_script_path = join('.', 'scripts', 'generate_CMIP6_json_files.py')
+drive_call = 'generate_CMIP6_json_files'
 test_file_path_yaml = join(
     '.', 'tests', 'data', 'yaml-test-files',
     'test-data-citation-template.yml'
@@ -20,8 +20,7 @@ test_output_path = './test-json-output-path'
 
 def test_pipeline():
     subprocess.check_call([
-        'python',
-        drive_script_path,
+        drive_call,
         test_file_path_yaml,
         test_file_path,
         test_output_path
