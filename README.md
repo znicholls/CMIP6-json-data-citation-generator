@@ -13,6 +13,7 @@
     - [Example](#example)
     - [Details](#details)
         - [Text Substitutions in yaml Files](#text-substitutions-in-yaml-files)
+- [Other Resources](#other-resources)
 
 <!-- /MarkdownTOC -->
 
@@ -122,3 +123,8 @@ For a filename such as, `mole-fraction-of-methyl-chloride-in-air_input4MIPs_GHGC
 - <scenario_id> --> N/A
 - <version_number> --> 1-1-0
 - <extension> --> .nc
+
+<a id="other-resources"></a>
+## Other Resources
+
+The full documentation of the CMIP6 data citation software with which this package interacts can be found at http://cera-www.dkrz.de/docs/pdf/CMIP6_Citation_Userguide.pdf
