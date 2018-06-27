@@ -1,5 +1,5 @@
 from os import listdir
-from os.path import abspath, join, isfile
+from os.path import abspath, join, isfile, expanduser
 import argparse
 import subprocess
 
@@ -11,6 +11,10 @@ def get_files_to_upload(input_dir, find_all=False):
         return files_in_dir[:1]
 
 def upload(input_dir, upload_all=False):
+    if not isfile(expanduser('~/.netrc')):
+        raise ValueError(
+            'You need a credentials file before you can upload files, see section 2.1 of http://cera-www.dkrz.de/docs/pdf/CMIP6_Citation_Userguide.pdf'
+        )
     files_to_upload = get_files_to_upload(input_dir, find_all=upload_all)
     client_file = join(
         abspath(__file__),

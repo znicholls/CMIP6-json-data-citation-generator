@@ -30,8 +30,9 @@ def test_upload_command_line_interface(mock_upload, mock_sys_argv):
         main()
         mock_upload.assert_called_with(input_dir="test/input", upload_all=True)
 
+@patch('CMIP6_json_data_citation_generator.upload_CMIP6_json_files.isfile', return_value=True)
 @patch('CMIP6_json_data_citation_generator.upload_CMIP6_json_files.get_files_to_upload')
-def test_upload_passing(mock_get_files_to_upload):
+def test_upload_passing(mock_get_files_to_upload, mock_isfile):
     upload('test/input')
     mock_get_files_to_upload.assert_called_with("test/input", find_all=False)
     upload('test/input', upload_all=True)
@@ -55,9 +56,10 @@ def test_get_files_to_upload(mock_listdir):
     assert not isdir(junk_dir)
     assert [] == get_files_to_upload(junk_dir, find_all=True)
 
+@patch('CMIP6_json_data_citation_generator.upload_CMIP6_json_files.isfile', return_value=True)
 @patch('CMIP6_json_data_citation_generator.upload_CMIP6_json_files.get_files_to_upload')
 @patch('CMIP6_json_data_citation_generator.upload_CMIP6_json_files.subprocess')
-def test_upload_call(mock_subprocess, mock_get_files_to_upload):
+def test_upload_call(mock_subprocess, mock_get_files_to_upload, mock_isfile):
     test_files = ['a', 'b', 'c']
     mock_get_files_to_upload.return_value = test_files
     expected_client_file = __file__.replace(
@@ -98,5 +100,5 @@ def test_warning(mock_upload, mock_sys_argv):
 def test_error_if_no_credentials(mock_isfile):
     mock_isfile.return_value = False
     expected_error = re.escape('You need a credentials file before you can upload files, see section 2.1 of http://cera-www.dkrz.de/docs/pdf/CMIP6_Citation_Userguide.pdf')
-    with raises(ValueError):
+    with raises(ValueError, match=expected_error):
         upload('irrelevant')
