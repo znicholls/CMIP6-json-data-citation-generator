@@ -127,4 +127,4 @@ For a filename such as, `mole-fraction-of-methyl-chloride-in-air_input4MIPs_GHGC
 <a id="other-resources"></a>
 ## Other Resources
 
-The full documentation of the CMIP6 data citation software with which this package interacts can be found at http://cera-www.dkrz.de/docs/pdf/CMIP6_Citation_Userguide.pdf
+For the interested reader, the full documentation of the CMIP6 data citation software with which this package interacts can be found at http://cera-www.dkrz.de/docs/pdf/CMIP6_Citation_Userguide.pdf
