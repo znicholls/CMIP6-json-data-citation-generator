@@ -38,6 +38,7 @@ def test_upload_passing(mock_get_files_to_upload, mock_isfile):
     upload('test/input', upload_all=True)
     mock_get_files_to_upload.assert_called_with("test/input", find_all=True)
 
+
 @patch('CMIP6_json_data_citation_generator.upload_CMIP6_json_files.listdir')
 def test_get_files_to_upload(mock_listdir):
     test_dir = 'input/dir'
