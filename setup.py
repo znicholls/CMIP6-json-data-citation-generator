@@ -33,6 +33,7 @@ setup(
         'mock',
         'pyyaml',
         'pytest-cov',
+        'codecov',
     ],
     classifiers=[
         'Development Status :: 3 - Alpha',
