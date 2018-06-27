@@ -1,3 +1,6 @@
+# example output
+examples/outputs
+
 # virtual environments
 venv*
 venv2*
