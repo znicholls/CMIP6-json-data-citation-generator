@@ -10,11 +10,12 @@ VERSION = "1.0.0"
 
 def read(fname):
     """
-    Read a file
+    Return the text from a file
 
     Thanks Jared Lewis :)
     """
-    return open(os.path.join(os.path.dirname(__file__), fname)).read()
+    with open(os.path.join(os.path.dirname(__file__), fname)) as file:
+        return file.read()
 
 setup(
     name=PACKAGE_NAME,
@@ -42,6 +43,7 @@ setup(
     keywords='CMIP6 climate reformatting',
     entry_points={
         'console_scripts':
-            ['generate_CMIP6_json_files = CMIP6_json_data_citation_generator.generate_CMIP6_json_files:main']
+            ['generate_CMIP6_json_files = CMIP6_json_data_citation_generator.generate_CMIP6_json_files:main',
+             'upload_CMIP6_json_files = CMIP6_json_data_citation_generator.upload_CMIP6_json_files:main']
     },
 )
