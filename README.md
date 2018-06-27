@@ -1,6 +1,7 @@
 # CMIP6-json-data-citation-generator
 
 [![Build Status](https://img.shields.io/travis/znicholls/CMIP6-json-data-citation-generator.svg)](https://travis-ci.org/znicholls/CMIP6-json-data-citation-generator)
+[![Codecov](https://img.shields.io/codecov/c/github/znicholls/CMIP6-json-data-citation-generator.svg)](https://codecov.io/gh/znicholls/CMIP6-json-data-citation-generator)
 
 <!-- MarkdownTOC autolink="true" autoanchor="true" markdown_preview="github" -->
 
