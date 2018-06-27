@@ -188,3 +188,6 @@ class jsonGenerator():
                 yaml_template=yaml_template,
                 output_file=file_to_write,
             )
+
+    def check_json_format(self):
+        return None

@@ -14,6 +14,7 @@
     - [Example](#example)
     - [Details](#details)
         - [Text Substitutions in yaml Files](#text-substitutions-in-yaml-files)
+- [Uploading](#uploading)
 - [Other Resources](#other-resources)
 
 <!-- /MarkdownTOC -->
@@ -124,6 +125,11 @@ For a filename such as, `mole-fraction-of-methyl-chloride-in-air_input4MIPs_GHGC
 - <scenario_id> --> N/A
 - <version_number> --> 1-1-0
 - \<extension\> --> .nc
+
+<a id="uploading"></a>
+## Uploading
+
+The files can be uploaded using `upload_CMIP6_json_files input_dir [--all]` from the command line. This uploads `.json` files in the directory specified by `input_dir` to the CMIP6 data citation server. By default, it will only upload a single file. If this works, you should then supply the `--all` flag to upload all of your `.json` files.
 
 <a id="other-resources"></a>
 ## Other Resources
