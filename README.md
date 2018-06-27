@@ -13,6 +13,7 @@
     - [Example](#example)
     - [Details](#details)
         - [Text Substitutions in yaml Files](#text-substitutions-in-yaml-files)
+- [Uploading](#uploading)
 - [Other Resources](#other-resources)
 
 <!-- /MarkdownTOC -->
@@ -123,6 +124,11 @@ For a filename such as, `mole-fraction-of-methyl-chloride-in-air_input4MIPs_GHGC
 - <scenario_id> --> N/A
 - <version_number> --> 1-1-0
 - \<extension\> --> .nc
+
+<a id="uploading"></a>
+## Uploading
+
+To do: write instructions re uploads
 
 <a id="other-resources"></a>
 ## Other Resources
