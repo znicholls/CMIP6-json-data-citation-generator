@@ -13,6 +13,5 @@ install:
   - python setup.py develop
 script:
   - pytest --cov
-  - generate_CMIP6_json_files ./yaml-templates/yaml-example.yml ./data/empty-test-files/ ./outputs
 after_success:
 - codecov
