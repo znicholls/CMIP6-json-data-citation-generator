@@ -1,4 +1,5 @@
 from os import listdir
+from os.path import abspath, join
 import argparse
 import subprocess
 
@@ -11,10 +12,14 @@ def get_files_to_upload(input_dir, find_all=False):
 
 def upload(input_dir, upload_all=False):
     files_to_upload = get_files_to_upload(input_dir, find_all=upload_all)
+    client_file = join(
+        abspath(__file__),
+        '../dkrz_citation_api_client/citation_client.py',
+    )
     for file_to_upload in files_to_upload:
         subprocess.check_call([
             'python',
-            test_file_path_yaml,
+            client_file,
             file_to_upload
         ])
 

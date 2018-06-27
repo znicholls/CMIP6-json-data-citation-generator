@@ -57,10 +57,16 @@ def test_get_files_to_upload(mock_listdir):
 def test_upload_call(mock_subprocess, mock_get_files_to_upload):
     test_files = ['a', 'b', 'c']
     mock_get_files_to_upload.return_value = test_files
+    expected_client_file = __file__.replace(
+        join('tests', 'test_upload.py'),
+        join('CMIP6_json_data_citation_generator', 'upload_CMIP6_json_files.py', '..', 'dkrz_citation_api_client', 'citation_client.py')
+    )
+
     upload('irrelevant')
+    assert mock_subprocess.check_call.call_count == 3
     for test_file in test_files:
-        mock_subprocess.check_call.assert_called_with([
+        mock_subprocess.check_call.assert_any_call([
             'python',
-            '../dkrz_citation_api_client/citation_client.py',
+            expected_client_file,
             test_file,
         ])
