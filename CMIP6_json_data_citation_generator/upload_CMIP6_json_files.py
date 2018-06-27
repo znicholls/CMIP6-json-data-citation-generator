@@ -6,7 +6,7 @@ def get_files_to_upload(input_dir, find_all=False):
     if find_all:
         return files_in_dir
     else:
-        return[:1]
+        return files_in_dir[:1]
 
 def upload(input_dir, upload_all=False):
     files = get_files_to_upload(input_dir, find_all=upload_all)
