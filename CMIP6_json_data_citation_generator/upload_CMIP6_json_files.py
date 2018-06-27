@@ -81,8 +81,6 @@ def main():
             '----------------------------------------------------------\n'
         )
 
-
-
     upload(input_dir=args.input, upload_all=args.all)
 
 if __name__ == '__main__':
