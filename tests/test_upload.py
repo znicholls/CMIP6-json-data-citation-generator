@@ -89,7 +89,7 @@ def test_upload_call(mock_subprocess, mock_get_files_to_upload, mock_isfile):
             upload('irrelevant')
         assert mock_subprocess.check_call.call_count == 3
         for test_file in test_files:
-            assert 'Uploading {}'.format(test_file) in out.getvalue().strip()
+            assert "Uploading {}".format(test_file) in out.getvalue().strip()
             mock_subprocess.check_call.assert_any_call([
                 'python',
                 expected_client_file,

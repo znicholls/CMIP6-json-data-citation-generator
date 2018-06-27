@@ -32,6 +32,7 @@ def upload(input_dir, upload_all=False):
         '../dkrz_citation_api_client/citation_client.py',
     )
     for file_to_upload in files_to_upload:
+        print("Uploading {}".format(file_to_upload))
         subprocess.check_call([
             'python',
             client_file,
