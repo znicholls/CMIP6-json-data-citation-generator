@@ -433,7 +433,7 @@ def test_check_json_format(temp_file):
     valid_json = json.loads(json.dumps(valid_yml))
     with open(temp_file, 'w') as outfile:
         json.dump(valid_json, outfile)
-    jsonGenerator.check_json_format(temp_file)
+    Generator.check_json_format(temp_file)
 
 
     del valid_json['titles']
@@ -441,6 +441,9 @@ def test_check_json_format(temp_file):
     with open(temp_file, 'w') as outfile:
         json.dump(valid_json, outfile)
 
-    with raises(ValueError):
-        jsonGenerator.check_json_format(temp_file)
+    expected_msg = re.escape(
+        'The key, titles, is missing in your yaml file: {}'.format(temp_file)
+    )
+    with raises(KeyError, match=expected_msg):
+        Generator.check_json_format(temp_file)
 

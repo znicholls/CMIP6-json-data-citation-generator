@@ -202,5 +202,13 @@ class jsonGenerator():
                     output_file=fn,
                 )
 
-    def check_json_format(self):
-        return None
+    def check_json_format(self, file_to_check):
+        with open(file_to_check, 'r') as in_file:
+            yaml_to_check = yaml.load(
+                json.dumps(json.load(in_file))
+            )
+
+        self.check_yaml_template(
+            yaml_template=yaml_to_check,
+            original_file=file_to_check,
+        )
