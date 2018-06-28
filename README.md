@@ -56,20 +56,20 @@ This will install the virtual environments (both python2 and python3) and run th
 <a id="summary"></a>
 ### Summary
 
-`json` files for files in the directory, `<input_dir>`, can be generated in the output directory, `<output_dir>`, using a yaml template file, `<yaml_template>` as shown
+`json` files for files in the directory, `<input_dir>` (including sub-directories), can be generated in the output directory, `<output_dir>`, using a yaml template file, `<yaml_template>` as shown
 
 ```
-python generate_CMIP6_json_files.py <yaml_template> <input_dir> <output_dir>
+generate_CMIP6_json_files <yaml_template> <input_dir> <output_dir>
 ```
 
 <a id="example"></a>
 ### Example
 
-The script will only generate one `json` file for each unique source id it finds in the `<input_dir>`. To see an example, run the following whilst your working directory is `CMIP6-json-data-citation-generator`
+The script will only generate one `json` file for each unique source id it finds in the `<input_dir>`. To see an example, run the following from the `CMIP6-json-data-citation-generator` directory
 
 ```
 source venv/bin/activate # if you haven't already
-python ./scripts/generate_CMIP6_json_files.py ./examples/yaml-templates/yaml-example.yml ./examples/data/empty-test-files/ ./examples/outputs
+generate_CMIP6_json_files ./examples/yaml-templates/yaml-example.yml ./examples/data/empty-test-files/ ./examples/outputs
 ```
 
 <a id="details"></a>

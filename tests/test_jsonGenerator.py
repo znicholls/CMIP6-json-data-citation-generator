@@ -1,15 +1,18 @@
-from os import listdir
-from os.path import join
+from os import listdir, remove
+from os.path import join, isfile, dirname
 from shutil import rmtree
 import re
 import datetime
 import sys
+from tempfile import mkstemp
 
+import pytest
 from pytest import raises
 from mock import patch
+import json
 
+from utils import captured_output
 from CMIP6_json_data_citation_generator import CMIPPathHandler
-
 from CMIP6_json_data_citation_generator import jsonGenerator
 
 test_file_path_empty_files = join('.', 'tests', 'data', 'empty-test-files')
@@ -28,6 +31,12 @@ test_data_citation_template_yaml = join(
     test_file_path_yaml,
     'test-data-citation-template.yml'
 )
+
+def get_test_file():
+    for test_file in listdir(test_file_path_empty_files):
+        if isfile(test_file):
+            break
+    return test_file
 
 def test_get_unique_source_ids_in_dir():
     Generator = jsonGenerator()
@@ -51,8 +60,8 @@ def test_get_unique_source_ids_in_dir_only_acts_on_nc_files():
     Generator = jsonGenerator()
     with patch.object(Generator, 'split_CMIP6_filename') as mock_split_filename:
         Generator.get_unique_source_ids_in_dir(
-            dir_to_search='.'
-            # safe to use because if there's nc files in top level, something is wrong
+            dir_to_search=join(dirname(__file__), '..', 'CMIP6_json_data_citation_generator')
+            # safe to use because if there's nc files in the source, something is wrong
         )
         mock_split_filename.assert_not_called()
 
@@ -228,7 +237,7 @@ def test_check_yaml_replace_values():
         in_file=test_data_citation_template_yaml
     )
 
-    file_name = listdir(test_file_path_empty_files)[0]
+    file_name = get_test_file()
     PathHandler = CMIPPathHandler()
 
     # no substitutions if they're not there
@@ -269,12 +278,18 @@ def test_write_json_to_file():
 @patch.object(jsonGenerator, 'get_yaml_with_filename_values_substituted')
 @patch.object(jsonGenerator, 'write_json_to_file')
 def test_writing_steps(mock_writer, mock_substitute, mock_checker, mock_loader):
-    test_file = listdir(test_file_path_empty_files)[0]
+    test_file = get_test_file()
     PathHandler = CMIPPathHandler()
-    source_id = PathHandler.get_split_CMIP6_filename(
+    filename_bits = PathHandler.get_split_CMIP6_filename(
         file_name=test_file
-    )['source_id']
-    file_name_to_write = source_id + '.json'
+    )
+
+    file_name_to_write = '_'.join([
+        filename_bits['institution_id'],
+        filename_bits['source_id'],
+        filename_bits['activity_id'],
+        filename_bits['target_mip'] + '.json',
+    ])
     yaml_template = test_data_citation_template_yaml
     out_dir = 'not/used'
     expected_out_file = join(out_dir, file_name_to_write)
@@ -310,10 +325,16 @@ def test_generate_json_for_all_unique_scenario_ids(mock_print, mock_isdir, mock_
         if fn.endswith('.nc')
     ][0]
     PathHandler = CMIPPathHandler()
-    source_id = PathHandler.get_split_CMIP6_filename(
+    filename_bits = PathHandler.get_split_CMIP6_filename(
         file_name=test_file
-    )['source_id']
-    file_name_to_write = source_id + '.json'
+    )
+
+    file_name_to_write = '_'.join([
+        filename_bits['institution_id'],
+        filename_bits['source_id'],
+        filename_bits['activity_id'],
+        filename_bits['target_mip'] + '.json',
+    ])
     in_dir = 'patched/over'
     out_dir = 'not/used'
     yaml_template = 'not used'
@@ -339,11 +360,16 @@ def test_generate_json_for_all_unique_scenario_ids(mock_print, mock_isdir, mock_
                 'Writing json file: {}\nfor file: {}'.format(expected_out_file,
                                                              test_file)
             )
-            assert mock_print.call_count == 2
-        mock_write_json.assert_called_with(
+            assert mock_print.call_count == 3
+        mock_write_json.assert_any_call(
             file_name=test_file,
             yaml_template=yaml_template,
             output_file=expected_out_file,
+        )
+        mock_write_json.assert_any_call(
+            file_name=test_file,
+            yaml_template=yaml_template,
+            output_file=expected_out_file.replace('_' + filename_bits['target_mip'], ''),
         )
 
     mock_isfile.return_value = True
@@ -358,7 +384,7 @@ def test_generate_json_for_all_unique_scenario_ids(mock_print, mock_isdir, mock_
         mock_isfile.assert_called_with(expected_out_file)
         if sys.version.startswith('3'):
             # for some reason mocking print is not happy with Python2
-            assert mock_print.call_count == 3
+            assert mock_print.call_count == 4
             mock_print.assert_any_call(
                 'json file already exists for source_id, see file: {}\nskipping file: {}'.format(
                     expected_out_file,
@@ -392,3 +418,35 @@ def test_write_json_to_file_only_runs_on_nc_file(mock_print):
                             test_file
                         )
                     )
+@pytest.fixture
+def temp_file():
+    handle, tmp_file = mkstemp()
+    yield tmp_file
+    remove(tmp_file)
+
+def test_check_json_format(temp_file):
+    temp_file
+    Generator = jsonGenerator()
+    valid_yml = Generator.return_template_yaml_from(
+        in_file=test_data_citation_template_yaml
+    )
+    valid_json = json.loads(json.dumps(valid_yml))
+    with open(temp_file, 'w') as outfile:
+        json.dump(valid_json, outfile)
+
+    assert Generator.check_json_format(temp_file)
+
+
+    del valid_json['titles']
+
+    with open(temp_file, 'w') as outfile:
+        json.dump(valid_json, outfile)
+
+    expected_msg = (
+        "'The key, titles, is missing in your yaml file: {}'".format(temp_file)
+    )
+    with captured_output() as (out, err):
+        Generator.check_json_format(temp_file)
+
+    assert not Generator.check_json_format(temp_file)
+    assert expected_msg == out.getvalue().strip()

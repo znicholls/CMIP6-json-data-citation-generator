@@ -9,12 +9,16 @@ VIRTUAL_ENV_DIR_PY2=$(ROOT_DIR)/venv2
 EXAMPLE_ROOT_DIR=$(ROOT_DIR)/examples
 EXAMPLE_FILE_DIR=$(EXAMPLE_ROOT_DIR)/data/empty-test-files/
 EXAMPLE_YML=$(EXAMPLE_ROOT_DIR)/yaml-templates/yaml-example.yml
-MAKE_JSON_COMMAND=$(ROOT_DIR)/scripts/generate_CMIP6_json_files.py
+MAKE_JSON_COMMAND=generate_CMIP6_json_files
 EXAMPLE_OUTPUT_DIR=$(EXAMPLE_ROOT_DIR)/outputs
 
-.PHONY : make_example_jsons
-make_example_jsons : $(VIRTUAL_ENV_DIR) $(EXAMPLE_FILE_DIR) $(EXAMPLE_YML)
+.PHONY : example_jsons
+example_jsons : $(VIRTUAL_ENV_DIR) $(EXAMPLE_FILE_DIR) $(EXAMPLE_YML)
 	$(call activate_venv,); $(MAKE_JSON_COMMAND) $(EXAMPLE_YML) $(EXAMPLE_FILE_DIR) $(EXAMPLE_OUTPUT_DIR)
+
+.PHONY: clean_example
+clean_example:
+	rm -rf $(EXAMPLE_OUTPUT_DIR)
 
 .PHONY : test
 test : $(VIRTUAL_ENV_DIR) $(VIRTUAL_ENV_DIR_PY2)
