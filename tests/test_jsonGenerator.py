@@ -450,3 +450,15 @@ def test_check_json_format(temp_file):
 
     assert not Generator.check_json_format(temp_file)
     assert expected_msg == out.getvalue().strip()
+
+@patch('CMIP6_json_data_citation_generator.isdir', return_value=True)
+@patch('CMIP6_json_data_citation_generator.walk')
+def test_invalid_name_in_dir(mock_walk, mock_isdir):
+    junk_name = 'junk.nc'
+    Generator = jsonGenerator()
+    mock_walk.return_value = [('root', ('dir',), ([junk_name]))]
+    with captured_output() as (out, err):
+        Generator.add_unique_source_ids_in_dir_to_unique_scenario_ids('mocked-out')
+
+
+    assert 'Unable to split filename: {}'.format(junk_name) == out.getvalue().strip()
