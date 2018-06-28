@@ -1,4 +1,4 @@
-from os.path import join, isfile
+from os.path import join, isfile, isdir
 from shutil import rmtree
 import subprocess
 import pytest
@@ -22,6 +22,8 @@ test_output_path = './test-json-output-path'
 
 @pytest.fixture
 def tear_down_test_path():
+    if isdir(test_output_path):
+        rmtree(test_output_path)
     yield None
     print('teardown test_output_path')
     rmtree(test_output_path)
