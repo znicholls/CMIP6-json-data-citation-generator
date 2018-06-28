@@ -1,12 +1,15 @@
-from os import listdir
+from os import listdir, remove
 from os.path import join, isfile, dirname
 from shutil import rmtree
 import re
 import datetime
 import sys
+from tempfile import mkstemp
 
+import pytest
 from pytest import raises
 from mock import patch
+import json
 
 from CMIP6_json_data_citation_generator import CMIPPathHandler
 
@@ -415,3 +418,29 @@ def test_write_json_to_file_only_runs_on_nc_file(mock_print):
                             test_file
                         )
                     )
+@pytest.fixture
+def temp_file():
+    handle, tmp_file = mkstemp()
+    yield tmp_file
+    remove(tmp_file)
+
+def test_check_json_format(temp_file):
+    temp_file
+    Generator = jsonGenerator()
+    valid_yml = Generator.return_template_yaml_from(
+        in_file=test_data_citation_template_yaml
+    )
+    valid_json = json.loads(json.dumps(valid_yml))
+    with open(temp_file, 'w') as outfile:
+        json.dump(valid_json, outfile)
+    jsonGenerator.check_json_format(temp_file)
+
+
+    del valid_json['titles']
+
+    with open(temp_file, 'w') as outfile:
+        json.dump(valid_json, outfile)
+
+    with raises(ValueError):
+        jsonGenerator.check_json_format(temp_file)
+
