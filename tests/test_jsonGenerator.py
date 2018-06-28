@@ -11,8 +11,8 @@ from pytest import raises
 from mock import patch
 import json
 
+from utils import captured_output
 from CMIP6_json_data_citation_generator import CMIPPathHandler
-
 from CMIP6_json_data_citation_generator import jsonGenerator
 
 test_file_path_empty_files = join('.', 'tests', 'data', 'empty-test-files')
@@ -433,7 +433,8 @@ def test_check_json_format(temp_file):
     valid_json = json.loads(json.dumps(valid_yml))
     with open(temp_file, 'w') as outfile:
         json.dump(valid_json, outfile)
-    Generator.check_json_format(temp_file)
+
+    assert Generator.check_json_format(temp_file)
 
 
     del valid_json['titles']
@@ -441,9 +442,11 @@ def test_check_json_format(temp_file):
     with open(temp_file, 'w') as outfile:
         json.dump(valid_json, outfile)
 
-    expected_msg = re.escape(
-        'The key, titles, is missing in your yaml file: {}'.format(temp_file)
+    expected_msg = (
+        "'The key, titles, is missing in your yaml file: {}'".format(temp_file)
     )
-    with raises(KeyError, match=expected_msg):
+    with captured_output() as (out, err):
         Generator.check_json_format(temp_file)
 
+    assert not Generator.check_json_format(temp_file)
+    assert expected_msg == out.getvalue().strip()

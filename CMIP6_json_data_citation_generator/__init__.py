@@ -208,7 +208,12 @@ class jsonGenerator():
                 json.dumps(json.load(in_file))
             )
 
-        self.check_yaml_template(
-            yaml_template=yaml_to_check,
-            original_file=file_to_check,
-        )
+        try:
+            self.check_yaml_template(
+                yaml_template=yaml_to_check,
+                original_file=file_to_check,
+            )
+            return True
+        except Exception as Except:
+            print(str(Except))
+            return False
