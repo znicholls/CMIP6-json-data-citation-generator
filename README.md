@@ -34,10 +34,9 @@ To be written, need to mention that `<name>` indicates that you should replace `
 ### Use
 
 ```
-python2 -m virtualenv venv # python3 will also work
+python2 -m virtualenv venv # python3 will also work for everything except uploading
 source venv/bin/activate
 pip install --upgrade pip
-pip install -Ur dev-requirements.txt
 python setup.py install
 ```
 
