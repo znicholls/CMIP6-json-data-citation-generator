@@ -25,7 +25,7 @@ Simple scripts to automatically generate json data citations for CMIP6 data file
 <a id="notation"></a>
 ## Notation
 
-To be written, need to mention that `<name>` indicates that you should replace `<name>` including the `<>` with the appropriate file, variable, path etc.
+`<name>` indicates that you should replace `<name>` including the `<>` with the appropriate file, variable, path etc. For example, `ls <path>` could become `ls CMIP6-json-data-citation-generator/tests`
 
 <a id="installation"></a>
 ## Installation
