@@ -493,8 +493,8 @@ def test_special_yaml_read():
 @pytest.fixture
 def remove_written_special_yaml():
     yield None
-    # if isfile(test_file_path_yaml_special_char_written):
-    #     remove(test_file_path_yaml_special_char_written)
+    if isfile(test_file_path_yaml_special_char_written):
+        remove(test_file_path_yaml_special_char_written)
 
 def test_special_yaml_write(remove_written_special_yaml):
     Generator = jsonGenerator()
