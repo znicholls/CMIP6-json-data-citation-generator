@@ -1,5 +1,7 @@
 from os import listdir, makedirs, walk
 from os.path import split, splitext, basename, join, isdir, isfile
+import io
+import sys
 
 import yaml
 import json
@@ -149,8 +151,15 @@ class jsonGenerator():
         return updated_yml
 
     def write_json_to_file(self, json_dict=None, file_name=None):
-        with open(file_name, 'w') as file_name:
-            json.dump(json_dict, file_name, indent=4)
+        with io.open(file_name, 'w', encoding='utf8') as json_file:
+            text = json.dumps(
+                json_dict,
+                ensure_ascii=False,
+                indent=4
+            )
+            if sys.version.startswith('2'):
+                text=unicode(text)
+            json_file.write(text)
 
     def write_json_for_filename_to_file_with_template(self, file_name=None, yaml_template=None, output_file=None):
         yaml_template = self.return_template_yaml_from(in_file=yaml_template)
