@@ -272,7 +272,7 @@ def test_check_yaml_replace_values():
         assert subbed_yml['fundingReferences'][0]['funderName'] == [value]
 
 def test_write_json_to_file():
-    with patch('CMIP6_json_data_citation_generator.codecs.open') as mock_open:
+    with patch('CMIP6_json_data_citation_generator.open') as mock_open:
         with patch('CMIP6_json_data_citation_generator.json.dump') as mock_json_dump:
             Generator = jsonGenerator()
             test_fn = 'UoM-ssp119-1-1-0'
