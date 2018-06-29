@@ -7,6 +7,7 @@ import re
 import datetime
 import sys
 from tempfile import mkstemp
+import codecs
 
 import pytest
 from pytest import raises
@@ -272,13 +273,13 @@ def test_check_yaml_replace_values():
         assert subbed_yml['fundingReferences'][0]['funderName'] == [value]
 
 def test_write_json_to_file():
-    with patch('CMIP6_json_data_citation_generator.open') as mock_open:
-        with patch('CMIP6_json_data_citation_generator.json.dump') as mock_json_dump:
+    with patch('CMIP6_json_data_citation_generator.io.open') as mock_open:
+        with patch('CMIP6_json_data_citation_generator.json.dumps') as mock_json_dump:
             Generator = jsonGenerator()
             test_fn = 'UoM-ssp119-1-1-0'
             test_dict = {'hi': 'test', 'bye': 'another test'}
             Generator.write_json_to_file(json_dict=test_dict, file_name=test_fn)
-            mock_open.assert_called_with(test_fn, 'w')
+            mock_open.assert_called_with(test_fn, 'w', encoding='utf8')
             mock_json_dump.assert_called_once()
 
 @patch.object(jsonGenerator, 'return_template_yaml_from')
@@ -479,11 +480,11 @@ def test_special_yaml_read():
     expected_result = {
         'creators': [
             {
-                'creatorName': "Müller, Björn",
-                'givenName': "Björn",
-                'familyName': "Müller",
-                'email': "björnmüller@äéèîç.com",
-                'affiliation': 'kæčœ universität von Lände',
+                'creatorName': u"Müller, Björn",
+                'givenName': u"Björn",
+                'familyName': u"Müller",
+                'email': u"björnmüller@äéèîç.com",
+                'affiliation': u'kæčœ universität von Lände',
             },
         ],
     }
@@ -505,13 +506,14 @@ def test_special_yaml_write(remove_written_special_yaml):
         file_name=test_file_path_yaml_special_char_written
     )
     expected_strings = [
-        "Müller, Björn",
-        "Björn",
-        "Müller",
-        "björnmüller@äéèîç.com",
-        "kæčœ universität von Lände",
+        u"Müller, Björn",
+        u"Björn",
+        u"Müller",
+        u"björnmüller@äéèîç.com",
+        u"kæčœ universität von Lände",
     ]
-    with open(test_file_path_yaml_special_char_written) as written_file:
+    with codecs.open(test_file_path_yaml_special_char_written, "r", "utf-8") as written_file:
         written_text = written_file.read()
+
         for expected_string in expected_strings:
             assert expected_string in written_text
