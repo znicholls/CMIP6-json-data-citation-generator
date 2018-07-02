@@ -18,6 +18,19 @@ creators:
       pid: "9876-5432-1098-7654"
     affiliation: "Other university"
   - creatorName: "Another university"
+contributors:
+  - contributorType: "ContactPerson"
+    contributorName: "Jungclaus, John"
+    givenName: "John"
+    familyName: "Jungclaus"
+    email: jj@gmail.com
+    affiliation: "JJ Uni TU"
+    nameIdentifier:
+      schemeURI: "http://orcid.org/"
+      nameIdentifierScheme: "ORCID"
+      pid: "4444-1111-2222-3333"
+  - contributorType: "ResearchGroup"
+    contributorName: "JJ institute for tests"
 titles:
   - "activity-id.CMIP-era.targetMIP.institutionID.source-id"
 fundingReferences:

@@ -231,6 +231,7 @@ def test_validation_dict():
 # test that if called with yml file, subjects not compulsory, if called with json file, subjects compulsory and fixed
 
 def test_check_all_values_valid(test_validation_dict):
+    for key, value in test_validation_dict.items():
 
     assert False
 
