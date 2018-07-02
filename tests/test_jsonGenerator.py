@@ -16,6 +16,9 @@ from utils import captured_output
 from CMIP6_json_data_citation_generator import CMIPPathHandler
 from CMIP6_json_data_citation_generator import jsonGenerator
 
+# TODO: get rid of all these reads of test_data_citation_templayte_yaml and use
+#       a fixture...
+
 test_file_path_empty_files = join('.', 'tests', 'data', 'empty-test-files')
 test_file_unique_source_ids = [
     'UoM-ssp119-1-1-0',
@@ -169,27 +172,27 @@ def test_read_yaml_template():
 @pytest.fixture
 def test_validation_dict():
     return {
-        'creators-compulsory-independent': [
+        'creators-compulsory': [
             {
-                'creatorName-compulsory-independent': "Last, First A. B.",
+                'creatorName-compulsory': "Last, First A. B.",
                 'givenName-optional-dependent-familyName-email-affiliation': "First A. B.",
                 'familyName-optional-dependent-givenName-email-affiliation': "Last",
                 'email-optional-dependent-givenName-familyName-affiliation': "email@test.com",
                 'nameIdentifier-optional-independent': {
-                    'schemeURI-compulsory-independent': "http://orcid.org/",
-                    'nameIdentifierScheme-compulsory-independent': "ORCID",
-                    'pid-compulsory-independent': "0000-1111-2222-3333",
+                    'schemeURI-compulsory': "http://orcid.org/",
+                    'nameIdentifierScheme-compulsory': "ORCID",
+                    'pid-compulsory': "0000-1111-2222-3333",
                 },
                 'affiliation-optional-dependent-givenName-familyName-email': 'Some university',
             },
         ],
-        'titles-compulsory-independent': [
+        'titles-compulsory': [
             "activity-id.CMIP-era.targetMIP.institutionID.source-id",
         ],
         "contributors-optional-independent": [
             {
-                "contributorType-compulsory-independent": "ContactPerson",
-                "contributorName-compulsory-independent": "Jungclaus, Johann",
+                "contributorType-compulsory": "ContactPerson",
+                "contributorName-compulsory": "Jungclaus, Johann",
                 "givenName-optional-dependent-familyName-email-affiliation": "Johann",
                 "familyName-optional-dependent-givenName-email-affiliation": "Jungclaus",
                 "email-optional-dependent-givenName-familyName-affiliation": "johann.jungclaus@mpimet.mpg.de",
@@ -203,52 +206,122 @@ def test_validation_dict():
         ],
         'fundingReferences-optional-independent': [
             {
-                'funderName-compulsory-independent': 'Funder name 1',
+                'funderName-compulsory': 'Funder name 1',
                 'funderIdentifier-optional-dependent-funderIdentifierType': 'http://hello',
-                'funderIdentifierType-compulsory-dependent-funderIdentifier': 'Cross Ref ID',
+                'funderIdentifierType-optional-dependent-funderIdentifier': 'Cross Ref ID',
             },
         ],
         'relatedIdentifiers-optional-independent': [
             {
-                'relatedIdentifier-compulsory-independent': 'doi-link',
-                'relatedIdentifierType-compulsory-independent': 'DOI',
-                'relationType-compulsory-independent': 'IsDocumentedBy',
+                'relatedIdentifier-compulsory': 'doi-link',
+                'relatedIdentifierType-compulsory': 'DOI',
+                'relationType-compulsory': 'IsDocumentedBy',
             }
         ]
     }
 
-# use a fixture to fix this
-# For each field you need to define:
-#   - field (semi-colon separated)
-#   - compulsory or not
-#   - depends on other fields or not
-#   - fixed or not
-# and do a test for:
-#   - what happens if removed
-#   - what happens if modified
-#   - what happens if type changes
+@pytest.mark.parametrize("filename", [
+        (['test.yml']),
+        (['test.json']),
+    ])
+def test_check_all_values_valid(test_validation_dict, filename):
+    Generator = jsonGenerator()
+    valid_dict = Generator.return_template_yaml_from(
+        in_file=test_data_citation_template_yaml
+    )
 
-# test that if called with yml file, subjects not compulsory, if called with json file, subjects compulsory and fixed
+    def run_validation_tests(tvd, vd, path=None):
+        if path is None:
+            path = []
+        for key, value in tvd.items():
+            actual_key = key.split('-')[0]
+            path = path + [actual_key]
+            key_str = '-'.join('path')
+            indicators = key.split('-')[1:]
 
-def test_check_all_values_valid(test_validation_dict):
-    for key, value in test_validation_dict.items():
+            tmp_vd = deepcopy(vd)
+            del tmp_vd[actual_key]
+            if indicators[0] == 'compulsory':
+                with raises(KeyError, match='Key ({}) is compulsory'.format(key_str)):
+                    Generator.check_all_values_valid(
+                        dict_to_check=tmp_vd,
+                        original_file=filename,
+                    )
+            else:
+                if indicators[1] == 'independent':
+                    expected_msg = 'Key ({}) is optional, do you want to add it?'.format('-'.join('path'))
+                else:
+                    expected_msg = 'Key ({}) is optional, do you want to add it? Adding it also requires {}'.format(
+                        key_str,
+                        ', '.join(indicators[2:])
+                    )
 
-    assert False
+                with captured_output() as (out, err):
+                    Generator.check_all_values_valid(
+                        dict_to_check=tmp_vd,
+                        original_file=filename,
+                    )
 
-"""
-Tests look like:
-- remove field
-    - if compulsory, check error thrown
-    - otherwise, check message printed including any dependencies
-- modify field
-    - if fixed, check error thrown
-    - otherwise do nothing
-- modify type
-    - check error thrown
-"""
+                assert out.getvalue().strip() == expected_msg
 
+            tmp_vd = deepcopy(vd)
+            assert type(value) == type(tmp_vd[actual_key])
+            tmp_vd[actual_key] == 4
+            with raises(ValueError, match='Value of key ({}) does not look right, I think it should be a {}'.format(key_str, type(value))):
+                Generator.check_all_values_valid(
+                    dict_to_check=tmp_vd,
+                    original_file=filename,
+                )
 
+            tmp_vd = deepcopy(vd)
+            if isinstance(value, list):
+                next_test_validation_value = value[0]
+                next_validation_value = tmp_vd[actual_key][0]
 
+            assert type(next_test_validation_value) == type(next_validation_value)
+            if isinstance(next_test_validation_value, dict):
+                run_validation_tests(
+                    next_test_validation_value,
+                    next_validation_value,
+                    path=path,
+                )
+
+    run_validation_tests(test_validation_dict, valid_dict)
+
+    # this is actually wrong, to be fixed later
+    correct_subject_value = [
+        {
+            "subject": "CMIP6.VIACSAB.PCMDI.PCMDI-test-1-0",
+            "schemeURI": "http://github.com/WCRP-CMIP/CMIP6_CVs",
+            "subjectScheme": "DRS"
+        },
+        {"subject": "climate"},
+        {"subject": "CMIP6"},
+    ]
+
+    if filename.endswith('.yml'):
+        Generator.check_all_values_valid(
+            dict_to_check=valid_dict,
+            original_file=filename,
+        )
+        valid_dict['subjects'] == correct_subject_value
+        with raises(KeyError, match="Key (subjects) should not be in your yml file"):
+            Generator.check_all_values_valid(
+                dict_to_check=valid_dict,
+                original_file=filename,
+            )
+    else:
+        with raises(KeyError, match='Key (subjects) is compulsory and should have been added to your json automatically when generated.'):
+            Generator.check_all_values_valid(
+                dict_to_check=valid_dict,
+                original_file=filename,
+            )
+
+        valid_dict['subjects'] == correct_subject_value
+        Generator.check_all_values_valid(
+            dict_to_check=valid_dict,
+            original_file=filename,
+        )
 
 def test_check_yaml_replace_values():
     Generator = jsonGenerator()
