@@ -194,7 +194,7 @@ def test_read_yaml_template():
     assert actual_result == expected_result
 
 # need to split this into many functions:
-# - loop over fields
+# - loop over fields (write all fields in lists so easy to get hold of with a loop something like https://stackoverflow.com/questions/14692690/access-nested-dictionary-items-via-a-list-of-keys)
 #   - check what happens if removed
 #     - if compulsory
 #     - if optional
