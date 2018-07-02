@@ -144,6 +144,28 @@ def test_read_yaml_template():
                 },
                 'affiliation': 'Other university',
             },
+            {
+                'creatorName': 'Another university',
+            },
+        ],
+        'contributors': [
+            {
+                'contributorType': "ContactPerson",
+                'contributorName': "Jungclaus, John",
+                'givenName': "John",
+                'familyName': "Jungclaus",
+                'email': "jj@gmail.com",
+                'nameIdentifier': {
+                    'schemeURI': "http://orcid.org/",
+                    'nameIdentifierScheme': "ORCID",
+                    'pid': "4444-1111-2222-3333",
+                },
+                'affiliation': 'JJ Uni TU',
+            },
+            {
+                'contributorType': "ResearchGroup",
+                'contributorName': "JJ institute for tests",
+            },
         ],
         'titles': [
             "activity-id.CMIP-era.targetMIP.institutionID.source-id",
