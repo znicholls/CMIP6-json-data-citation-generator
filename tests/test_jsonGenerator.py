@@ -166,6 +166,52 @@ def test_read_yaml_template():
     }
     assert actual_result == expected_result
 
+def test_validation_dict():
+    return {
+        'creators-compulsory': [
+            {
+                'creatorName': "Last, First A. B.",
+                'givenName': "First A. B.",
+                'familyName': "Last",
+                'email': "email@test.com",
+                'nameIdentifier': {
+                    'schemeURI': "http://orcid.org/",
+                    'nameIdentifierScheme': "ORCID",
+                    'pid': "0000-1111-2222-3333",
+                },
+                'affiliation': 'Some university',
+            },
+            {
+                'creatorName': "La, Fir",
+                'givenName': "Fir",
+                'familyName': "La",
+                'email': "email2@test.com",
+                'nameIdentifier': {
+                    'schemeURI': "http://orcid.org/",
+                    'nameIdentifierScheme': "ORCID",
+                    'pid': "9876-5432-1098-7654",
+                },
+                'affiliation': 'Other university',
+            },
+            {
+                'creatorName': "Another university",
+            },
+        ],
+        'titles': [
+            "activity-id.CMIP-era.targetMIP.institutionID.source-id",
+        ],
+        'fundingReferences': [
+            {'funderName': 'Funder name 1'},
+            {'funderName': 'Funder name 2'},
+        ],
+        'relatedIdentifiers': [
+            {
+                'relatedIdentifier': 'doi-link',
+                'relatedIdentifierType': 'DOI',
+                'relationType': 'IsDocumentedBy',
+            }
+        ]
+    }
 # use a fixture to fix this
 # For each field you need to define:
 #   - field (semi-colon separated)
@@ -328,12 +374,40 @@ def test_check_yaml_replace_values():
 def test_write_json_to_file():
     with patch('CMIP6_json_data_citation_generator.open') as mock_open:
         with patch('CMIP6_json_data_citation_generator.json.dump') as mock_json_dump:
-            Generator = jsonGenerator()
-            test_fn = 'UoM-ssp119-1-1-0'
-            test_dict = {'hi': 'test', 'bye': 'another test'}
-            Generator.write_json_to_file(json_dict=test_dict, file_name=test_fn)
-            mock_open.assert_called_with(test_fn, 'w')
-            mock_json_dump.assert_called_once()
+            with patch.object(jsonGenerator, 'ensure_subjects_field_in_yaml') as mock_ensure_subjects_field:
+                Generator = jsonGenerator()
+                test_fn = 'UoM-ssp119-1-1-0'
+                test_dict = {'hi': 'test', 'bye': 'another test'}
+                test_dict_plus_subjects = Generator.ensure_subjects_field_in_dict(
+                    in_dict=test_dict,
+                )
+                Generator.write_json_to_file(json_dict=test_dict, file_name=test_fn)
+                mock_open.assert_called_with(test_fn, 'w')
+                mock_json_dump.assert_called_with(test_dict_plus_subjects, test_fn, indent=4)
+                mock_ensure_subjects_field.assert_called_once()
+
+def test_ensure_subjects_field_in_dict():
+    Generator = jsonGenerator()
+    valid_yml = Generator.return_template_yaml_from(
+        in_file=test_data_citation_template_yaml
+    )
+    test_result = Generator.ensure_subjects_field_in_dict(in_dict=valid_yml)
+    assert test_result['subjects'] == [
+        {
+          "subject": "CMIP6.VIACSAB.PCMDI.PCMDI-test-1-0",
+          "schemeURI": "http://github.com/WCRP-CMIP/CMIP6_CVs",
+          "subjectScheme": "DRS"
+        },
+        {
+          "subject": "climate"
+        },
+        {
+          "subject": "CMIP6"
+        }
+    ]
+    with raises(TypeError):
+        Generator.ensure_subjects_field_in_dict(in_dict=[1, 2, 3])
+
 
 @patch.object(jsonGenerator, 'return_template_yaml_from')
 @patch.object(jsonGenerator, 'check_yaml_template')
