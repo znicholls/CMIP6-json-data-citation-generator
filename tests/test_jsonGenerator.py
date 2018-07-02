@@ -193,6 +193,16 @@ def test_read_yaml_template():
     }
     assert actual_result == expected_result
 
+# need to split this into many functions:
+# - loop over fields
+#   - check what happens if removed
+#     - if compulsory
+#     - if optional
+#       - if independent
+#       - if dependent
+#   - check what happens if type is changed
+# - add a spurious field, make sure error is thrown
+#
 def test_check_yaml_template():
     Generator = jsonGenerator()
     valid_yml = Generator.return_template_yaml_from(
