@@ -166,52 +166,57 @@ def test_read_yaml_template():
     }
     assert actual_result == expected_result
 
+@pytest.fixture
 def test_validation_dict():
     return {
-        'creators-compulsory': [
+        'creators-compulsory-independent': [
             {
-                'creatorName': "Last, First A. B.",
-                'givenName': "First A. B.",
-                'familyName': "Last",
-                'email': "email@test.com",
-                'nameIdentifier': {
-                    'schemeURI': "http://orcid.org/",
-                    'nameIdentifierScheme': "ORCID",
-                    'pid': "0000-1111-2222-3333",
+                'creatorName-compulsory-independent': "Last, First A. B.",
+                'givenName-optional-dependent-familyName-email-affiliation': "First A. B.",
+                'familyName-optional-dependent-givenName-email-affiliation': "Last",
+                'email-optional-dependent-givenName-familyName-affiliation': "email@test.com",
+                'nameIdentifier-optional-independent': {
+                    'schemeURI-compulsory-independent': "http://orcid.org/",
+                    'nameIdentifierScheme-compulsory-independent': "ORCID",
+                    'pid-compulsory-independent': "0000-1111-2222-3333",
                 },
-                'affiliation': 'Some university',
-            },
-            {
-                'creatorName': "La, Fir",
-                'givenName': "Fir",
-                'familyName': "La",
-                'email': "email2@test.com",
-                'nameIdentifier': {
-                    'schemeURI': "http://orcid.org/",
-                    'nameIdentifierScheme': "ORCID",
-                    'pid': "9876-5432-1098-7654",
-                },
-                'affiliation': 'Other university',
-            },
-            {
-                'creatorName': "Another university",
+                'affiliation-optional-dependent-givenName-familyName-email': 'Some university',
             },
         ],
-        'titles': [
+        'titles-compulsory-independent': [
             "activity-id.CMIP-era.targetMIP.institutionID.source-id",
         ],
-        'fundingReferences': [
-            {'funderName': 'Funder name 1'},
-            {'funderName': 'Funder name 2'},
-        ],
-        'relatedIdentifiers': [
+        "contributors-optional-independent": [
             {
-                'relatedIdentifier': 'doi-link',
-                'relatedIdentifierType': 'DOI',
-                'relationType': 'IsDocumentedBy',
+                "contributorType-compulsory-independent": "ContactPerson",
+                "contributorName-compulsory-independent": "Jungclaus, Johann",
+                "givenName-optional-dependent-familyName-email-affiliation": "Johann",
+                "familyName-optional-dependent-givenName-email-affiliation": "Jungclaus",
+                "email-optional-dependent-givenName-familyName-affiliation": "johann.jungclaus@mpimet.mpg.de",
+                "nameIdentifier-optional-independent": {
+                    "schemeURI": "http://orcid.org/",
+                    "nameIdentifierScheme": "ORCID",
+                    "pid": "0000-0002-3849-4339"
+                },
+                "affiliation-optional-dependent-givenName-familyName-email": "Max-Planck-Institut fuer Meteorologie"
+            },
+        ],
+        'fundingReferences-optional-independent': [
+            {
+                'funderName-compulsory-independent': 'Funder name 1',
+                'funderIdentifier-optional-dependent-funderIdentifierType': 'http://hello',
+                'funderIdentifierType-compulsory-dependent-funderIdentifier': 'Cross Ref ID',
+            },
+        ],
+        'relatedIdentifiers-optional-independent': [
+            {
+                'relatedIdentifier-compulsory-independent': 'doi-link',
+                'relatedIdentifierType-compulsory-independent': 'DOI',
+                'relationType-compulsory-independent': 'IsDocumentedBy',
             }
         ]
     }
+
 # use a fixture to fix this
 # For each field you need to define:
 #   - field (semi-colon separated)
@@ -223,16 +228,11 @@ def test_validation_dict():
 #   - what happens if modified
 #   - what happens if type changes
 
-def contributorType_dependencies(field_value):
-    base = ['contributorName']
-    if field_value == 'ContactPerson':
-        return base + ['givenName', 'familyName', 'email', 'affiliation']
-    return base
+# test that if called with yml file, subjects not compulsory, if called with json file, subjects compulsory and fixed
 
-(   # field(semi-colon separated for multiple levels) compulsory dependencies fixed
-    ('creators', True, None, False),
-    ('creators-creatorName', True, contributorType_dependencies, False),
-)
+def test_check_all_values_valid(test_validation_dict):
+
+    assert False
 
 """
 Tests look like:
@@ -246,98 +246,8 @@ Tests look like:
     - check error thrown
 """
 
-def test_check_all_values_valid():
-    Generator = jsonGenerator()
-    valid_yml = Generator.return_template_yaml_from(
-        in_file=test_data_citation_template_yaml
-    )
-
-    key_to_exclude = 'titles'
-    missing_compulsory_field_yml = {
-        key: value for key, value in valid_yml.items()
-        if key not in key_to_exclude
-    }
-    error_msg = 'The key, {}, is missing in your yaml file: {}'.format(
-        key_to_exclude,
-        test_data_citation_template_yaml
-    )
-    with raises(KeyError, match=re.escape(error_msg)):
-        Generator.check_yaml_template(
-            yaml_template=missing_compulsory_field_yml,
-            original_file=test_data_citation_template_yaml,
-        )
 
 
-    sub_field_tests = {
-        'fundingReferences': {
-            'all_or_none': ['funderIdentifier', 'funderIdentifierType'],
-            'required': ['funderName'],
-        },
-        'creators': {
-            'all_or_none': ['givenName', 'familyName', 'email', 'affiliation', 'nameIdentifier'],
-            'required': ['creatorName'],
-        },
-        'contributors': {
-            'all_or_none': ['givenName', 'familyName', 'email', 'affiliation', 'nameIdentifier'],
-            'required': ['contributorName', 'contributorType'],
-        },
-    }
-    for top_field in sub_field_tests:
-        all_or_none_fields = sub_field_tests[top_field]['all_or_none']
-        for all_or_none_field in all_or_none_fields:
-            all_or_none_other_fields = [
-                field for field in all_or_none_fields
-                if field != all_or_none_field
-            ]
-            missing_optional_field_yml = deepcopy(valid_yml)
-
-            del missing_optional_field_yml[top_field][0][all_or_none_field]
-
-            msg = 'The key, {}-{}, is missing in your yaml file: {}\nDo you want to add it (Note, if you do you must also include {})?'.format(
-                top_field,
-                all_or_none_field,
-                test_data_citation_template_yaml,
-                "'" + "', '".join(all_or_none_other_fields) + "'"
-            )
-            with patch('CMIP6_json_data_citation_generator.print') as mock_print:
-                Generator.check_yaml_template(
-                    yaml_template=missing_optional_field_yml,
-                    original_file=test_data_citation_template_yaml,
-                )
-                if sys.version.startswith('3'):
-                    # for some reason mocking print is not happy with Python2
-                    assert mock_print.call_count == 1
-                    mock_print.assert_called_with(msg)
-                    del mock_print
-
-    key_to_add = 'extra key'
-    extra_key_yml = valid_yml.copy()
-    extra_key_yml[key_to_add] = 15
-    error_msg = 'The key, {}, looks wrong (either it should not be there or is a typo) in your yaml file: {}'.format(
-        key_to_add,
-        test_data_citation_template_yaml
-    )
-    with raises(KeyError, match=re.escape(error_msg)):
-        Generator.check_yaml_template(
-            yaml_template=extra_key_yml,
-            original_file=test_data_citation_template_yaml,
-        )
-
-    key_to_alter = 'titles'
-    altered_value = "title string"
-    wrong_format_yml = valid_yml.copy()
-    wrong_format_yml[key_to_alter] = altered_value
-    error_msg = 'The type ({}) of key, {}, looks wrong in your yaml file: {}\nI think it should be a {}'.format(
-        type(altered_value),
-        key_to_alter,
-        test_data_citation_template_yaml,
-        type(valid_yml[key_to_alter])
-    )
-    with raises(ValueError, match=re.escape(error_msg)):
-        Generator.check_yaml_template(
-            yaml_template=wrong_format_yml,
-            original_file=test_data_citation_template_yaml,
-        )
 
 def test_check_yaml_replace_values():
     Generator = jsonGenerator()
