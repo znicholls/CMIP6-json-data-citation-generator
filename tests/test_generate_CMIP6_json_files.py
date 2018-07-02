@@ -22,7 +22,7 @@ test_file_unique_jsons = [
     'UoM_UoM-ssp534os-1-1-0_input4MIPs_ScenarioMIP',
     'UoM_UoM-ssp585-1-1-0_input4MIPs_ScenarioMIP',
 ]
-test_output_path = './test-json-output-path'
+test_output_path = './tests/test-json-output-path'
 
 @pytest.fixture
 def tear_down_test_path():

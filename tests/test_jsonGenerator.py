@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from os import listdir, remove
 from os.path import join, isfile, dirname
 from shutil import rmtree
@@ -5,6 +7,7 @@ import re
 import datetime
 import sys
 from tempfile import mkstemp
+import codecs
 
 import pytest
 from pytest import raises
@@ -15,7 +18,8 @@ from utils import captured_output
 from CMIP6_json_data_citation_generator import CMIPPathHandler
 from CMIP6_json_data_citation_generator import jsonGenerator
 
-test_file_path_empty_files = join('.', 'tests', 'data', 'empty-test-files')
+test_data_path = join('.', 'tests', 'data')
+test_file_path_empty_files = join(test_data_path, 'empty-test-files')
 test_file_unique_source_ids = [
     'UoM-ssp119-1-1-0',
     'UoM-ssp245-1-1-0',
@@ -26,10 +30,15 @@ test_file_unique_source_ids = [
 ]
 test_output_path = join('.', 'test-json-output-path')
 
-test_file_path_yaml = join('.', 'tests', 'data', 'yaml-test-files')
+test_file_path_yaml = join(test_data_path, 'yaml-test-files')
 test_data_citation_template_yaml = join(
     test_file_path_yaml,
     'test-data-citation-template.yml'
+)
+test_file_path_yaml_special_char = join(test_data_path, 'yaml-test-files', 'test-special-char.yml')
+test_file_path_yaml_special_char_written = test_file_path_yaml_special_char.replace(
+    '.yml',
+    '-written.yml'
 )
 
 def get_test_file():
@@ -286,13 +295,13 @@ def test_check_yaml_replace_values():
         assert subbed_yml['fundingReferences'][0]['funderName'] == [value]
 
 def test_write_json_to_file():
-    with patch('CMIP6_json_data_citation_generator.open') as mock_open:
-        with patch('CMIP6_json_data_citation_generator.json.dump') as mock_json_dump:
+    with patch('CMIP6_json_data_citation_generator.io.open') as mock_open:
+        with patch('CMIP6_json_data_citation_generator.json.dumps') as mock_json_dump:
             Generator = jsonGenerator()
             test_fn = 'UoM-ssp119-1-1-0'
             test_dict = {'hi': 'test', 'bye': 'another test'}
             Generator.write_json_to_file(json_dict=test_dict, file_name=test_fn)
-            mock_open.assert_called_with(test_fn, 'w')
+            mock_open.assert_called_with(test_fn, 'w', encoding='utf8')
             mock_json_dump.assert_called_once()
 
 @patch.object(jsonGenerator, 'return_template_yaml_from')
@@ -484,3 +493,49 @@ def test_invalid_name_in_dir(mock_walk, mock_isdir):
 
 
     assert 'Unable to split filename: {}'.format(junk_name) == out.getvalue().strip()
+
+def test_special_yaml_read():
+    Generator = jsonGenerator()
+    actual_result = Generator.return_template_yaml_from(
+        in_file=test_file_path_yaml_special_char
+    )
+    expected_result = {
+        'creators': [
+            {
+                'creatorName': u"Müller, Björn",
+                'givenName': u"Björn",
+                'familyName': u"Müller",
+                'email': u"björnmüller@äéèîç.com",
+                'affiliation': u'kæčœ universität von Lände',
+            },
+        ],
+    }
+    assert actual_result == expected_result
+
+@pytest.fixture
+def remove_written_special_yaml():
+    yield None
+    if isfile(test_file_path_yaml_special_char_written):
+        remove(test_file_path_yaml_special_char_written)
+
+def test_special_yaml_write(remove_written_special_yaml):
+    Generator = jsonGenerator()
+    dict_to_write = Generator.return_template_yaml_from(
+        in_file=test_file_path_yaml_special_char
+    )
+    Generator.write_json_to_file(
+        json_dict=dict_to_write,
+        file_name=test_file_path_yaml_special_char_written
+    )
+    expected_strings = [
+        u"Müller, Björn",
+        u"Björn",
+        u"Müller",
+        u"björnmüller@äéèîç.com",
+        u"kæčœ universität von Lände",
+    ]
+    with codecs.open(test_file_path_yaml_special_char_written, "r", "utf-8") as written_file:
+        written_text = written_file.read()
+
+        for expected_string in expected_strings:
+            assert expected_string in written_text
