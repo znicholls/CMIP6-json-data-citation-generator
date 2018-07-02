@@ -28,6 +28,7 @@ setup(
     long_description=read('README.md'),
     url='https://gitlab.com/znicholls/CMIP6_data_file_renaming',
     install_requires=[
+        'pytest',
         'httplib2',
         'mock',
         'pyyaml',
