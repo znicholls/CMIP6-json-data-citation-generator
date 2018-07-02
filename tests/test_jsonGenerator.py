@@ -246,7 +246,7 @@ Tests look like:
     - check error thrown
 """
 
-def test_check_yaml_template():
+def test_check_all_values_valid():
     Generator = jsonGenerator()
     valid_yml = Generator.return_template_yaml_from(
         in_file=test_data_citation_template_yaml
@@ -374,7 +374,7 @@ def test_check_yaml_replace_values():
 def test_write_json_to_file():
     with patch('CMIP6_json_data_citation_generator.open') as mock_open:
         with patch('CMIP6_json_data_citation_generator.json.dump') as mock_json_dump:
-            with patch.object(jsonGenerator, 'ensure_subjects_field_in_yaml') as mock_ensure_subjects_field:
+            with patch.object(jsonGenerator, 'ensure_subjects_field_in_dict') as mock_ensure_subjects_field:
                 Generator = jsonGenerator()
                 test_fn = 'UoM-ssp119-1-1-0'
                 test_dict = {'hi': 'test', 'bye': 'another test'}
