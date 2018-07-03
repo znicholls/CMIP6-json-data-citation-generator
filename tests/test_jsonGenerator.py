@@ -41,6 +41,19 @@ test_file_path_yaml_special_char_written = test_file_path_yaml_special_char.repl
     '-written.yml'
 )
 
+@pytest.fixture
+def temp_file():
+    handle, tmp_file = mkstemp()
+    yield tmp_file
+    remove(tmp_file)
+
+@pytest.fixture
+def valid_data_citation_dict():
+    Generator = jsonGenerator()
+    return Generator.return_data_citation_dict_from_yaml(
+        in_file=test_data_citation_template_yaml
+    )
+
 def get_test_file():
     for test_file in listdir(test_file_path_empty_files):
         if isfile(test_file):
@@ -77,7 +90,7 @@ def test_get_unique_source_ids_in_dir_only_acts_on_nc_files():
 def test_yaml_read_in():
     Generator = jsonGenerator()
     yaml_template = join(test_file_path_yaml, 'test-yaml.yml')
-    actual_result = Generator.return_template_yaml_from(in_file=yaml_template)
+    actual_result = Generator.return_data_citation_dict_from_yaml(in_file=yaml_template)
     expected_result = {
         'list-field': ['item1', 'item2'],
         'dict-field-1': 34843,
@@ -124,7 +137,7 @@ def test_yaml_read_in():
 
 def test_read_yaml_template():
     Generator = jsonGenerator()
-    actual_result = Generator.return_template_yaml_from(
+    actual_result = Generator.return_data_citation_dict_from_yaml(
         in_file=test_data_citation_template_yaml
     )
     expected_result = {
@@ -203,15 +216,11 @@ def test_read_yaml_template():
 #   - check what happens if type is changed
 # - add a spurious field, make sure error is thrown
 #
-def test_check_data_citation_dict():
+def test_check_data_citation_dict(valid_data_citation_dict):
     Generator = jsonGenerator()
-    valid_yml = Generator.return_template_yaml_from(
-        in_file=test_data_citation_template_yaml
-    )
-
     key_to_exclude = 'titles'
     missing_compulsory_field_yml = {
-        key: value for key, value in valid_yml.items()
+        key: value for key, value in valid_data_citation_dict.items()
         if key not in key_to_exclude
     }
     error_msg = 'The key, {}, is missing in your yaml file: {}'.format(
@@ -226,7 +235,7 @@ def test_check_data_citation_dict():
 
     key_to_exclude = 'relatedIdentifiers'
     missing_optional_field_yml = {
-        key: value for key, value in valid_yml.items()
+        key: value for key, value in valid_data_citation_dict.items()
         if key not in key_to_exclude
     }
     msg = 'The key, {}, is missing in your yaml file: {}\nDo you want to add it?'.format(
@@ -244,7 +253,7 @@ def test_check_data_citation_dict():
             mock_print.assert_called_with(msg)
 
     key_to_add = 'extra key'
-    extra_key_yml = valid_yml.copy()
+    extra_key_yml = valid_data_citation_dict.copy()
     extra_key_yml[key_to_add] = 15
     error_msg = 'The key, {}, looks wrong (either it should not be there or is a typo) in your yaml file: {}'.format(
         key_to_add,
@@ -258,13 +267,13 @@ def test_check_data_citation_dict():
 
     key_to_alter = 'titles'
     altered_value = "title string"
-    wrong_format_yml = valid_yml.copy()
+    wrong_format_yml = valid_data_citation_dict.copy()
     wrong_format_yml[key_to_alter] = altered_value
     error_msg = 'The type ({}) of key, {}, looks wrong in your yaml file: {}\nI think it should be a {}'.format(
         type(altered_value),
         key_to_alter,
         test_data_citation_template_yaml,
-        type(valid_yml[key_to_alter])
+        type(valid_data_citation_dict[key_to_alter])
     )
     with raises(ValueError, match=re.escape(error_msg)):
         Generator.check_data_citation_dict(
@@ -272,34 +281,30 @@ def test_check_data_citation_dict():
             original_file=test_data_citation_template_yaml,
         )
 
-def test_check_yaml_replace_values():
+def test_check_yaml_replace_values(valid_data_citation_dict):
     Generator = jsonGenerator()
-    valid_yml = Generator.return_template_yaml_from(
-        in_file=test_data_citation_template_yaml
-    )
-
     file_name = get_test_file()
     PathHandler = CMIPPathHandler()
 
     # no substitutions if they're not there
     subbed_yml = Generator.get_yaml_with_filename_values_substituted(
-        raw_yml=valid_yml,
+        raw_yml=valid_data_citation_dict,
         file_name=file_name,
     )
-    assert subbed_yml == valid_yml
+    assert subbed_yml == valid_data_citation_dict
 
     for key, value in PathHandler.get_split_CMIP6_filename(file_name=file_name).items():
-        valid_yml['titles'] = ['<' + key + '>']
+        valid_data_citation_dict['titles'] = ['<' + key + '>']
         subbed_yml = Generator.get_yaml_with_filename_values_substituted(
-            raw_yml=valid_yml,
+            raw_yml=valid_data_citation_dict,
             file_name=file_name,
         )
         assert subbed_yml['titles'] == [value]
 
     for key, value in PathHandler.get_split_CMIP6_filename(file_name=file_name).items():
-        valid_yml['fundingReferences'][0]['funderName'] = ['<' + key + '>']
+        valid_data_citation_dict['fundingReferences'][0]['funderName'] = ['<' + key + '>']
         subbed_yml = Generator.get_yaml_with_filename_values_substituted(
-            raw_yml=valid_yml,
+            raw_yml=valid_data_citation_dict,
             file_name=file_name,
         )
         assert subbed_yml['fundingReferences'][0]['funderName'] == [value]
@@ -314,7 +319,7 @@ def test_write_json_to_file():
             mock_open.assert_called_with(test_fn, 'w', encoding='utf8')
             mock_json_dump.assert_called_once()
 
-@patch.object(jsonGenerator, 'return_template_yaml_from')
+@patch.object(jsonGenerator, 'return_data_citation_dict_from_yaml')
 @patch.object(jsonGenerator, 'check_data_citation_dict')
 @patch.object(jsonGenerator, 'get_yaml_with_filename_values_substituted')
 @patch.object(jsonGenerator, 'write_json_to_file')
@@ -459,29 +464,19 @@ def test_write_json_to_file_only_runs_on_nc_file(mock_print):
                             test_file
                         )
                     )
-@pytest.fixture
-def temp_file():
-    handle, tmp_file = mkstemp()
-    yield tmp_file
-    remove(tmp_file)
 
-def test_check_json_format(temp_file):
-    temp_file
+def test_check_json_format(temp_file, valid_data_citation_dict):
     Generator = jsonGenerator()
-    valid_yml = Generator.return_template_yaml_from(
-        in_file=test_data_citation_template_yaml
-    )
-    valid_json = json.loads(json.dumps(valid_yml))
     with open(temp_file, 'w') as outfile:
-        json.dump(valid_json, outfile)
+        json.dump(valid_data_citation_dict, outfile)
 
     assert Generator.check_json_format(temp_file)
 
 
-    del valid_json['titles']
+    del valid_data_citation_dict['titles']
 
     with open(temp_file, 'w') as outfile:
-        json.dump(valid_json, outfile)
+        json.dump(valid_data_citation_dict, outfile)
 
     expected_msg = (
         "'The key, titles, is missing in your yaml file: {}'".format(temp_file)
@@ -506,7 +501,7 @@ def test_invalid_name_in_dir(mock_walk, mock_isdir):
 
 def test_special_yaml_read():
     Generator = jsonGenerator()
-    actual_result = Generator.return_template_yaml_from(
+    actual_result = Generator.return_data_citation_dict_from_yaml(
         in_file=test_file_path_yaml_special_char
     )
     expected_result = {
@@ -530,7 +525,7 @@ def remove_written_special_yaml():
 
 def test_special_yaml_write(remove_written_special_yaml):
     Generator = jsonGenerator()
-    dict_to_write = Generator.return_template_yaml_from(
+    dict_to_write = Generator.return_data_citation_dict_from_yaml(
         in_file=test_file_path_yaml_special_char
     )
     Generator.write_json_to_file(

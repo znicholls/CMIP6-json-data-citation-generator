@@ -77,11 +77,11 @@ class jsonGenerator():
         PathHandler = CMIPPathHandler()
         return PathHandler.get_split_CMIP6_filename(file_name=file_name)
 
-    def return_template_yaml_from(self, in_file=None):
+    def return_data_citation_dict_from_yaml(self, in_file=None):
         return yaml.load(open(in_file, 'r'))
 
     def check_data_citation_dict(self, yaml_template=None, original_file=None):
-        valid_yaml = self.return_template_yaml_from(
+        valid_yaml = self.return_data_citation_dict_from_yaml(
             in_file=self.valid_yaml_path
         )
         self.check_all_values_valid(
@@ -162,7 +162,7 @@ class jsonGenerator():
             json_file.write(text)
 
     def write_json_for_filename_to_file_with_template(self, file_name=None, yaml_template=None, output_file=None):
-        yaml_template = self.return_template_yaml_from(in_file=yaml_template)
+        yaml_template = self.return_data_citation_dict_from_yaml(in_file=yaml_template)
         self.check_data_citation_dict(
             yaml_template=yaml_template,
             original_file=file_name
