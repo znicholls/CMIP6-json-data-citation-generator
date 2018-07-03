@@ -80,7 +80,7 @@ class jsonGenerator():
     def return_template_yaml_from(self, in_file=None):
         return yaml.load(open(in_file, 'r'))
 
-    def check_yaml_template(self, yaml_template=None, original_file=None):
+    def check_data_citation_dict(self, yaml_template=None, original_file=None):
         valid_yaml = self.return_template_yaml_from(
             in_file=self.valid_yaml_path
         )
@@ -163,7 +163,7 @@ class jsonGenerator():
 
     def write_json_for_filename_to_file_with_template(self, file_name=None, yaml_template=None, output_file=None):
         yaml_template = self.return_template_yaml_from(in_file=yaml_template)
-        self.check_yaml_template(
+        self.check_data_citation_dict(
             yaml_template=yaml_template,
             original_file=file_name
         )
@@ -218,7 +218,7 @@ class jsonGenerator():
             )
 
         try:
-            self.check_yaml_template(
+            self.check_data_citation_dict(
                 yaml_template=yaml_to_check,
                 original_file=file_to_check,
             )

@@ -203,7 +203,7 @@ def test_read_yaml_template():
 #   - check what happens if type is changed
 # - add a spurious field, make sure error is thrown
 #
-def test_check_yaml_template():
+def test_check_data_citation_dict():
     Generator = jsonGenerator()
     valid_yml = Generator.return_template_yaml_from(
         in_file=test_data_citation_template_yaml
@@ -219,7 +219,7 @@ def test_check_yaml_template():
         test_data_citation_template_yaml
     )
     with raises(KeyError, match=re.escape(error_msg)):
-        Generator.check_yaml_template(
+        Generator.check_data_citation_dict(
             yaml_template=missing_compulsory_field_yml,
             original_file=test_data_citation_template_yaml,
         )
@@ -234,7 +234,7 @@ def test_check_yaml_template():
         test_data_citation_template_yaml
     )
     with patch('CMIP6_json_data_citation_generator.print') as mock_print:
-        Generator.check_yaml_template(
+        Generator.check_data_citation_dict(
             yaml_template=missing_optional_field_yml,
             original_file=test_data_citation_template_yaml,
         )
@@ -251,7 +251,7 @@ def test_check_yaml_template():
         test_data_citation_template_yaml
     )
     with raises(KeyError, match=re.escape(error_msg)):
-        Generator.check_yaml_template(
+        Generator.check_data_citation_dict(
             yaml_template=extra_key_yml,
             original_file=test_data_citation_template_yaml,
         )
@@ -267,7 +267,7 @@ def test_check_yaml_template():
         type(valid_yml[key_to_alter])
     )
     with raises(ValueError, match=re.escape(error_msg)):
-        Generator.check_yaml_template(
+        Generator.check_data_citation_dict(
             yaml_template=wrong_format_yml,
             original_file=test_data_citation_template_yaml,
         )
@@ -315,7 +315,7 @@ def test_write_json_to_file():
             mock_json_dump.assert_called_once()
 
 @patch.object(jsonGenerator, 'return_template_yaml_from')
-@patch.object(jsonGenerator, 'check_yaml_template')
+@patch.object(jsonGenerator, 'check_data_citation_dict')
 @patch.object(jsonGenerator, 'get_yaml_with_filename_values_substituted')
 @patch.object(jsonGenerator, 'write_json_to_file')
 def test_writing_steps(mock_writer, mock_substitute, mock_checker, mock_loader):
