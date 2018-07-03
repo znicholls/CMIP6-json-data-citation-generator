@@ -281,7 +281,7 @@ def test_check_data_citation_dict(valid_data_citation_dict):
             original_file=test_data_citation_template_yaml,
         )
 
-def test_check_yaml_replace_values(valid_data_citation_dict):
+def test_get_yaml_with_filename_values_substituted(valid_data_citation_dict):
     Generator = jsonGenerator()
     file_name = get_test_file()
     PathHandler = CMIPPathHandler()
