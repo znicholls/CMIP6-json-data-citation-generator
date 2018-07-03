@@ -81,53 +81,10 @@ class jsonGenerator():
         return yaml.load(open(in_file, 'r'))
 
     def check_data_citation_dict(self, data_citation_dict, original_file):
-        valid_yaml = self.return_data_citation_dict_from_yaml(
-            in_file=self.valid_yaml_path
-        )
-        self.check_all_values_valid(
-            yaml_to_check=yaml_template,
-            yaml_correct=valid_yaml,
-            original_file=original_file
-        )
+        # load validation schema
+        # validate with validation schema
+        return None
 
-    def check_all_values_valid(self, yaml_to_check=None, yaml_correct=None, original_file=None):
-        optional_keys = ['fundingReferences', 'relatedIdentifiers']
-        for key in yaml_correct:
-            if key not in yaml_to_check:
-                if key in optional_keys:
-                    msg = 'The key, {}, is missing in your yaml file: {}\nDo you want to add it?'.format(
-                        key,
-                        original_file,
-                    )
-                    print(msg)
-                else:
-                    error_msg = 'The key, {}, is missing in your yaml file: {}'.format(
-                        key,
-                        original_file,
-                    )
-                    raise KeyError(error_msg)
-
-        for key, value in yaml_to_check.items():
-            if key not in yaml_correct:
-                error_msg = 'The key, {}, looks wrong (either it should not be there or is a typo) in your yaml file: {}'.format(
-                    key,
-                    original_file,
-                )
-                raise KeyError(error_msg)
-            if isinstance(value, dict):
-                self.check_all_values_valid(
-                    yaml_to_check=value,
-                    yaml_correct=yaml_correct[key]
-                )
-            else:
-                if type(value) != type(yaml_correct[key]):
-                    error_msg = 'The type ({}) of key, {}, looks wrong in your yaml file: {}\nI think it should be a {}'.format(
-                        type(value),
-                        key,
-                        original_file,
-                        type(yaml_correct[key]),
-                    )
-                    raise ValueError(error_msg)
 
     def get_data_citation_dict_with_filename_values_substituted(self, raw_dict=None, file_name=None):
         def make_substitutions(item):

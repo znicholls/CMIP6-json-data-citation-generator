@@ -8,6 +8,7 @@ import datetime
 import sys
 from tempfile import mkstemp
 import codecs
+from copy import deepcopy
 
 import pytest
 from pytest import raises
@@ -206,6 +207,77 @@ def test_read_yaml_template():
     }
     assert actual_result == expected_result
 
+@pytest.fixture
+def test_validation_dict():
+    return {
+        'creators-compulsory-independent': [
+            {
+                'creatorName-compulsory-independent': "Last, First A. B.",
+                'givenName-optional-dependent-familyName-email-affiliation': "First A. B.",
+                'familyName-optional-dependent-givenName-email-affiliation': "Last",
+                'email-optional-dependent-givenName-familyName-affiliation': "email@test.com",
+                'nameIdentifier-optional-independent': {
+                    'schemeURI-compulsory-independent': "http://orcid.org/",
+                    'nameIdentifierScheme-compulsory-independent': "ORCID",
+                    'pid-compulsory-independent': "0000-1111-2222-3333",
+                },
+                'affiliation-optional-dependent-givenName-familyName-email': 'Some university',
+            },
+        ],
+        'titles-compulsory-independent': [
+            "activity-id.CMIP-era.targetMIP.institutionID.source-id",
+        ],
+        "contributors-optional-independent": [
+            {
+                "contributorType-compulsory-independent": "ContactPerson",
+                "contributorName-compulsory-independent": "Jungclaus, Johann",
+                "givenName-optional-dependent-familyName-email-affiliation": "Johann",
+                "familyName-optional-dependent-givenName-email-affiliation": "Jungclaus",
+                "email-optional-dependent-givenName-familyName-affiliation": "johann.jungclaus@mpimet.mpg.de",
+                "nameIdentifier-optional-independent": {
+                    "schemeURI-compulsory-independent": "http://orcid.org/",
+                    "nameIdentifierScheme-compulsory-independent": "ORCID",
+                    "pid-compulsory-independent": "0000-0002-3849-4339"
+                },
+                "affiliation-optional-dependent-givenName-familyName-email": "Max-Planck-Institut fuer Meteorologie"
+            },
+        ],
+        'fundingReferences-optional-independent': [
+            {
+                'funderName-compulsory-independent': 'Funder name 1',
+                'funderIdentifier-optional-dependent-funderIdentifierType': 'http://hello',
+                'funderIdentifierType-compulsory-dependent-funderIdentifier': 'Cross Ref ID',
+            },
+        ],
+        'relatedIdentifiers-optional-independent': [
+            {
+                'relatedIdentifier-compulsory-independent': 'doi-link',
+                'relatedIdentifierType-compulsory-independent': 'DOI',
+                'relationType-compulsory-independent': 'IsDocumentedBy',
+            }
+        ]
+    }
+
+def get_valid_dict_from_test_validation_dict(tvd):
+    def fix_keys(dict_in):
+        dict_out = deepcopy(dict_in)
+        for key in dict_in:
+            new_key = key.split('-')[0]
+            dict_out[new_key] = deepcopy(dict_in[key])
+            del dict_out[key]
+
+            if isinstance(dict_out[new_key], dict):
+                dict_out[new_key] = fix_keys(dict_out[new_key])
+
+            elif isinstance(dict_out[new_key], list):
+                for i, value in enumerate(dict_out[new_key]):
+                    if isinstance(value, dict):
+                        dict_out[new_key][i] = fix_keys(dict_out[new_key][i])
+
+        return dict_out
+
+    return fix_keys(tvd)
+
 # need to split this into many functions:
 # - loop over fields (write all fields in lists so easy to get hold of with a loop something like https://stackoverflow.com/questions/14692690/access-nested-dictionary-items-via-a-list-of-keys)
 #   - check what happens if removed
@@ -215,7 +287,44 @@ def test_read_yaml_template():
 #       - if dependent
 #   - check what happens if type is changed
 # - add a spurious field, make sure error is thrown
-#
+
+def test_removing_fields_from_valid_data_citation_dict(test_validation_dict, valid_data_citation_dict):
+    Generator = jsonGenerator()
+    test_file = 'test.yml'
+    def check_removing_fields(input_schema_dict):
+        for key in input_schema_dict:
+            actual_key = key.split('-')[0]
+            test_dict = get_valid_dict_from_test_validation_dict(input_schema_dict)
+
+            del test_dict[actual_key]
+
+            if key.split('-')[1] == 'compulsory':
+                error_msg = 'The key, {}, is missing in your yaml file: {}'.format(
+                    actual_key,
+                    test_file
+                )
+                with raises(KeyError, match=re.escape(error_msg)):
+                    Generator.check_data_citation_dict(test_dict, test_file)
+            else:
+                expected_msg = 'The key, {}, is missing in your yaml file: {}\nDo you want to add it?'.format(
+                    actual_key,
+                    test_file
+                )
+                with captured_output() as (out, err):
+                    Generator.check_data_citation_dict(test_dict, test_file)
+
+                assert expected_msg == out.getvalue().strip()
+
+            if isinstance(input_schema_dict[key], dict):
+                check_removing_fields(input_schema_dict[key])
+
+            elif isinstance(input_schema_dict[key], list):
+                for i, value in enumerate(input_schema_dict[key]):
+                    if isinstance(value, dict):
+                        check_removing_fields(value)
+
+    check_removing_fields(test_validation_dict)
+
 def test_check_data_citation_dict(valid_data_citation_dict):
     Generator = jsonGenerator()
 
