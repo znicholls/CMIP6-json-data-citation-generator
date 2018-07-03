@@ -80,7 +80,7 @@ class jsonGenerator():
     def return_data_citation_dict_from_yaml(self, in_file=None):
         return yaml.load(open(in_file, 'r'))
 
-    def check_data_citation_dict(self, yaml_template=None, original_file=None):
+    def check_data_citation_dict(self, data_citation_dict, original_file):
         valid_yaml = self.return_data_citation_dict_from_yaml(
             in_file=self.valid_yaml_path
         )
@@ -162,13 +162,13 @@ class jsonGenerator():
             json_file.write(text)
 
     def write_json_for_filename_to_file_with_template(self, file_name=None, yaml_template=None, output_file=None):
-        yaml_template = self.return_data_citation_dict_from_yaml(in_file=yaml_template)
+        data_citation_dict = self.return_data_citation_dict_from_yaml(in_file=yaml_template)
         self.check_data_citation_dict(
-            yaml_template=yaml_template,
+            yaml_template=data_citation_dict,
             original_file=file_name
         )
         yaml_substituted = self.get_data_citation_dict_with_filename_values_substituted(
-            raw_dict = yaml_template,
+            raw_dict = data_citation_dict,
             file_name = file_name
         )
         self.write_json_to_file(

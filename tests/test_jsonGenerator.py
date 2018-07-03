@@ -218,6 +218,12 @@ def test_read_yaml_template():
 #
 def test_check_data_citation_dict(valid_data_citation_dict):
     Generator = jsonGenerator()
+
+    Generator.check_data_citation_dict(valid_data_citation_dict)
+
+
+
+
     key_to_exclude = 'titles'
     missing_compulsory_field_yml = {
         key: value for key, value in valid_data_citation_dict.items()
