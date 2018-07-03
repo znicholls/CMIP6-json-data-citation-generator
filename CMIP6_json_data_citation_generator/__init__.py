@@ -83,7 +83,7 @@ class jsonGenerator():
     def check_data_citation_dict(self, data_citation_dict, original_file):
         # load validation schema
         # validate with validation schema
-        return None
+        assert False
 
 
     def get_data_citation_dict_with_filename_values_substituted(self, raw_dict=None, file_name=None):
@@ -120,10 +120,7 @@ class jsonGenerator():
 
     def write_json_for_filename_to_file_with_template(self, file_name=None, yaml_template=None, output_file=None):
         data_citation_dict = self.return_data_citation_dict_from_yaml(in_file=yaml_template)
-        self.check_data_citation_dict(
-            yaml_template=data_citation_dict,
-            original_file=file_name
-        )
+        self.check_data_citation_dict(data_citation_dict, file_name)
         yaml_substituted = self.get_data_citation_dict_with_filename_values_substituted(
             raw_dict = data_citation_dict,
             file_name = file_name

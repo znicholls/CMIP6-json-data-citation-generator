@@ -306,14 +306,23 @@ def test_removing_fields_from_valid_data_citation_dict(test_validation_dict, val
                     Generator.check_data_citation_dict(test_dict, test_file)
             else:
                 # put dependent stuff in here
-                expected_msg = 'The key, {}, is missing in your yaml file: {}\nDo you want to add it?'.format(
-                    actual_key,
-                    test_file
-                )
-                with captured_output() as (out, err):
-                    Generator.check_data_citation_dict(test_dict, test_file)
+                if key.split('-')[2] == 'dependent':
+                    error_msg = 'Given you have the key(s), {}, the key, {}, is required and is missing in your yaml file: {}'.format(
+                        ', '.join(key.split('-')[3:]),
+                        actual_key,
+                        test_file
+                    )
+                    with raises(KeyError, match=re.escape(error_msg)):
+                        Generator.check_data_citation_dict(test_dict, test_file)
+                else:
+                    expected_msg = 'The key, {}, is missing in your yaml file: {}\nDo you want to add it?'.format(
+                        actual_key,
+                        test_file
+                    )
+                    with captured_output() as (out, err):
+                        Generator.check_data_citation_dict(test_dict, test_file)
 
-                assert expected_msg == out.getvalue().strip()
+                    assert expected_msg == out.getvalue().strip()
 
             if isinstance(input_schema_dict[key], dict):
                 check_removing_fields(input_schema_dict[key])
@@ -433,10 +442,7 @@ def test_writing_steps(mock_writer, mock_substitute, mock_checker, mock_loader):
         output_file=expected_out_file,
     )
     mock_loader.assert_called_with(in_file=yaml_template)
-    mock_checker.assert_called_with(
-        yaml_template=mock_loader(),
-        original_file=test_file
-    )
+    mock_checker.assert_called_with(mock_loader(), test_file)
     mock_substitute.assert_called_with(
         raw_dict=mock_loader(),
         file_name=test_file
