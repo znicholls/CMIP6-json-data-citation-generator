@@ -281,30 +281,30 @@ def test_check_data_citation_dict(valid_data_citation_dict):
             original_file=test_data_citation_template_yaml,
         )
 
-def test_get_yaml_with_filename_values_substituted(valid_data_citation_dict):
+def test_get_data_citation_dict_with_filename_values_substituted(valid_data_citation_dict):
     Generator = jsonGenerator()
     file_name = get_test_file()
     PathHandler = CMIPPathHandler()
 
     # no substitutions if they're not there
-    subbed_yml = Generator.get_yaml_with_filename_values_substituted(
-        raw_yml=valid_data_citation_dict,
+    subbed_yml = Generator.get_data_citation_dict_with_filename_values_substituted(
+        raw_dict=valid_data_citation_dict,
         file_name=file_name,
     )
     assert subbed_yml == valid_data_citation_dict
 
     for key, value in PathHandler.get_split_CMIP6_filename(file_name=file_name).items():
         valid_data_citation_dict['titles'] = ['<' + key + '>']
-        subbed_yml = Generator.get_yaml_with_filename_values_substituted(
-            raw_yml=valid_data_citation_dict,
+        subbed_yml = Generator.get_data_citation_dict_with_filename_values_substituted(
+            raw_dict=valid_data_citation_dict,
             file_name=file_name,
         )
         assert subbed_yml['titles'] == [value]
 
     for key, value in PathHandler.get_split_CMIP6_filename(file_name=file_name).items():
         valid_data_citation_dict['fundingReferences'][0]['funderName'] = ['<' + key + '>']
-        subbed_yml = Generator.get_yaml_with_filename_values_substituted(
-            raw_yml=valid_data_citation_dict,
+        subbed_yml = Generator.get_data_citation_dict_with_filename_values_substituted(
+            raw_dict=valid_data_citation_dict,
             file_name=file_name,
         )
         assert subbed_yml['fundingReferences'][0]['funderName'] == [value]
@@ -321,7 +321,7 @@ def test_write_json_to_file():
 
 @patch.object(jsonGenerator, 'return_data_citation_dict_from_yaml')
 @patch.object(jsonGenerator, 'check_data_citation_dict')
-@patch.object(jsonGenerator, 'get_yaml_with_filename_values_substituted')
+@patch.object(jsonGenerator, 'get_data_citation_dict_with_filename_values_substituted')
 @patch.object(jsonGenerator, 'write_json_to_file')
 def test_writing_steps(mock_writer, mock_substitute, mock_checker, mock_loader):
     test_file = get_test_file()
@@ -352,7 +352,7 @@ def test_writing_steps(mock_writer, mock_substitute, mock_checker, mock_loader):
         original_file=test_file
     )
     mock_substitute.assert_called_with(
-        raw_yml=mock_loader(),
+        raw_dict=mock_loader(),
         file_name=test_file
     )
     mock_writer.assert_called_with(

@@ -129,7 +129,7 @@ class jsonGenerator():
                     )
                     raise ValueError(error_msg)
 
-    def get_yaml_with_filename_values_substituted(self, raw_yml=None, file_name=None):
+    def get_data_citation_dict_with_filename_values_substituted(self, raw_dict=None, file_name=None):
         def make_substitutions(item):
             filename_bits = self.split_CMIP6_filename(file_name=file_name)
             if isinstance(item, str):
@@ -144,11 +144,11 @@ class jsonGenerator():
             elif isinstance(item, dict):
                 return {key: make_substitutions(value) for key, value in item.items()}
 
-        updated_yml = {}
-        for key, value in raw_yml.items():
-            updated_yml[key] = make_substitutions(value)
+        updated_dict = {}
+        for key, value in raw_dict.items():
+            updated_dict[key] = make_substitutions(value)
 
-        return updated_yml
+        return updated_dict
 
     def write_json_to_file(self, json_dict=None, file_name=None):
         with io.open(file_name, 'w', encoding='utf8') as json_file:
@@ -167,8 +167,8 @@ class jsonGenerator():
             yaml_template=yaml_template,
             original_file=file_name
         )
-        yaml_substituted = self.get_yaml_with_filename_values_substituted(
-            raw_yml = yaml_template,
+        yaml_substituted = self.get_data_citation_dict_with_filename_values_substituted(
+            raw_dict = yaml_template,
             file_name = file_name
         )
         self.write_json_to_file(
