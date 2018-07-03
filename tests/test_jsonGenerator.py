@@ -285,8 +285,7 @@ def get_valid_dict_from_test_validation_dict(tvd):
 #     - if optional
 #       - if independent
 #       - if dependent
-#   - check what happens if type is changed
-# - add a spurious field, make sure error is thrown
+
 
 def test_removing_fields_from_valid_data_citation_dict(test_validation_dict, valid_data_citation_dict):
     Generator = jsonGenerator()
@@ -306,6 +305,7 @@ def test_removing_fields_from_valid_data_citation_dict(test_validation_dict, val
                 with raises(KeyError, match=re.escape(error_msg)):
                     Generator.check_data_citation_dict(test_dict, test_file)
             else:
+                # put dependent stuff in here
                 expected_msg = 'The key, {}, is missing in your yaml file: {}\nDo you want to add it?'.format(
                     actual_key,
                     test_file
@@ -319,82 +319,53 @@ def test_removing_fields_from_valid_data_citation_dict(test_validation_dict, val
                 check_removing_fields(input_schema_dict[key])
 
             elif isinstance(input_schema_dict[key], list):
-                for i, value in enumerate(input_schema_dict[key]):
+                for value in input_schema_dict[key]:
                     if isinstance(value, dict):
                         check_removing_fields(value)
 
     check_removing_fields(test_validation_dict)
 
-def test_check_data_citation_dict(valid_data_citation_dict):
+def test_adding_extra_field_valid_data_citation_dict(valid_data_citation_dict):
     Generator = jsonGenerator()
-
-    Generator.check_data_citation_dict(valid_data_citation_dict)
-
-
-
-
-    key_to_exclude = 'titles'
-    missing_compulsory_field_yml = {
-        key: value for key, value in valid_data_citation_dict.items()
-        if key not in key_to_exclude
-    }
-    error_msg = 'The key, {}, is missing in your yaml file: {}'.format(
-        key_to_exclude,
-        test_data_citation_template_yaml
-    )
-    with raises(KeyError, match=re.escape(error_msg)):
-        Generator.check_data_citation_dict(
-            yaml_template=missing_compulsory_field_yml,
-            original_file=test_data_citation_template_yaml,
-        )
-
-    key_to_exclude = 'relatedIdentifiers'
-    missing_optional_field_yml = {
-        key: value for key, value in valid_data_citation_dict.items()
-        if key not in key_to_exclude
-    }
-    msg = 'The key, {}, is missing in your yaml file: {}\nDo you want to add it?'.format(
-        key_to_exclude,
-        test_data_citation_template_yaml
-    )
-    with patch('CMIP6_json_data_citation_generator.print') as mock_print:
-        Generator.check_data_citation_dict(
-            yaml_template=missing_optional_field_yml,
-            original_file=test_data_citation_template_yaml,
-        )
-        if sys.version.startswith('3'):
-            # for some reason mocking print is not happy with Python2
-            assert mock_print.call_count == 1
-            mock_print.assert_called_with(msg)
+    test_file = 'test.yml'
+    Generator.check_data_citation_dict(valid_data_citation_dict, test_file)
 
     key_to_add = 'extra key'
-    extra_key_yml = valid_data_citation_dict.copy()
-    extra_key_yml[key_to_add] = 15
+    valid_data_citation_dict[key_to_add] = [{'hi': 'bye'}]
     error_msg = 'The key, {}, looks wrong (either it should not be there or is a typo) in your yaml file: {}'.format(
         key_to_add,
         test_data_citation_template_yaml
     )
     with raises(KeyError, match=re.escape(error_msg)):
-        Generator.check_data_citation_dict(
-            yaml_template=extra_key_yml,
-            original_file=test_data_citation_template_yaml,
-        )
+        Generator.check_data_citation_dict(valid_data_citation_dict, test_file)
 
-    key_to_alter = 'titles'
-    altered_value = "title string"
-    wrong_format_yml = valid_data_citation_dict.copy()
-    wrong_format_yml[key_to_alter] = altered_value
-    error_msg = 'The type ({}) of key, {}, looks wrong in your yaml file: {}\nI think it should be a {}'.format(
-        type(altered_value),
-        key_to_alter,
-        test_data_citation_template_yaml,
-        type(valid_data_citation_dict[key_to_alter])
-    )
-    with raises(ValueError, match=re.escape(error_msg)):
-        Generator.check_data_citation_dict(
-            yaml_template=wrong_format_yml,
-            original_file=test_data_citation_template_yaml,
-        )
+def test_altering_type_of_valid_data_citation_dict_field(valid_data_citation_dict):
+    Generator = jsonGenerator()
+    test_file = 'test.yml'
+    def check_altering_fields(valid_dict):
+        for key in valid_dict:
+            test_dict = deepcopy(valid_dict)
+            altered_value = 4
+            test_dict[key] = altered_value
+
+            error_msg = 'The type ({}) of key, {}, looks wrong in your yaml file: {}\nI think it should be a {}'.format(
+                type(altered_value),
+                key,
+                test_file,
+                type(valid_dict[key])
+            )
+            with raises(ValueError, match=re.escape(error_msg)):
+                Generator.check_data_citation_dict(test_dict, test_file)
+
+            if isinstance(valid_dict[key], dict):
+                check_altering_fields(valid_dict[key])
+
+            elif isinstance(valid_dict[key], list):
+                for value in valid_dict[key]:
+                    if isinstance(value, dict):
+                        check_altering_fields(value)
+
+    check_altering_fields(test_validation_dict)
 
 def test_get_data_citation_dict_with_filename_values_substituted(valid_data_citation_dict):
     Generator = jsonGenerator()

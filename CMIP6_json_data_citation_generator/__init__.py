@@ -170,15 +170,10 @@ class jsonGenerator():
 
     def check_json_format(self, file_to_check):
         with open(file_to_check, 'r') as in_file:
-            yaml_to_check = yaml.load(
-                json.dumps(json.load(in_file))
-            )
+            dict_to_check = json.load(in_file)
 
         try:
-            self.check_data_citation_dict(
-                yaml_template=yaml_to_check,
-                original_file=file_to_check,
-            )
+            self.check_data_citation_dict(dict_to_check, file_to_check,)
             return True
         except Exception as Except:
             print(str(Except))
