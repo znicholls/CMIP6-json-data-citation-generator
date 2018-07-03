@@ -315,7 +315,7 @@ def test_write_json_to_file():
             Generator = jsonGenerator()
             test_fn = 'UoM-ssp119-1-1-0'
             test_dict = {'hi': 'test', 'bye': 'another test'}
-            Generator.write_json_to_file(json_dict=test_dict, file_name=test_fn)
+            Generator.write_json_to_file(data_citation_dict=test_dict, file_name=test_fn)
             mock_open.assert_called_with(test_fn, 'w', encoding='utf8')
             mock_json_dump.assert_called_once()
 
@@ -356,7 +356,7 @@ def test_writing_steps(mock_writer, mock_substitute, mock_checker, mock_loader):
         file_name=test_file
     )
     mock_writer.assert_called_with(
-        json_dict=mock_substitute(),
+        data_citation_dict=mock_substitute(),
         file_name=expected_out_file
     )
 
@@ -529,7 +529,7 @@ def test_special_yaml_write(remove_written_special_yaml):
         in_file=test_file_path_yaml_special_char
     )
     Generator.write_json_to_file(
-        json_dict=dict_to_write,
+        data_citation_dict=dict_to_write,
         file_name=test_file_path_yaml_special_char_written
     )
     expected_strings = [

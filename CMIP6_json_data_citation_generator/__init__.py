@@ -150,10 +150,10 @@ class jsonGenerator():
 
         return updated_dict
 
-    def write_json_to_file(self, json_dict=None, file_name=None):
+    def write_json_to_file(self, data_citation_dict=None, file_name=None):
         with io.open(file_name, 'w', encoding='utf8') as json_file:
             text = json.dumps(
-                json_dict,
+                data_citation_dict,
                 ensure_ascii=False,
                 indent=4
             )
@@ -172,7 +172,7 @@ class jsonGenerator():
             file_name = file_name
         )
         self.write_json_to_file(
-            json_dict=yaml_substituted,
+            data_citation_dict=yaml_substituted,
             file_name=output_file
         )
 
