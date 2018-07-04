@@ -278,51 +278,43 @@ def get_valid_dict_from_test_validation_dict(tvd):
 
     return fix_keys(tvd)
 
-# need to split this into many functions:
-# - loop over fields (write all fields in lists so easy to get hold of with a loop something like https://stackoverflow.com/questions/14692690/access-nested-dictionary-items-via-a-list-of-keys)
-#   - check what happens if removed
-#     - if compulsory
-#     - if optional
-#       - if independent
-#       - if dependent
-
-
 def test_removing_fields_from_valid_data_citation_dict(test_validation_dict, valid_data_citation_dict):
     Generator = jsonGenerator()
     test_file = 'test.yml'
-    def check_removing_fields(input_schema_dict):
-        for key in input_schema_dict:
-            actual_key = key.split('-')[0]
-            test_dict = get_valid_dict_from_test_validation_dict(input_schema_dict)
+    def test_field_removal(test_dict, key_to_remove):
+        del test_dict[actual_key]
 
-            del test_dict[actual_key]
-
-            if key.split('-')[1] == 'compulsory':
-                error_msg = 'The key, {}, is missing in your yaml file: {}'.format(
+        if key.split('-')[1] == 'compulsory':
+            error_msg = 'The key, {}, is missing in your yaml file: {}'.format(
+                actual_key,
+                test_file
+            )
+            with raises(KeyError, match=re.escape(error_msg)):
+                Generator.check_data_citation_dict(test_dict, test_file)
+        else:
+            if key.split('-')[2] == 'dependent':
+                error_msg = 'Given you have one or all of the key(s), {}, the key, {}, is required in your yaml file: {}'.format(
+                    ', '.join(key.split('-')[3:]),
                     actual_key,
                     test_file
                 )
                 with raises(KeyError, match=re.escape(error_msg)):
                     Generator.check_data_citation_dict(test_dict, test_file)
             else:
-                # put dependent stuff in here
-                if key.split('-')[2] == 'dependent':
-                    error_msg = 'Given you have the key(s), {}, the key, {}, is required and is missing in your yaml file: {}'.format(
-                        ', '.join(key.split('-')[3:]),
-                        actual_key,
-                        test_file
-                    )
-                    with raises(KeyError, match=re.escape(error_msg)):
-                        Generator.check_data_citation_dict(test_dict, test_file)
-                else:
-                    expected_msg = 'The key, {}, is missing in your yaml file: {}\nDo you want to add it?'.format(
-                        actual_key,
-                        test_file
-                    )
-                    with captured_output() as (out, err):
-                        Generator.check_data_citation_dict(test_dict, test_file)
+                expected_msg = 'The key, {}, is missing in your yaml file: {}\nDo you want to add it?'.format(
+                    actual_key,
+                    test_file
+                )
+                with captured_output() as (out, err):
+                    Generator.check_data_citation_dict(test_dict, test_file)
 
-                    assert expected_msg == out.getvalue().strip()
+                assert expected_msg == out.getvalue().strip()
+
+    def check_removing_fields(input_schema_dict):
+        for key in input_schema_dict:
+            actual_key = key.split('-')[0]
+            test_dict = get_valid_dict_from_test_validation_dict(input_schema_dict)
+            test_field_removal(test_dict, actual_key)
 
             if isinstance(input_schema_dict[key], dict):
                 check_removing_fields(input_schema_dict[key])
@@ -375,6 +367,22 @@ def test_altering_type_of_valid_data_citation_dict_field(valid_data_citation_dic
                         check_altering_fields(value)
 
     check_altering_fields(test_validation_dict)
+
+# test addition/checking of subject field
+# if yaml file, check_data_citation_dict should automatically add subject field
+# if json file, check_data_citation_dict should check the value of the subject field and if it doesn't match
+"""
+"subjects":
+  [
+    {
+      "subject":"<activity_id>.CMIP6.<target_MIP>.<institution-id>[.<source-id>]",
+      "subjectScheme":"DRS"
+    },
+    {"subject":"climate"},
+    {"subject":"CMIP6"},
+]
+"""
+# raise an error
 
 def test_get_data_citation_dict_with_filename_values_substituted(valid_data_citation_dict):
     Generator = jsonGenerator()
