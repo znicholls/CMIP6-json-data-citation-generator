@@ -5,6 +5,7 @@ import sys
 
 import yaml
 import json
+from marshmallow import Schema, fields
 
 class CMIPPathHandler():
     def __init__(self):
@@ -44,6 +45,11 @@ class CMIPPathHandler():
             filename_bits['scenario_id'] = 'N/A'
 
         return filename_bits
+
+class ValidationDict(Schema):
+    creators = fields.List()
+    titles = fields.List()
+    contributors = fields.List()
 
 class jsonGenerator():
     def __init__(self):

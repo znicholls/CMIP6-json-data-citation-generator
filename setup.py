@@ -34,6 +34,7 @@ setup(
         'pyyaml',
         'pytest-cov',
         'codecov',
+        'marshmallow',
     ],
     classifiers=[
         'Development Status :: 3 - Alpha',
