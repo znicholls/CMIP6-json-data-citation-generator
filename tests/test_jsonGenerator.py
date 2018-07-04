@@ -281,28 +281,28 @@ def get_valid_dict_from_test_validation_dict(tvd):
 def test_removing_fields_from_valid_data_citation_dict(test_validation_dict, valid_data_citation_dict):
     Generator = jsonGenerator()
     test_file = 'test.yml'
-    def test_field_removal(test_dict, key_to_remove):
-        del test_dict[actual_key]
+    def test_field_removal(test_dict, key_to_remove, definition_key):
+        del test_dict[key_to_remove]
 
-        if key.split('-')[1] == 'compulsory':
+        if definition_key.split('-')[1] == 'compulsory':
             error_msg = 'The key, {}, is missing in your yaml file: {}'.format(
-                actual_key,
+                key_to_remove,
                 test_file
             )
             with raises(KeyError, match=re.escape(error_msg)):
                 Generator.check_data_citation_dict(test_dict, test_file)
         else:
-            if key.split('-')[2] == 'dependent':
+            if definition_key.split('-')[2] == 'dependent':
                 error_msg = 'Given you have one or all of the key(s), {}, the key, {}, is required in your yaml file: {}'.format(
-                    ', '.join(key.split('-')[3:]),
-                    actual_key,
+                    ', '.join(definition_key.split('-')[3:]),
+                    key_to_remove,
                     test_file
                 )
                 with raises(KeyError, match=re.escape(error_msg)):
                     Generator.check_data_citation_dict(test_dict, test_file)
             else:
                 expected_msg = 'The key, {}, is missing in your yaml file: {}\nDo you want to add it?'.format(
-                    actual_key,
+                    key_to_remove,
                     test_file
                 )
                 with captured_output() as (out, err):
@@ -314,7 +314,7 @@ def test_removing_fields_from_valid_data_citation_dict(test_validation_dict, val
         for key in input_schema_dict:
             actual_key = key.split('-')[0]
             test_dict = get_valid_dict_from_test_validation_dict(input_schema_dict)
-            test_field_removal(test_dict, actual_key)
+            test_field_removal(test_dict, actual_key, key)
 
             if isinstance(input_schema_dict[key], dict):
                 check_removing_fields(input_schema_dict[key])
@@ -366,23 +366,55 @@ def test_altering_type_of_valid_data_citation_dict_field(valid_data_citation_dic
                     if isinstance(value, dict):
                         check_altering_fields(value)
 
-    check_altering_fields(test_validation_dict)
+    check_altering_fields(valid_data_citation_dict)
 
-# test addition/checking of subject field
-# if yaml file, check_data_citation_dict should automatically add subject field
-# if json file, check_data_citation_dict should check the value of the subject field and if it doesn't match
-"""
-"subjects":
-  [
-    {
-      "subject":"<activity_id>.CMIP6.<target_MIP>.<institution-id>[.<source-id>]",
-      "subjectScheme":"DRS"
-    },
-    {"subject":"climate"},
-    {"subject":"CMIP6"},
-]
-"""
-# raise an error
+def test_add_subject_field_to_data_citation_dict_yaml(valid_data_citation_dict):
+    Generator = jsonGenerator()
+    test_file = 'test.yml'
+    subject_key = 'subjects'
+    Generator.check_data_citation_dict(valid_data_citation_dict, test_file)
+
+    test_data_citation_dict = deepcopy(valid_data_citation_dict)
+    test_data_citation_dict[subject_key] = [{'junk': 'more junk'}]
+    error_msg = 'The key, {}, looks wrong (either it should not be there or is a typo) in your yaml file: {}'.format(
+        subject_key,
+        test_data_citation_template_yaml
+    )
+    with raises(KeyError, match=re.escape(error_msg)):
+        Generator.check_data_citation_dict(test_data_citation_dict, test_file)
+
+def test_add_subject_field_to_data_citation_dict_json(valid_data_citation_dict):
+    Generator = jsonGenerator()
+    test_file = 'test.json'
+    subject_key = 'subjects'
+    test_data_citation_dict = deepcopy(valid_data_citation_dict)
+
+    error_msg = 'The key, {}, is missing in your json file: {}'.format(
+        subject_key,
+        test_file
+    )
+    with raises(KeyError, match=re.escape(error_msg)):
+        Generator.check_data_citation_dict(test_data_citation_dict, test_file)
+
+    test_data_citation_dict[subject_key] = [
+        {
+          "subject":"<activity_id>.CMIP6.<target_MIP>.<institution-id>[.<source-id>]",
+          "schemeURI": "http://github.com/WCRP-CMIP/CMIP6_CVs",
+          "subjectScheme":"DRS",
+        },
+        {"subject":"climate"},
+        {"subject":"CMIP6"},
+    ]
+    Generator.check_data_citation_dict(test_data_citation_dict, test_file)
+    error_msg = 'There is something wrong with your key, {}, in your json file: {}. Please re-generate and, if still failing, raise an issue on https://github.com/znicholls/CMIP6-json-data-citation-generator'.format(
+        subject_key,
+        test_file
+    )
+    for value in test_data_citation_dict[subject_key]:
+        error_dict = deepcopy(test_data_citation_dict)
+        error_dict.remove(value)
+        with raises(KeyError, match= re.escape(error_msg)):
+            Generator.check_data_citation_dict(test_data_citation_dict, test_file)
 
 def test_get_data_citation_dict_with_filename_values_substituted(valid_data_citation_dict):
     Generator = jsonGenerator()
@@ -423,10 +455,11 @@ def test_write_json_to_file():
             mock_json_dump.assert_called_once()
 
 @patch.object(jsonGenerator, 'return_data_citation_dict_from_yaml')
+@patch.object(jsonGenerator, 'add_subject_field_to_data_citation_dict')
 @patch.object(jsonGenerator, 'check_data_citation_dict')
 @patch.object(jsonGenerator, 'get_data_citation_dict_with_filename_values_substituted')
 @patch.object(jsonGenerator, 'write_json_to_file')
-def test_writing_steps(mock_writer, mock_substitute, mock_checker, mock_loader):
+def test_writing_steps(mock_writer, mock_substitute, mock_checker, mock_subject_adder, mock_loader):
     test_file = get_test_file()
     PathHandler = CMIPPathHandler()
     filename_bits = PathHandler.get_split_CMIP6_filename(
@@ -450,7 +483,8 @@ def test_writing_steps(mock_writer, mock_substitute, mock_checker, mock_loader):
         output_file=expected_out_file,
     )
     mock_loader.assert_called_with(in_file=yaml_template)
-    mock_checker.assert_called_with(mock_loader(), test_file)
+    mock_subject_adder.assert_called_with(mock_loader())
+    mock_checker.assert_called_with(mock_subject_adder(), test_file)
     mock_substitute.assert_called_with(
         raw_dict=mock_loader(),
         file_name=test_file
