@@ -481,10 +481,10 @@ def test_writing_steps(mock_writer, mock_substitute, mock_checker, mock_subject_
         output_file=expected_out_file,
     )
     mock_loader.assert_called_with(in_file=yaml_template)
-    mock_subject_adder.assert_called_with(mock_loader())
+    mock_subject_adder.assert_called_with(mock_loader(), test_file)
     mock_checker.assert_called_with(mock_subject_adder(), test_file)
     mock_substitute.assert_called_with(
-        raw_dict=mock_loader(),
+        raw_dict=mock_subject_adder(),
         file_name=test_file
     )
     mock_writer.assert_called_with(
