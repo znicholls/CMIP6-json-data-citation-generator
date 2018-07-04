@@ -1,0 +1,17 @@
+{
+  "tests/test_generate_CMIP6_json_files.py::test_pipeline": true,
+  "tests/test_generate_CMIP6_json_files.py::test_pipeline_within_python": true,
+  "tests/test_jsonGenerator.py::test_add_subject_field_to_data_citation_dict_json": true,
+  "tests/test_jsonGenerator.py::test_add_subject_field_to_data_citation_dict_yaml": true,
+  "tests/test_jsonGenerator.py::test_adding_extra_field_valid_data_citation_dict": true,
+  "tests/test_jsonGenerator.py::test_altering_type_of_valid_data_citation_dict_field": true,
+  "tests/test_jsonGenerator.py::test_check_all_values_valid": true,
+  "tests/test_jsonGenerator.py::test_check_all_values_valid[filename0]": true,
+  "tests/test_jsonGenerator.py::test_check_all_values_valid[filename1]": true,
+  "tests/test_jsonGenerator.py::test_check_data_citation_dict": true,
+  "tests/test_jsonGenerator.py::test_check_json_format": true,
+  "tests/test_jsonGenerator.py::test_data_citation_dict": true,
+  "tests/test_jsonGenerator.py::test_ensure_subjects_field_in_dict": true,
+  "tests/test_jsonGenerator.py::test_get_yaml_with_filename_values_substituted": true,
+  "tests/test_jsonGenerator.py::test_removing_fields_from_valid_data_citation_dict": true
+}

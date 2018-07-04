@@ -1,0 +1,6 @@
+pytest
+httplib2
+mock
+pyyaml
+pytest-cov
+codecov

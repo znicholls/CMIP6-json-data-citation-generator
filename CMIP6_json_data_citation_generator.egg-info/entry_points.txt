@@ -1,0 +1,4 @@
+[console_scripts]
+generate_CMIP6_json_files = CMIP6_json_data_citation_generator.generate_CMIP6_json_files:main
+upload_CMIP6_json_files = CMIP6_json_data_citation_generator.upload_CMIP6_json_files:main
+
