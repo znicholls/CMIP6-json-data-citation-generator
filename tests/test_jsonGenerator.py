@@ -368,14 +368,20 @@ def test_altering_type_of_valid_data_citation_dict_field(valid_data_citation_dic
 
     check_altering_fields(valid_data_citation_dict)
 
-def test_get_nc_file_attributes():
-    test_file = join(test_data_path, 'nc-test-file', 'mole-fraction-of-so2f2-in-air_input4MIPs_GHGConcentrations_AerChemMIP_UoM-AIM-ssp370-lowNTCF-1-2-0_gr1-GMNHSH_2015-2500.nc')
+def test_add_subject_field_to_data_citation_dict_yaml(valid_data_citation_dict):
     Generator = jsonGenerator()
-    retrived_attributes = Generator.get_nc_file_attributes(test_file)
-    assert retrived_attributes['target_mip'] == 'AerChemMIP'
-    assert retrived_attributes['target_mip'] == 'AerChemMIP'
-    with raises(KeyError):
-        retrived_attributes['experiment_id']
+    test_file = 'test.yml'
+    subject_key = 'subjects'
+    Generator.check_data_citation_dict(valid_data_citation_dict, test_file)
+
+    test_data_citation_dict = deepcopy(valid_data_citation_dict)
+    test_data_citation_dict[subject_key] = [{'junk': 'more junk'}]
+    error_msg = 'The key, {}, looks wrong (either it should not be there or is a typo) in your yaml file: {}'.format(
+        subject_key,
+        test_data_citation_template_yaml
+    )
+    with raises(KeyError, match=re.escape(error_msg)):
+        Generator.check_data_citation_dict(test_data_citation_dict, test_file)
 
 def test_add_subject_field_to_data_citation_dict_json(valid_data_citation_dict):
     Generator = jsonGenerator()
