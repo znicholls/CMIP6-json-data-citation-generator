@@ -46,8 +46,8 @@ If you make any use of the CMIP6 Data Citation Generator, please cite the releva
 
 .. |Build Status| image:: https://travis-ci.org/znicholls/CMIP6-json-data-citation-generator.svg?branch=master
     :target: https://travis-ci.org/znicholls/CMIP6-json-data-citation-generator
-.. |Docs| image:: https://img.shields.io/badge/docs-latest-brightgreen.svg?style=flat
-    :target: https://CMIP6-json-data-citation-generator.readthedocs.io/en/latest/
+.. |Docs| image:: https://readthedocs.org/projects/cmip6-json-data-citation-generator/badge/?version=latest
+    :target: https://cmip6-json-data-citation-generator.readthedocs.io/en/latest/
 .. |Codecov| image:: https://img.shields.io/codecov/c/github/znicholls/CMIP6-json-data-citation-generator.svg
     :target: https://codecov.io/gh/znicholls/CMIP6-json-data-citation-generator
 .. |PyPI| image:: https://img.shields.io/pypi/v/CMIP6-json-data-citation-generator.svg

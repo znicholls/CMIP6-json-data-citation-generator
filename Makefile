@@ -12,7 +12,7 @@ test: venv
 	./venv/bin/pytest -rfsxEX tests
 
 docs: venv
-	./venv/bin/sphinx-build -M html docs docs/build
+	./venv/bin/sphinx-build -M html docs docs/_build
 
 flake8: venv
 	./venv/bin/flake8 src tests setup.py _version.py
