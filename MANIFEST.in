@@ -1,0 +1,8 @@
+include README.rst
+include LICENSE
+include CHANGELOG.rst
+
+recursive-include tests *.py
+
+include versioneer.py
+include src/cmip6_data_citation_generator/_version.py
