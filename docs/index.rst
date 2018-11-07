@@ -30,6 +30,11 @@ CMIP6 Data Citation Generator
 
     changelog
 
+Other Resources
+---------------
+
+The complete CMIP6 Data Citation User Guide can be found at https://cera-www.dkrz.de/docs/pdf/CMIP6_Citation_Userguide.pdf.
+
 Index
 -----
 
