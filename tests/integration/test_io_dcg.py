@@ -1,3 +1,4 @@
+from os import remove
 from os.path import isfile
 import re
 
@@ -7,11 +8,11 @@ from marshmallow import ValidationError
 
 
 from conftest import TEST_VALID_INPUT_YAML
-from cmip6_data_citation_generator.io import load_template_yaml, validate_and_return_raw_dict, write_json
+from cmip6_data_citation_generator.io_dcg import load_and_validate_yaml, validate_and_return_raw_dict, write_json
 
 
-def test_load_template_yaml():
-    validated_schema = load_template_yaml(TEST_VALID_INPUT_YAML)
+def test_load_and_validate_yaml():
+    validated_schema = load_and_validate_yaml(TEST_VALID_INPUT_YAML)
 
     assert isinstance(validated_schema, dict)
     assert (
@@ -21,7 +22,7 @@ def test_load_template_yaml():
 
 
 @pytest.mark.parametrize("field_to_delete", ["fundingReferences", "relatedIdentifiers"])
-def test_load_template_yaml_missing_optional_field(valid_yaml_dict, field_to_delete):
+def test_load_and_validate_yaml_missing_optional_field(valid_yaml_dict, field_to_delete):
     del valid_yaml_dict[field_to_delete]
     validate_and_return_raw_dict(valid_yaml_dict)
 
@@ -29,7 +30,7 @@ def test_load_template_yaml_missing_optional_field(valid_yaml_dict, field_to_del
 @pytest.mark.parametrize(
     "field_to_delete", ["contributors", "creators", "subjects", "titles"]
 )
-def test_load_template_yaml_missing_compulsory_field(valid_yaml_dict, field_to_delete):
+def test_load_and_validate_yaml_missing_compulsory_field(valid_yaml_dict, field_to_delete):
     del valid_yaml_dict[field_to_delete]
     error_msg = (
         "^.*" + "{}".format(field_to_delete) + ".*Missing data for required field.*$"
@@ -38,7 +39,7 @@ def test_load_template_yaml_missing_compulsory_field(valid_yaml_dict, field_to_d
         validate_and_return_raw_dict(valid_yaml_dict)
 
 
-def test_load_template_yaml_missing_dependent_field(valid_yaml_dict):
+def test_load_and_validate_yaml_missing_dependent_field(valid_yaml_dict):
     tlevel = "subjects"
     del valid_yaml_dict[tlevel][0]["schemeURI"]
     error_msg = re.escape(
@@ -49,7 +50,7 @@ def test_load_template_yaml_missing_dependent_field(valid_yaml_dict):
         validate_and_return_raw_dict(valid_yaml_dict)
 
 
-def test_load_template_yaml_extra_field(valid_yaml_dict):
+def test_load_and_validate_yaml_extra_field(valid_yaml_dict):
     valid_yaml_dict["junk"] = [{"extra": "field"}]
     error_msg = re.escape("{'junk': [u'Unknown field.']}")
     with pytest.raises(ValidationError, match=error_msg):
@@ -67,6 +68,8 @@ def test_write_json():
     with open(tout_file, "r") as f:
         result = f.read()
 
-    expected = "hi"
+    expected = '{\n    "key": [\n        "hi", \n        "bye"\n    ], \n    "string": 34\n}'
 
     assert result == expected
+    remove(tout_file)
+

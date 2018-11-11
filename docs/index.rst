@@ -24,6 +24,7 @@ CMIP6 Data Citation Generator
     :caption: API reference
 
     utils
+    io_dcg
 
 .. toctree::
     :maxdepth: 2
