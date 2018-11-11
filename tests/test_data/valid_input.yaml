@@ -45,7 +45,10 @@ relatedIdentifiers:  # must already be in database (optional)
   relationType: IsDocumentedBy
 subjects:  # (compulsory)
 - schemeURI: http://github.com/WCRP-CMIP/CMIP6_CVs
-  subject: input4MIPs.CMIP6.AerChemMIP.UoM.UoM-AIM-ssp370-lowNTCF-1-2-0  # must be in first list element
+  subject: <mip_era>.<activity_id>.<institution_id>.<source_id>.<experiment_id>
+  # must be in first list element (handle in other checks, not in schema)
+  # scheme is different for input4MIPs, there it is:
+  #    <activity_id>.<mip_era>.<target_mip>.<institution_id>.<source_id>
   subjectScheme: DRS
 - subject: forcing data
 - subject: climate
