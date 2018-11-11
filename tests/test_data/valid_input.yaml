@@ -1,4 +1,4 @@
-contributors:  # must already be in database
+contributors:  # must already be in database (effectively compulsory)
 - affiliation: University of Melbourne
   contributorName: Meinshausen, Malte
   contributorType: ContactPerson
@@ -9,7 +9,13 @@ contributors:  # must already be in database
     nameIdentifierScheme: ORCID
     pid: 0000-0003-4048-3521
     schemeURI: https://orcid.org/
-creators:  # must already be in database
+- contributorName: Institut Pierre Simon Laplace (IPSL)  # creators, funders, contributors without 'email', 'givenName' or 'familyName' are considered as institutes
+  contributorType: ResearchGroup
+  nameIdentifier:
+    nameIdentifierScheme: ISNI
+    pid: 0000000090008794
+    schemeURI: http://www.isni.org/isni/
+creators:  # must already be in database (compulsory)
 - affiliation: University of Melbourne
   creatorName: Meinshausen, Malte
   email: malte.meinshausen@unimelb.edu.au
@@ -28,22 +34,22 @@ creators:  # must already be in database
     nameIdentifierScheme: ORCID
     pid: 0000-0002-4767-2723
     schemeURI: https://orcid.org/
-fundingReferences:  # must already be in database
+fundingReferences:  # must already be in database (optional)
 - funderIdentifier: http://doi.org/10.13039/501100000923
   funderIdentifierType: Crossref Funder ID
   funderName: Australian Research Council (ARC)
 - funderName: European Union (EU)
-relatedIdentifiers:  # must already be in database
+relatedIdentifiers:  # must already be in database (optional)
 - relatedIdentifier: 10.5194/gmd-10-2057-2017
   relatedIdentifierType: DOI
   relationType: IsDocumentedBy
-subjects:
+subjects:  # (compulsory)
 - schemeURI: http://github.com/WCRP-CMIP/CMIP6_CVs
   subject: input4MIPs.CMIP6.AerChemMIP.UoM.UoM-AIM-ssp370-lowNTCF-1-2-0  # must be in first list element
   subjectScheme: DRS
 - subject: forcing data
 - subject: climate
 - subject: CMIP6
-titles:  # must already be in database
+titles:  # must already be in database (compulsory)
 - 'UoM-AIM-ssp370-lowNTCF-1-2-0: AIM-ssp370-lowNTCF GHG concentrations'
 
