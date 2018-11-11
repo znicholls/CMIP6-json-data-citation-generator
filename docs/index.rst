@@ -6,11 +6,11 @@
 CMIP6 Data Citation Generator
 =============================
 
-.. include:: ../../README.rst
+.. include:: ../README.rst
     :start-after: sec-begin-index
     :end-before: sec-end-index
 
-.. include:: ../../README.rst
+.. include:: ../README.rst
     :start-after: sec-begin-license
     :end-before: sec-end-license
 
@@ -23,6 +23,7 @@ CMIP6 Data Citation Generator
     :maxdepth: 2
     :caption: API reference
 
+    utils
 
 .. toctree::
     :maxdepth: 2
@@ -43,3 +44,7 @@ Index
 - :ref:`genindex`
 - :ref:`modindex`
 - :ref:`search`
+
+.. include:: ../README.rst
+    :start-after: sec-begin-links
+    :end-before: sec-end-links

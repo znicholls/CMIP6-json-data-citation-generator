@@ -13,6 +13,7 @@
                             \____/\___/_/ /_/\___/_/   \__,_/\__/\____/_/
 
 
+.. sec-begin-index
 
 +--------+-------------------+-----------+--------+
 | Basics | |Python Versions| | |License| | |Docs| |
@@ -34,6 +35,8 @@
 | Latest activity | |Contributors| | |Last Commit| | |Commits Since Last Release| |
 +-----------------+----------------+---------------+------------------------------+
 
+.. sec-end-index
+
 License
 -------
 
@@ -43,6 +46,8 @@ The CMIP6 Data Citation Generator is free software under a BSD 2-Clause License,
 If you make any use of the CMIP6 Data Citation Generator, please cite the relevant [to do: Zenodo release] `Zenodo release <https://zenodo.org/search?page=1&size=20&q=cmip6-data-citation-generator>`_.
 
 .. sec-end-license
+
+.. sec-begin-links
 
 .. |Build Status| image:: https://travis-ci.org/znicholls/CMIP6-json-data-citation-generator.svg?branch=master
     :target: https://travis-ci.org/znicholls/CMIP6-json-data-citation-generator
@@ -66,3 +71,5 @@ If you make any use of the CMIP6 Data Citation Generator, please cite the releva
     :target: https://zenodo.org/badge/latestdoi/junk
 .. |License| image:: https://img.shields.io/github/license/znicholls/CMIP6-json-data-citation-generator.svg
     :target: https://github.com/znicholls/CMIP6-json-data-citation-generator/blob/master/LICENSE
+
+.. sec-end-links
