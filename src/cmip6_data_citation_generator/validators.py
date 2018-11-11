@@ -1,4 +1,4 @@
-from marshmallow import Schema, fields, validates_schema, ValidationError
+from marshmallow import Schema, fields, validates_schema, ValidationError, RAISE
 
 
 def validate_dependent_fields(data, dependent_fields, name):
@@ -78,6 +78,9 @@ class SubjectsSchema(Schema):
 
 
 class CitationSchema(Schema):
+    class Meta:
+        unknown = RAISE
+
     contributors = fields.Nested(ContributorSchema, required=True, many=True)
     creators = fields.Nested(CreatorSchema, required=True, many=True)
     fundingReferences = fields.Nested(FundingReferencesSchema, many=True)

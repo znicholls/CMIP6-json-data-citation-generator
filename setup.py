@@ -56,7 +56,7 @@ setup(
     packages=find_packages(SOURCE_DIR),  # no tests/docs in `src` so don't need exclude
     package_dir={"": SOURCE_DIR},
     # include_package_data=True,
-    install_requires=["PyYAML", "marshmallow"],
+    install_requires=["PyYAML", "marshmallow==3.0.0b20"],
     extras_require={
         "docs": ["sphinx", "sphinx_rtd_theme"],
         "test": ["codecov", "pytest-cov", "pytest"],
