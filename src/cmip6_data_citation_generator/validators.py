@@ -6,11 +6,10 @@ def validate_dependent_fields(data, dependent_fields, name):
         "The fields {} in {} are co-dependent, if you supply one of them, you must "
         "supply all of them".format(dependent_fields, name)
     )
-    for i, field in enumerate(dependent_fields):
-        if field in data:
-            for dependent_field in dependent_fields[i:]:
-                if dependent_field not in data:
-                    raise ValidationError(error_msg)
+    if any([d in data for d in dependent_fields]):
+        for field in dependent_fields:
+            if field not in data:
+                raise ValidationError(error_msg)
 
 
 class NameIdentifierSchema(Schema):

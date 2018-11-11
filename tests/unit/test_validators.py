@@ -1,3 +1,6 @@
+import re
+
+
 import pytest
 from marshmallow import ValidationError
 
@@ -22,6 +25,17 @@ def test_load_template_yaml_missing_compulsory_field(valid_yaml, field_to_delete
     del valid_yaml[field_to_delete]
     error_msg = (
         "^.*" + "{}".format(field_to_delete) + ".*Missing data for required field.*$"
+    )
+    with pytest.raises(ValidationError, match=error_msg):
+        CitationSchema(strict=True).load(valid_yaml)
+
+
+def test_load_template_yaml_missing_dependent_field(valid_yaml):
+    tlevel = "subjects"
+    del valid_yaml[tlevel][0]["schemeURI"]
+    error_msg = re.escape(
+        "The fields {} in {} are co-dependent, if you supply one of them, you must "
+        "supply all of them".format(["schemeURI", "subjectScheme"], tlevel)
     )
     with pytest.raises(ValidationError, match=error_msg):
         CitationSchema(strict=True).load(valid_yaml)
