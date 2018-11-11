@@ -8,7 +8,11 @@ from marshmallow import ValidationError
 
 
 from conftest import TEST_VALID_INPUT_YAML
-from cmip6_data_citation_generator.io_dcg import load_and_validate_yaml, validate_and_return_raw_dict, write_json
+from cmip6_data_citation_generator.io_dcg import (
+    load_and_validate_yaml,
+    validate_and_return_raw_dict,
+    write_json,
+)
 
 
 def test_load_and_validate_yaml():
@@ -22,7 +26,9 @@ def test_load_and_validate_yaml():
 
 
 @pytest.mark.parametrize("field_to_delete", ["fundingReferences", "relatedIdentifiers"])
-def test_load_and_validate_yaml_missing_optional_field(valid_yaml_dict, field_to_delete):
+def test_load_and_validate_yaml_missing_optional_field(
+    valid_yaml_dict, field_to_delete
+):
     del valid_yaml_dict[field_to_delete]
     validate_and_return_raw_dict(valid_yaml_dict)
 
@@ -30,7 +36,9 @@ def test_load_and_validate_yaml_missing_optional_field(valid_yaml_dict, field_to
 @pytest.mark.parametrize(
     "field_to_delete", ["contributors", "creators", "subjects", "titles"]
 )
-def test_load_and_validate_yaml_missing_compulsory_field(valid_yaml_dict, field_to_delete):
+def test_load_and_validate_yaml_missing_compulsory_field(
+    valid_yaml_dict, field_to_delete
+):
     del valid_yaml_dict[field_to_delete]
     error_msg = (
         "^.*" + "{}".format(field_to_delete) + ".*Missing data for required field.*$"
@@ -68,8 +76,9 @@ def test_write_json():
     with open(tout_file, "r") as f:
         result = f.read()
 
-    expected = '{\n    "key": [\n        "hi", \n        "bye"\n    ], \n    "string": 34\n}'
+    expected = (
+        '{\n    "key": [\n        "hi", \n        "bye"\n    ], \n    "string": 34\n}'
+    )
 
     assert result == expected
     remove(tout_file)
-
