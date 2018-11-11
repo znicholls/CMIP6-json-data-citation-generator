@@ -1,8 +1,5 @@
 venv: setup.py
-	@echo 'You will need the output of `python --version` to be Python2 for this to work'
-	@echo 'You will also need virtualenv installed'
-	@echo 'Install virtualenv with `pip install virtualenv`'
-	[ -d ./venv ] || python -m virtualenv ./venv
+	[ -d ./venv ] || python3 -m venv ./venv
 	./venv/bin/pip install --upgrade pip
 	./venv/bin/pip install versioneer
 	./venv/bin/pip install -e .[test,docs,deploy]
@@ -18,20 +15,13 @@ flake8: venv
 	./venv/bin/flake8 src tests setup.py _version.py
 
 .PHONY: black
-black: venv3
+black: venv
 	@status=$$(git status --porcelain pymagicc tests); \
 	if test "x$${status}" = x; then \
 		./venv3/bin/black --exclude _version.py --py36 setup.py src tests docs/conf.py; \
 	else \
 		echo Not trying any formatting. Working directory is dirty ... >&2; \
 	fi;
-
-venv3:
-	@echo "This will only work if you have Python3 installed"
-	[ -d ./venv3 ] || python3 -m venv venv3
-	./venv3/bin/pip install --upgrade pip
-	./venv3/bin/pip install black
-	touch venv3
 
 publish-on-pypi: venv
 	-rm -rf build dist

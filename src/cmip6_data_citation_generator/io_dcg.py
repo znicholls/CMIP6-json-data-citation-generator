@@ -60,5 +60,5 @@ def write_json(json_dict, path):
     """
     with io.open(path, "w", encoding="utf-8") as outfile:
         outfile.write(
-            unicode(json.dumps(json_dict, sort_keys=True, indent=4, ensure_ascii=False))
+            str(json.dumps(json_dict, sort_keys=True, indent=4, ensure_ascii=False))
         )

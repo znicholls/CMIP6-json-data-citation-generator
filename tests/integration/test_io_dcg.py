@@ -60,7 +60,7 @@ def test_load_and_validate_yaml_missing_dependent_field(valid_yaml_dict):
 
 def test_load_and_validate_yaml_extra_field(valid_yaml_dict):
     valid_yaml_dict["junk"] = [{"extra": "field"}]
-    error_msg = re.escape("{'junk': [u'Unknown field.']}")
+    error_msg = re.escape("{'junk': ['Unknown field.']}")
     with pytest.raises(ValidationError, match=error_msg):
         validate_and_return_raw_dict(valid_yaml_dict)
 
@@ -77,7 +77,7 @@ def test_write_json():
         result = f.read()
 
     expected = (
-        '{\n    "key": [\n        "hi", \n        "bye"\n    ], \n    "string": 34\n}'
+        '{\n    "key": [\n        "hi",\n        "bye"\n    ],\n    "string": 34\n}'
     )
 
     assert result == expected

@@ -60,7 +60,7 @@ setup(
     extras_require={
         "docs": ["sphinx", "sphinx_rtd_theme"],
         "test": ["codecov", "pytest-cov", "pytest"],
-        "deploy": ["twine", "setuptools", "wheel", "flake8", "versioneer"],
+        "deploy": ["twine", "setuptools", "wheel", "flake8", "black", "versioneer"],
     },
     cmdclass=cmdclass,
 )
