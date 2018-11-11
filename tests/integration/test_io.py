@@ -1,3 +1,4 @@
+from os.path import isfile
 import re
 
 
@@ -6,7 +7,7 @@ from marshmallow import ValidationError
 
 
 from conftest import TEST_VALID_INPUT_YAML
-from cmip6_data_citation_generator.io import load_template_yaml, validate_and_return_raw_dict
+from cmip6_data_citation_generator.io import load_template_yaml, validate_and_return_raw_dict, write_json
 
 
 def test_load_template_yaml():
@@ -53,3 +54,19 @@ def test_load_template_yaml_extra_field(valid_yaml_dict):
     error_msg = re.escape("{'junk': [u'Unknown field.']}")
     with pytest.raises(ValidationError, match=error_msg):
         validate_and_return_raw_dict(valid_yaml_dict)
+
+
+def test_write_json():
+    tout_file = "tjson.json"
+    tdict = {"string": 34, "key": ["hi", "bye"]}
+
+    write_json(tdict, tout_file)
+
+    assert isfile(tout_file)
+
+    with open(tout_file, "r") as f:
+        result = f.read()
+
+    expected = "hi"
+
+    assert result == expected
