@@ -72,4 +72,3 @@ def deep_substitute(input_val, substitutions):
             raise KeyError(error_msg)
 
     return input_val
-
