@@ -34,6 +34,8 @@ Other Resources
 ---------------
 
 The complete CMIP6 Data Citation User Guide can be found at https://cera-www.dkrz.de/docs/pdf/CMIP6_Citation_Userguide.pdf.
+The last page in particular is very helpful.
+It documents and explains a number of error messages which can arise when uploading.
 
 Index
 -----
