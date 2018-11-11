@@ -1,7 +1,7 @@
 venv: setup.py
-	echo You will need the output of `python --version` to be Python2 for this to work
-	echo You will also need virtualenv installed
-	echo Install virtualenv with `pip install virtualenv`
+	@echo 'You will need the output of `python --version` to be Python2 for this to work'
+	@echo 'You will also need virtualenv installed'
+	@echo 'Install virtualenv with `pip install virtualenv`'
 	[ -d ./venv ] || python -m virtualenv ./venv
 	./venv/bin/pip install --upgrade pip
 	./venv/bin/pip install versioneer
