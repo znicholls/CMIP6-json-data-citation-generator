@@ -52,19 +52,11 @@ setup(
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 2.7",
     ],
-    keywords=[
-        "netcdf",
-        "python",
-        "climate",
-        "cmip6",
-    ],
+    keywords=["netcdf", "python", "climate", "cmip6"],
     packages=find_packages(SOURCE_DIR),  # no tests/docs in `src` so don't need exclude
     package_dir={"": SOURCE_DIR},
     # include_package_data=True,
-    install_requires=[
-        "PyYAML",
-        "marshmallow"
-    ],
+    install_requires=["PyYAML", "marshmallow"],
     extras_require={
         "docs": ["sphinx", "sphinx_rtd_theme"],
         "test": ["codecov", "pytest-cov", "pytest"],
