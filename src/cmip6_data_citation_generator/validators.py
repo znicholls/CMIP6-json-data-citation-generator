@@ -30,7 +30,9 @@ class ContributorSchema(Schema):
 
     @validates_schema
     def dependency_validation(self, data):
-        validate_dependent_fields(data, ["email", "familyName", "givenName"], "contributors")
+        validate_dependent_fields(
+            data, ["email", "familyName", "givenName"], "contributors"
+        )
 
 
 class CreatorSchema(Schema):
@@ -43,7 +45,9 @@ class CreatorSchema(Schema):
 
     @validates_schema
     def dependency_validation(self, data):
-        validate_dependent_fields(data, ["email", "familyName", "givenName"], "creators")
+        validate_dependent_fields(
+            data, ["email", "familyName", "givenName"], "creators"
+        )
 
 
 class FundingReferencesSchema(Schema):
@@ -53,7 +57,9 @@ class FundingReferencesSchema(Schema):
 
     @validates_schema
     def dependency_validation(self, data):
-        validate_dependent_fields(data, ["funderIdentifier", "funderIdentifierType"], "fundingReferences")
+        validate_dependent_fields(
+            data, ["funderIdentifier", "funderIdentifierType"], "fundingReferences"
+        )
 
 
 class RelatedIdentifiersSchema(Schema):
@@ -79,4 +85,3 @@ class CitationSchema(Schema):
     relatedIdentifiers = fields.Nested(RelatedIdentifiersSchema, many=True)
     subjects = fields.Nested(SubjectsSchema, required=True, many=True)
     titles = fields.List(fields.String(), required=True)
-

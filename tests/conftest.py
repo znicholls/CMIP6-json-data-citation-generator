@@ -12,8 +12,9 @@ TEST_VALID_INPUT_YAML = join(TEST_DATA_ROOT_DIR, "valid_input.yaml")
 
 @pytest.fixture(scope="session")
 def base_valid_yaml():
-    with open(TEST_VALID_INPUT_YAML, 'r') as stream:
+    with open(TEST_VALID_INPUT_YAML, "r") as stream:
         yield yaml.load(stream)
+
 
 @pytest.fixture(scope="function")
 def valid_yaml(base_valid_yaml):

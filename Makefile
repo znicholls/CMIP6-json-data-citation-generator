@@ -9,13 +9,29 @@ venv: setup.py
 	touch venv
 
 test: venv
-	./venv/bin/pytest -rfsxEX tests
+	./venv/bin/pytest --cov -rfsxEX --cov-report term-missing
 
 docs: venv
 	./venv/bin/sphinx-build -M html docs docs/_build
 
 flake8: venv
 	./venv/bin/flake8 src tests setup.py _version.py
+
+.PHONY: black
+black: venv3
+	@status=$$(git status --porcelain pymagicc tests); \
+	if test "x$${status}" = x; then \
+		./venv3/bin/black --exclude _version.py --py36 setup.py src tests docs/conf.py; \
+	else \
+		echo Not trying any formatting. Working directory is dirty ... >&2; \
+	fi;
+
+venv3:
+	@echo "This will only work if you have Python3 installed"
+	[ -d ./venv3 ] || python3 -m venv venv3
+	./venv3/bin/pip install --upgrade pip
+	./venv3/bin/pip install black
+	touch venv3
 
 publish-on-pypi: venv
 	-rm -rf build dist
