@@ -18,7 +18,7 @@ flake8: venv
 black: venv
 	@status=$$(git status --porcelain pymagicc tests); \
 	if test "x$${status}" = x; then \
-		./venv3/bin/black --exclude _version.py --py36 setup.py src tests docs/conf.py; \
+		./venv/bin/black --exclude _version.py --py36 setup.py src tests docs/conf.py; \
 	else \
 		echo Not trying any formatting. Working directory is dirty ... >&2; \
 	fi;
