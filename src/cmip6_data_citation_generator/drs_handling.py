@@ -5,7 +5,7 @@ import re
 from netcdf_scm.iris_cube_wrappers import CMIP6Input4MIPsCube, CMIP6OutputCube
 
 
-def _get_unique_subjects_in_dir(directory, drs, regexp=".*"):
+def _get_unique_subjects_in_dir(directory, drs, regexp=".*", keep=True):
     """Get unique subjets in directory.
 
     This returns all the unique data citation subjects from the files in a directory.
@@ -20,15 +20,21 @@ def _get_unique_subjects_in_dir(directory, drs, regexp=".*"):
         ["CMIP6input4MIPS", "CMIP6output"].
 
     regexp : str
-        Regular expression to use to filter the found filepaths. Only filepaths which
-        match this regular expression will be used to generate the unique subjects
-        list.
+        Regular expression to use to filter the found filepaths. Only
+
+    keep : bool
+        If True, keep the filepaths which match regexp to generate the unique subjects
+        list. If False, keep the filepaths which don't match regexp to generate the
+        unique subjects list.
     """
     regexp = re.compile(regexp)
     matching_paths = []
     for root, dirs, files in os.walk(directory):
         full_paths = [os.path.join(root, f) for f in files]
-        mps = [fp for fp in full_paths if regexp.match(fp) and fp]
+        if keep:
+            mps = [fp for fp in full_paths if regexp.match(fp) and fp]
+        else:
+            mps = [fp for fp in full_paths if not regexp.match(fp) and fp]
         if mps:
             [matching_paths.append(mp) for mp in mps]
 
