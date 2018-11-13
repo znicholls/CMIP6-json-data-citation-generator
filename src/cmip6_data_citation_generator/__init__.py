@@ -53,10 +53,17 @@ def generate_jsons(input_dir, template_yaml, drs, output_dir, regexp=".*", keep=
         ids["subject"] = subject
         json_dict = deep_substitute(template_yaml_dict, ids)
         if json_dict["subjects"][0]["subject"] != subject:
-            import pdb
+            sdicts = []
+            for sdict in json_dict["subjects"]:
+                if sdict["subject"] == subject:
+                    sdicts.insert(0, sdict)
+                else:
+                    sdicts.append(sdict)
 
-            pdb.set_trace()
-            raise NotImplementedError("Should reorder here")
+            json_dict["subjects"] = sdicts
+
+            if json_dict["subjects"][0]["subject"] != subject:
+                raise KeyError("Should reorder here")
 
         output_path = join(output_dir, "{}.json".format(subject))
         print("Writing citation file for {} to {}".format(subject, output_path))
