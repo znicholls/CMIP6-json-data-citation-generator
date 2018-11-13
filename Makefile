@@ -41,13 +41,13 @@ test-testpypi-install: venv
 	python3 -m venv $(TEMPVENV)
 	$(TEMPVENV)/bin/pip install pip --upgrade
 	# Install dependencies not on testpypi registry
-	$(TEMPVENV)/bin/pip install pandas
+	# e.g. $(TEMPVENV)/bin/pip install pandas
 	# Install pymagicc without dependencies.
 	$(TEMPVENV)/bin/pip install \
-		-i https://testpypi.python.org/pypi netcdf-scm \
+		-i https://testpypi.python.org/pypi cmip6-data-citation-generator \
 		--no-dependencies --pre
 	@echo "This doesn't test dependencies"
-	$(TEMPVENV)/bin/python -c "from netcdf_scm import *; import cmip6_data_citation_generator; print(cmip6_data_citation_generator.__version__)"
+	$(TEMPVENV)/bin/python -c "from cmip6_data_citation_generator import *; import cmip6_data_citation_generator; print(cmip6_data_citation_generator.__version__)"
 
 .PHONY: publish-on-pypi
 publish-on-pypi:
@@ -64,7 +64,7 @@ test-pypi-install: venv
 	$(eval TEMPVENV := $(shell mktemp -d))
 	python3 -m venv $(TEMPVENV)
 	$(TEMPVENV)/bin/pip install pip --upgrade
-	$(TEMPVENV)/bin/pip install netcdf_scm --pre
+	$(TEMPVENV)/bin/pip install cmip6-data-citation-generator --pre
 	$(TEMPVENV)/bin/python scripts/test_install.py
 
 .PHONY: test-install
