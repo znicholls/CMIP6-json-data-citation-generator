@@ -47,6 +47,20 @@ If you make any use of the CMIP6 Data Citation Generator, please cite the releva
 
 .. sec-end-license
 
+.. sec-begin-installation
+
+Installation
+------------
+
+The CMIP6 Data Citation Generator can be installed with `pip <https://pypi.org/project/pip/>`_.
+
+::
+
+  # if you're using a virtual environment, make sure you're in it
+  pip install cmip6-data-citation-generator
+
+.. sec-end-installation
+
 .. sec-begin-links
 
 .. |Build Status| image:: https://travis-ci.org/znicholls/CMIP6-json-data-citation-generator.svg?branch=master

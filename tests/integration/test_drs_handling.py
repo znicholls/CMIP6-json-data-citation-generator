@@ -100,32 +100,40 @@ def test_get_unique_subjects_in_dir_cmip6output_style():
 
 
 def test_get_unique_subjects_in_dir_flat_style():
-    error_msg = r"^.*" + "\n\n" + re.escape(
-        "Please note: "
-        "The CMIP6 data citation json generator only works with "
-        "filepaths which match a CMIP data reference syntax. Hence "
-        "we can't make a citation for you unless your files are "
-        "correctly named and sorted into appropriate directories. We "
-        "are considering upgrading so that citations can be made "
-        "independent of filename and directory structure. If this "
-        "functionality would be useful, please comment on this issue: "
-        "https://github.com/znicholls/CMIP6-json-data-citation-generator/issues/20"
+    error_msg = (
+        r"^.*"
+        + "\n\n"
+        + re.escape(
+            "Please note: "
+            "The CMIP6 data citation json generator only works with "
+            "filepaths which match a CMIP data reference syntax. Hence "
+            "we can't make a citation for you unless your files are "
+            "correctly named and sorted into appropriate directories. We "
+            "are considering upgrading so that citations can be made "
+            "independent of filename and directory structure. If this "
+            "functionality would be useful, please comment on this issue: "
+            "https://github.com/znicholls/CMIP6-json-data-citation-generator/issues/20"
+        )
     )
     with pytest.raises(ValueError, match=error_msg):
         _get_unique_subjects_in_dir(TEST_DATA_FLATTISH_STYLE, "CMIP6input4MIPs")
 
 
 def test_get_unique_subjects_in_dir_cant_read_error():
-    error_msg = r"^.*" + "\n\n" + re.escape(
-        "Please note: "
-        "The CMIP6 data citation json generator only works with "
-        "filepaths which match a CMIP data reference syntax. Hence "
-        "we can't make a citation for you unless your files are "
-        "correctly named and sorted into appropriate directories. We "
-        "are considering upgrading so that citations can be made "
-        "independent of filename and directory structure. If this "
-        "functionality would be useful, please comment on this issue: "
-        "https://github.com/znicholls/CMIP6-json-data-citation-generator/issues/20"
+    error_msg = (
+        r"^.*"
+        + "\n\n"
+        + re.escape(
+            "Please note: "
+            "The CMIP6 data citation json generator only works with "
+            "filepaths which match a CMIP data reference syntax. Hence "
+            "we can't make a citation for you unless your files are "
+            "correctly named and sorted into appropriate directories. We "
+            "are considering upgrading so that citations can be made "
+            "independent of filename and directory structure. If this "
+            "functionality would be useful, please comment on this issue: "
+            "https://github.com/znicholls/CMIP6-json-data-citation-generator/issues/20"
+        )
     )
     with pytest.raises(ValueError, match=error_msg):
         _get_unique_subjects_in_dir(TEST_DATA_ROOT_DIR, "CMIP6input4MIPs")
