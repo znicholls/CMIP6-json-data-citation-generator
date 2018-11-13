@@ -90,9 +90,14 @@ class CitationSchema(Schema):
 
     @validates('subjects')
     def validate_subjects(self, value):
-        if value[0]["subject"] != "<subject>":
+        subject_compulsory_dict = {
+            "subject": "<subject>",
+            "subjectScheme": "DRS",
+            "schemeURI": "http://github.com/WCRP-CMIP/CMIP6_CVs",
+        }
+        if value[0] != subject_compulsory_dict:
             error_msg = (
                 "^The first element under subjects should be autofilled by the "
-                "generator and hence have 'subject' == <subject>"
+                "generator and hence be equal to {}".format(subject_compulsory_dict)
             )
             raise ValidationError(error_msg)

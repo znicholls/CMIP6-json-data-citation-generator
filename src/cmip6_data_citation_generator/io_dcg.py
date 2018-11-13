@@ -1,10 +1,26 @@
 import io
 import yaml
 import json
+from copy import deepcopy
 
 
 from .validators import CitationSchema
 
+
+def _add_compulsory_subject(input_dict):
+    output_dict = deepcopy(input_dict)
+    skey = "subjects"
+    if skey not in output_dict:
+        output_dict[skey] = []
+
+    subject_compulsory_dict = {
+        "subject": "<subject>",
+        "subjectScheme": "DRS",
+        "schemeURI": "http://github.com/WCRP-CMIP/CMIP6_CVs",
+    }
+    output_dict["subjects"].insert(0, subject_compulsory_dict)
+
+    return output_dict
 
 def load_and_validate_yaml(yaml_to_read, schema=CitationSchema):
     """Load yaml from file and validate using schema
@@ -25,7 +41,9 @@ def load_and_validate_yaml(yaml_to_read, schema=CitationSchema):
     with open(yaml_to_read, "r") as stream:
         raw_dict = yaml.load(stream)
 
-    return validate_and_return_raw_dict(raw_dict, schema=schema)
+    prepped_dict = _add_compulsory_subject(raw_dict)
+
+    return validate_and_return_raw_dict(prepped_dict, schema=schema)
 
 
 def validate_and_return_raw_dict(raw_dict, schema=CitationSchema):
