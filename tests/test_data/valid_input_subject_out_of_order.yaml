@@ -1,0 +1,36 @@
+contributors:  # must already be in database (effectively compulsory)
+- affiliation: University of Melbourne
+  contributorName: Meinshausen, Malte
+  contributorType: ContactPerson
+  email: malte.meinshausen@unimelb.edu.au
+  familyName: Meinshausen
+  givenName: Malte
+  nameIdentifier:
+    nameIdentifierScheme: ORCID
+    pid: 0000-0003-4048-3521
+    schemeURI: https://orcid.org/
+creators:  # must already be in database (compulsory)
+- affiliation: University of Melbourne
+  creatorName: Meinshausen, Malte
+  email: malte.meinshausen@unimelb.edu.au
+  familyName: Meinshausen
+  givenName: Malte
+  nameIdentifier:
+    nameIdentifierScheme: ORCID
+    pid: 0000-0003-4048-3521
+    schemeURI: https://orcid.org/
+subjects:  # (compulsory)
+- subject: forcing data
+- subject: climate
+- subject: CMIP6
+- schemeURI: http://github.com/WCRP-CMIP/CMIP6_CVs
+  subject: <subject>
+  # CMIP6 output
+  #   <mip_era>.<activity_id>.<institution_id>.<source_id>.<experiment_id>
+  # must be in first list element (handle in other checks, not in schema)
+  # scheme is different for input4MIPs, there it is:
+  #    <activity_id>.<mip_era>.<target_mip>.<institution_id>.<source_id>
+  subjectScheme: DRS
+titles:  # must already be in database (compulsory)
+- '<source_id> GHG concentrations'
+
