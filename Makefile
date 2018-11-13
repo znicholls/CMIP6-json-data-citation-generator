@@ -23,12 +23,41 @@ black: venv
 		echo Not trying any formatting. Working directory is dirty ... >&2; \
 	fi;
 
-publish-on-pypi: venv
+# first time setup, follow this https://blog.jetbrains.com/pycharm/2017/05/how-to-publish-your-package-on-pypi/
+# then this works
+.PHONY: publish-on-testpypi
+publish-on-testpypi:
 	-rm -rf build dist
 	@status=$$(git status --porcelain); \
 	if test "x$${status}" = x; then \
-		./venv/bin/python setup.py bdist_wheel --universal; \
-		./venv/bin/twine upload dist/*; \
+		$(call activate_conda_env,); \
+			python setup.py sdist bdist_wheel --universal; \
+			twine upload -r testpypi dist/*; \
+	else \
+		echo Working directory is dirty >&2; \
+	fi;
+
+test-testpypi-install: venv
+	$(eval TEMPVENV := $(shell mktemp -d))
+	python3 -m venv $(TEMPVENV)
+	$(TEMPVENV)/bin/pip install pip --upgrade
+	# Install dependencies not on testpypi registry
+	$(TEMPVENV)/bin/pip install pandas
+	# Install pymagicc without dependencies.
+	$(TEMPVENV)/bin/pip install \
+		-i https://testpypi.python.org/pypi netcdf-scm \
+		--no-dependencies --pre
+	@echo "This doesn't test dependencies"
+	$(TEMPVENV)/bin/python -c "from netcdf_scm import *; import cmip6_data_citation_generator; print(cmip6_data_citation_generator.__version__)"
+
+.PHONY: publish-on-pypi
+publish-on-pypi:
+	-rm -rf build dist
+	@status=$$(git status --porcelain); \
+	if test "x$${status}" = x; then \
+		$(call activate_conda_env,); \
+			python setup.py sdist bdist_wheel --universal; \
+			twine upload dist/*; \
 	else \
 		echo Working directory is dirty >&2; \
 	fi;
@@ -37,8 +66,16 @@ test-pypi-install: venv
 	$(eval TEMPVENV := $(shell mktemp -d))
 	python3 -m venv $(TEMPVENV)
 	$(TEMPVENV)/bin/pip install pip --upgrade
-	$(TEMPVENV)/bin/pip install cmip6_data_citation_generator
-	$(TEMPVENV)/bin/python -c "import sys; sys.path.remove(''); import cmip6_data_citation_generator; print(cmip6_data_citation_generator.__version__)"
+	$(TEMPVENV)/bin/pip install netcdf_scm --pre
+	$(TEMPVENV)/bin/python scripts/test_install.py
+
+.PHONY: test-install
+test-install: venv
+	$(eval TEMPVENV := $(shell mktemp -d))
+	python3 -m venv $(TEMPVENV)
+	$(TEMPVENV)/bin/pip install pip --upgrade
+	$(TEMPVENV)/bin/pip install .
+	$(TEMPVENV)/bin/python scripts/test_install.py
 
 clean:
 	rm -rf venv
