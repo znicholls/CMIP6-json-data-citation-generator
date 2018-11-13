@@ -20,7 +20,7 @@ CMIP6 Data Citation Generator
 
     installation
     usage
-
+    development
 
 .. toctree::
     :maxdepth: 2
