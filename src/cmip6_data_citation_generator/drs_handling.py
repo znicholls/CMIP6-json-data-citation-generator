@@ -17,7 +17,7 @@ def _get_unique_subjects_in_dir(directory, drs, regexp=".*", keep=True):
 
     drs : str
         The data reference syntax used to save your data. Must be one of
-        ["CMIP6input4MIPS", "CMIP6output"].
+        ["CMIP6input4MIPs", "CMIP6output"].
 
     regexp : str
         Regular expression to use to filter the found filepaths.
