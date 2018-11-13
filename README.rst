@@ -50,7 +50,7 @@ Installation
 
 The CMIP6 Data Citation Generator can be installed with `pip <https://pypi.org/project/pip/>`_.
 
-::
+.. code-block:: bash
 
   # if you're using a virtual environment, make sure you're in it
   pip install cmip6-data-citation-generator
