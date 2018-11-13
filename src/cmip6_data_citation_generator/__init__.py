@@ -24,7 +24,7 @@ def generate_jsons(input_dir, template_yaml, drs, output_dir, regexp=".*", keep=
 
     drs : str
         The data reference syntax used to save your data. Must be one of
-        ["CMIP6input4MIPS", "CMIP6output"].
+        ["CMIP6input4MIPs", "CMIP6output"].
 
     output_dir : str
         The path in which to save the generated files.

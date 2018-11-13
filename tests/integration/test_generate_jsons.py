@@ -1,5 +1,5 @@
 from os import remove
-from os.path import isfile
+from os.path import isfile, basename
 import re
 import json
 
@@ -7,7 +7,7 @@ import json
 import pytest
 
 
-from conftest import TEST_DATA_CMIP6_OUTPUT_STYLE, TEST_VALID_INPUT_YAML, TEST_SPECIAL_CHAR_YAML
+from conftest import TEST_DATA_CMIP6_OUTPUT_STYLE, TEST_DATA_CMIP6_INPUT4MIPS_STYLE, TEST_VALID_INPUT_YAML, TEST_SPECIAL_CHAR_YAML
 from cmip6_data_citation_generator import generate_jsons
 
 
@@ -34,6 +34,33 @@ def test_get_unique_subjects_in_dir_cmip6output_style():
     )
 
     remove(expected_file)
+
+
+def test_get_unique_subjects_in_dir_input4mips_style_with_regexp_False():
+    generate_jsons(
+        TEST_DATA_CMIP6_INPUT4MIPS_STYLE,
+        TEST_VALID_INPUT_YAML,
+        "CMIP6input4MIPs",
+        ".",
+        regexp=".*ScenarioMIP.*",
+        keep=False,
+    )
+
+    expected_files = [
+        "./input4MIPs.CMIP6.AerChemMIP.UoM.UoM-AIM-ssp370-lowNTCF-1-2-0.json",
+        "./input4MIPs.CMIP6.CMIP.UoM.UoM-CMIP-1-2-0.json",
+    ]
+    for expected_file in expected_files:
+        assert isfile(expected_file)
+
+        written = json.loads(open(expected_file).read())
+        subject = ".".join(basename(expected_file).split(".")[:-1])
+        assert (
+            written["subjects"][0]["subject"]
+            == subject
+        )
+
+        remove(expected_file)
 
 
 def test_generate_jsons_special_characters():
