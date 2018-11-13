@@ -121,7 +121,7 @@ def _get_ids_cmip6input4mips_path(path):
 def _get_subject_cmip6output_path(path):
     ids = _get_ids_cmip6output_path(path)
 
-    return "{mip_era}.{activity_id}.{institution_id}.{source_id}".format(**ids)
+    return "{mip_era}.{activity_id}.{institution_id}.{source_id}.{experiment_id}".format(**ids)
 
 def _get_ids_cmip6output_path(path):
     drs_cube = CMIP6OutputCube()

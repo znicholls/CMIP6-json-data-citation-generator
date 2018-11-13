@@ -94,7 +94,7 @@ def test_get_unique_subjects_in_dir_cmip6input4mips_style_keep_false():
 def test_get_unique_subjects_in_dir_cmip6output_style():
     result = _get_unique_subjects_in_dir(TEST_DATA_CMIP6_OUTPUT_STYLE, "CMIP6output")
 
-    expected = sorted(["CMIP6.DCPP.CNRM-CERFACS.CNRM-CM6-1"])
+    expected = sorted(["CMIP6.DCPP.CNRM-CERFACS.CNRM-CM6-1.dcppA-hindcast"])
 
     assert result == expected
 
