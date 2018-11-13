@@ -30,9 +30,8 @@ publish-on-testpypi:
 	-rm -rf build dist
 	@status=$$(git status --porcelain); \
 	if test "x$${status}" = x; then \
-		$(call activate_conda_env,); \
-			python setup.py sdist bdist_wheel --universal; \
-			twine upload -r testpypi dist/*; \
+		./venv/bin/python setup.py sdist bdist_wheel --universal; \
+		./venv/bin/twine upload -r testpypi dist/*; \
 	else \
 		echo Working directory is dirty >&2; \
 	fi;
@@ -55,9 +54,8 @@ publish-on-pypi:
 	-rm -rf build dist
 	@status=$$(git status --porcelain); \
 	if test "x$${status}" = x; then \
-		$(call activate_conda_env,); \
-			python setup.py sdist bdist_wheel --universal; \
-			twine upload dist/*; \
+		./venv/bin/python setup.py sdist bdist_wheel --universal; \
+		./venv/bin/twine upload dist/*; \
 	else \
 		echo Working directory is dirty >&2; \
 	fi;
