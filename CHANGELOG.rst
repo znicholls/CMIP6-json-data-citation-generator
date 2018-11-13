@@ -4,6 +4,7 @@ Changelog
 master
 ------
 
+- (`#22 <https://github.com/znicholls/CMIP6-json-data-citation-generator/pull/22>`_) Added test of special character support
 
 v0.1.2
 ------
