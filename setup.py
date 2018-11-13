@@ -50,7 +50,7 @@ setup(
         "License :: OSI Approved :: BSD License",
         "Intended Audience :: Developers",
         "Operating System :: OS Independent",
-        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.6",
     ],
     keywords=["netcdf", "python", "climate", "cmip6"],
     packages=find_packages(SOURCE_DIR),  # no tests/docs in `src` so don't need exclude
