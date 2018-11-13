@@ -46,9 +46,9 @@ relatedIdentifiers:  # must already be in database (optional)
 subjects:  # (compulsory)
   # The first subject element is added automatically by the generator.
   # It will be
-  # schemeURI: http://github.com/WCRP-CMIP/CMIP6_CVs
   # subject: <subject>
   # subjectScheme: DRS
+  # schemeURI: http://github.com/WCRP-CMIP/CMIP6_CVs
   # <subject> is then replaced according to the data reference syntax.
   # For CMIP6 output:
   #   <mip_era>.<activity_id>.<institution_id>.<source_id>.<experiment_id>

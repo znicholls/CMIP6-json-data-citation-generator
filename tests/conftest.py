@@ -6,6 +6,9 @@ import pytest
 import yaml
 
 
+from cmip6_data_citation_generator.io_dcg import _add_compulsory_subject
+
+
 TEST_DATA_ROOT_DIR = join(dirname(abspath(__file__)), "test_data")
 
 TEST_DATA_CMIP6_INPUT4MIPS_STYLE = join(TEST_DATA_ROOT_DIR, "input4MIPs_like")
@@ -14,8 +17,6 @@ TEST_DATA_FLATTISH_STYLE = join(TEST_DATA_ROOT_DIR, "flattish_files")
 
 TEST_VALID_INPUT_YAML = join(TEST_DATA_ROOT_DIR, "valid_input.yaml")
 TEST_SPECIAL_CHAR_YAML = join(TEST_DATA_ROOT_DIR, "special_char_input.yaml")
-TEST_VALID_INPUT_SUBJECT_OUT_OF_ORDER_YAML = join(TEST_DATA_ROOT_DIR, "valid_input_subject_out_of_order.yaml")
-TEST_NO_SUBJECT_YAML = join(TEST_DATA_ROOT_DIR, "no_subject.yaml")
 
 
 @pytest.fixture(scope="session")
@@ -26,4 +27,4 @@ def base_valid_yaml_dict():
 
 @pytest.fixture(scope="function")
 def valid_yaml_dict(base_valid_yaml_dict):
-    yield deepcopy(base_valid_yaml_dict)
+    yield _add_compulsory_subject(deepcopy(base_valid_yaml_dict))

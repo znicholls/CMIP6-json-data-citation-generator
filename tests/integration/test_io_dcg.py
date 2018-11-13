@@ -12,6 +12,7 @@ from cmip6_data_citation_generator.io_dcg import (
     load_and_validate_yaml,
     validate_and_return_raw_dict,
     write_json,
+    _add_compulsory_subject,
 )
 
 
@@ -26,7 +27,7 @@ def test_load_and_validate_yaml():
 
 
 @pytest.mark.parametrize("field_to_delete", ["fundingReferences", "relatedIdentifiers"])
-def test_load_and_validate_yaml_missing_optional_field(
+def test_validate_and_return_raw_dict_missing_optional_field(
     valid_yaml_dict, field_to_delete
 ):
     del valid_yaml_dict[field_to_delete]
@@ -34,9 +35,10 @@ def test_load_and_validate_yaml_missing_optional_field(
 
 
 @pytest.mark.parametrize(
-    "field_to_delete", ["contributors", "creators", "subjects", "titles"]
+    # "field_to_delete", ["contributors", "creators", "subjects", "titles"]
+    "field_to_delete", ["subjects"]
 )
-def test_load_and_validate_yaml_missing_compulsory_field(
+def test_validate_and_return_raw_dict_missing_compulsory_field(
     valid_yaml_dict, field_to_delete
 ):
     del valid_yaml_dict[field_to_delete]
@@ -47,19 +49,21 @@ def test_load_and_validate_yaml_missing_compulsory_field(
         validate_and_return_raw_dict(valid_yaml_dict)
 
 
-def test_load_and_validate_yaml_missing_subject_field(
+def test_validate_and_return_raw_dict_missing_subject_field(
     valid_yaml_dict
 ):
     del valid_yaml_dict["subjects"][0]
     error_msg = re.escape(
-        "^The first element under subjects should be autofilled by the generator "
-        "and hence have 'subject' == <subject>"
+        "{'subjects': [\"^The first element under subjects should be autofilled by "
+        "the generator and hence be equal to {'subject': '<subject>', "
+        "'subjectScheme': 'DRS', 'schemeURI': "
+        "'http://github.com/WCRP-CMIP/CMIP6_CVs'}\"]}"
     )
     with pytest.raises(ValidationError, match=error_msg):
         validate_and_return_raw_dict(valid_yaml_dict)
 
 
-def test_load_and_validate_yaml_missing_dependent_field(valid_yaml_dict):
+def test_validate_and_return_raw_dict_missing_dependent_field(valid_yaml_dict):
     tlevel = "subjects"
     del valid_yaml_dict[tlevel][0]["schemeURI"]
     error_msg = re.escape(
@@ -70,11 +74,27 @@ def test_load_and_validate_yaml_missing_dependent_field(valid_yaml_dict):
         validate_and_return_raw_dict(valid_yaml_dict)
 
 
-def test_load_and_validate_yaml_extra_field(valid_yaml_dict):
+def test_validate_and_return_raw_dict_extra_field(valid_yaml_dict):
     valid_yaml_dict["junk"] = [{"extra": "field"}]
     error_msg = re.escape("{'junk': ['Unknown field.']}")
     with pytest.raises(ValidationError, match=error_msg):
         validate_and_return_raw_dict(valid_yaml_dict)
+
+
+def test_add_compulsory_subject(valid_yaml_dict):
+    compulsory_subject = {
+        "subject": "<subject>",
+        "subjectScheme": "DRS",
+        "schemeURI": "http://github.com/WCRP-CMIP/CMIP6_CVs",
+    }
+
+    result = _add_compulsory_subject({})
+    expected = {"subjects": [compulsory_subject]}
+    assert result == expected
+
+    result_again = _add_compulsory_subject(result)
+    expected_again = {"subjects": [compulsory_subject, compulsory_subject]}
+    assert result_again == expected_again
 
 
 def test_write_json():
