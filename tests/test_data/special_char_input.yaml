@@ -1,0 +1,25 @@
+contributors:
+- email: jäèrömü.çiçùúáßæįł@somewhere.edu.au
+  familyName: Çiçùúáßæįł
+  givenName: Jäèrömü
+  contributorName: Çiçùúáßæįł, Jäèrömü
+  contributorType: ContactPerson
+creators:
+- creatorName: Çiçùúáßæįł, Jäèrömü
+  email: jäèrömü.çiçùúáßæįł@somewhere.edu.au
+  familyName: Çiçùúáßæįł
+  givenName: Jäèrömü
+  nameIdentifier:
+    nameIdentifierScheme: ORCID
+    pid: 0023-0103-3048-8121
+    schemeURI: https://orcid.org/
+subjects:
+- schemeURI: http://github.com/WCRP-CMIP/CMIP6_CVs
+  subject: <subject>
+  subjectScheme: DRS
+- subject: forcing data
+- subject: climate
+- subject: CMIP6
+titles:
+- 'test yaml with special chars'
+
