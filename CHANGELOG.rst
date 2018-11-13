@@ -5,6 +5,11 @@ master
 ------
 
 
+v0.1.2
+------
+
+- Nothing new, just updating to get Zenodo citation right
+
 v0.1.1
 ------
 
