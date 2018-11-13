@@ -47,6 +47,18 @@ def test_load_and_validate_yaml_missing_compulsory_field(
         validate_and_return_raw_dict(valid_yaml_dict)
 
 
+def test_load_and_validate_yaml_missing_subject_field(
+    valid_yaml_dict
+):
+    del valid_yaml_dict["subjects"][0]
+    error_msg = re.escape(
+        "^The first element under subjects should be autofilled by the generator "
+        "and hence have 'subject' == <subject>"
+    )
+    with pytest.raises(ValidationError, match=error_msg):
+        validate_and_return_raw_dict(valid_yaml_dict)
+
+
 def test_load_and_validate_yaml_missing_dependent_field(valid_yaml_dict):
     tlevel = "subjects"
     del valid_yaml_dict[tlevel][0]["schemeURI"]

@@ -44,14 +44,16 @@ relatedIdentifiers:  # must already be in database (optional)
   relatedIdentifierType: DOI
   relationType: IsDocumentedBy
 subjects:  # (compulsory)
-- schemeURI: http://github.com/WCRP-CMIP/CMIP6_CVs
-  subject: <subject>
-  # CMIP6 output
+  # The first subject element is added automatically by the generator.
+  # It will be
+  # schemeURI: http://github.com/WCRP-CMIP/CMIP6_CVs
+  # subject: <subject>
+  # subjectScheme: DRS
+  # <subject> is then replaced according to the data reference syntax.
+  # For CMIP6 output:
   #   <mip_era>.<activity_id>.<institution_id>.<source_id>.<experiment_id>
-  # must be in first list element (handle in other checks, not in schema)
-  # scheme is different for input4MIPs, there it is:
+  # For input4MIPs:
   #    <activity_id>.<mip_era>.<target_mip>.<institution_id>.<source_id>
-  subjectScheme: DRS
 - subject: forcing data
 - subject: climate
 - subject: CMIP6

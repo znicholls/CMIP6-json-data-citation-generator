@@ -1,4 +1,4 @@
-from marshmallow import Schema, fields, validates_schema, ValidationError, RAISE
+from marshmallow import Schema, fields, validates, validates_schema, ValidationError, RAISE
 
 
 def validate_dependent_fields(data, dependent_fields, name):
@@ -87,3 +87,12 @@ class CitationSchema(Schema):
     relatedIdentifiers = fields.Nested(RelatedIdentifiersSchema, many=True)
     subjects = fields.Nested(SubjectsSchema, required=True, many=True)
     titles = fields.List(fields.String(), required=True)
+
+    @validates('subjects')
+    def validate_subjects(self, value):
+        if value[0]["subject"] != "<subject>":
+            error_msg = (
+                "^The first element under subjects should be autofilled by the "
+                "generator and hence have 'subject' == <subject>"
+            )
+            raise ValidationError(error_msg)
