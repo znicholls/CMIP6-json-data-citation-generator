@@ -1,7 +1,10 @@
-contributors:  # must already be in database (effectively compulsory)
+# compulsory, must have already been entered into online database using the GUI
+contributors:
 - affiliation: University of Melbourne
   contributorName: Meinshausen, Malte
   contributorType: ContactPerson
+  # if you supply one of 'email', 'familyName' or 'givenName', you must supply
+  # all of them
   email: malte.meinshausen@unimelb.edu.au
   familyName: Meinshausen
   givenName: Malte
@@ -9,13 +12,17 @@ contributors:  # must already be in database (effectively compulsory)
     nameIdentifierScheme: ORCID
     pid: 0000-0003-4048-3521
     schemeURI: https://orcid.org/
-- contributorName: Institut Pierre Simon Laplace (IPSL)  # creators, funders, contributors without 'email', 'givenName' or 'familyName' are considered as institutes
+# creators, funders, contributors without 'email', 'givenName' or 'familyName'
+# are considered institutes
+- contributorName: Institut Pierre Simon Laplace (IPSL)
   contributorType: ResearchGroup
   nameIdentifier:
     nameIdentifierScheme: ISNI
     pid: 0000000090008794
     schemeURI: http://www.isni.org/isni/
-creators:  # must already be in database (compulsory)
+
+# compulsory, must have already been entered into online database using the GUI
+creators:
 - affiliation: University of Melbourne
   creatorName: Meinshausen, Malte
   email: malte.meinshausen@unimelb.edu.au
@@ -34,21 +41,30 @@ creators:  # must already be in database (compulsory)
     nameIdentifierScheme: ORCID
     pid: 0000-0002-4767-2723
     schemeURI: https://orcid.org/
-fundingReferences:  # must already be in database (optional)
+
+# optional, must have already been entered into online database using the GUI
+fundingReferences:
+  # if you supply one of 'funderIdentifier' or 'funderIdentifierType'you must supply
+  # both of them
 - funderIdentifier: http://doi.org/10.13039/501100000923
   funderIdentifierType: Crossref Funder ID
   funderName: Australian Research Council (ARC)
 - funderName: European Union (EU)
-relatedIdentifiers:  # must already be in database (optional)
+
+# optional, must have already been entered into online database using the GUI
+relatedIdentifiers:
+  # all of these fields are compulsory for each relatedIdentifier
 - relatedIdentifier: 10.5194/gmd-10-2057-2017
   relatedIdentifierType: DOI
   relationType: IsDocumentedBy
-subjects:  # (compulsory)
+
+# compulsory
+subjects:
   # The first subject element is added automatically by the generator.
   # It will be
-  # subject: <subject>
-  # subjectScheme: DRS
-  # schemeURI: http://github.com/WCRP-CMIP/CMIP6_CVs
+  # - subject: <subject>
+  #   subjectScheme: DRS
+  #   schemeURI: http://github.com/WCRP-CMIP/CMIP6_CVs
   # <subject> is then replaced according to the data reference syntax.
   # For CMIP6 output:
   #   <mip_era>.<activity_id>.<institution_id>.<source_id>.<experiment_id>
@@ -57,6 +73,7 @@ subjects:  # (compulsory)
 - subject: forcing data
 - subject: climate
 - subject: CMIP6
-titles:  # must already be in database (compulsory)
-- '<source_id> GHG concentrations'
 
+# compulsory, must match what is in the online database
+titles:
+- '<source_id> GHG concentrations'

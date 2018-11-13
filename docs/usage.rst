@@ -3,8 +3,11 @@
 Usage
 -----
 
-Having cloned this repository, an example of how to use the generator is given in ``scripts/example-generation.py``.
+Having cloned this repository, an example, marked up, yaml file is given in ``tests/test_data/valid_input.yaml``.
+
+An example of of how to use the generator is given in ``scripts/example-generation.py``.
 Running this script will produce output in the path ``./example-outputs`` along with output like the block below (note: any warning about Iris not being installed can be safely ignored).
+Each example json file is based off the template file ``tests/test_data/valid_input.yaml`` but fills in the missing text with information taken from the filepath of each data file.
 
 .. code-block:: console
 
@@ -22,6 +25,4 @@ Running this script will produce output in the path ``./example-outputs`` along 
     Writing citation file for input4MIPs.CMIP6.ScenarioMIP.UoM.UoM-REMIND-MAGPIE-ssp585-1-2-0 to ./example-outputs/input4MIPs.CMIP6.ScenarioMIP.UoM.UoM-REMIND-MAGPIE-ssp585-1-2-0.json
 
 
-Each example json file is based off the template file ``tests/test_data/
-valid_input.yaml`` but fills in the missing text with information taken from the
-filepath of each data file.
+
