@@ -18,13 +18,17 @@ CMIP6 Data Citation Generator
     :maxdepth: 2
     :caption: Documentation
 
+    installation
+    usage
+
 
 .. toctree::
     :maxdepth: 2
     :caption: API reference
 
-    utils
-    io_dcg
+    cmip6_data_citation_generator
+    cmip6_data_citation_generator.utils
+    cmip6_data_citation_generator.io_dcg
 
 .. toctree::
     :maxdepth: 2

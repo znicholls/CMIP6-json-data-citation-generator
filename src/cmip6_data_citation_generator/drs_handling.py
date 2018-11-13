@@ -95,8 +95,14 @@ def _get_subject_path(path, drs):
 
 def _get_path_processor(drs):
     drs_funcs = {
-        "CMIP6output": {"subject": _get_subject_cmip6output_path, "ids": _get_ids_cmip6output_path},
-        "CMIP6input4MIPs": {"subject": _get_subject_cmip6input4mips_path, "ids": _get_ids_cmip6input4mips_path},
+        "CMIP6output": {
+            "subject": _get_subject_cmip6output_path,
+            "ids": _get_ids_cmip6output_path,
+        },
+        "CMIP6input4MIPs": {
+            "subject": _get_subject_cmip6input4mips_path,
+            "ids": _get_ids_cmip6input4mips_path,
+        },
     }
 
     for key, value in drs_funcs.items():
@@ -113,6 +119,7 @@ def _get_subject_cmip6input4mips_path(path):
         **ids
     )
 
+
 def _get_ids_cmip6input4mips_path(path):
     drs_cube = CMIP6Input4MIPsCube()
     return drs_cube.get_load_data_from_identifiers_args_from_filepath(path)
@@ -121,7 +128,10 @@ def _get_ids_cmip6input4mips_path(path):
 def _get_subject_cmip6output_path(path):
     ids = _get_ids_cmip6output_path(path)
 
-    return "{mip_era}.{activity_id}.{institution_id}.{source_id}.{experiment_id}".format(**ids)
+    return "{mip_era}.{activity_id}.{institution_id}.{source_id}.{experiment_id}".format(
+        **ids
+    )
+
 
 def _get_ids_cmip6output_path(path):
     drs_cube = CMIP6OutputCube()
