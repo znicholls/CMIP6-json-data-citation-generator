@@ -1,4 +1,11 @@
-from marshmallow import Schema, fields, validates, validates_schema, ValidationError, RAISE
+from marshmallow import (
+    Schema,
+    fields,
+    validates,
+    validates_schema,
+    ValidationError,
+    RAISE,
+)
 
 
 def validate_dependent_fields(data, dependent_fields, name):
@@ -88,7 +95,7 @@ class CitationSchema(Schema):
     subjects = fields.Nested(SubjectsSchema, required=True, many=True)
     titles = fields.List(fields.String(), required=True)
 
-    @validates('subjects')
+    @validates("subjects")
     def validate_subjects(self, value):
         subject_compulsory_dict = {
             "subject": "<subject>",

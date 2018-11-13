@@ -22,6 +22,7 @@ def _add_compulsory_subject(input_dict):
 
     return output_dict
 
+
 def load_and_validate_yaml(yaml_to_read, schema=CitationSchema):
     """Load yaml from file and validate using schema
 

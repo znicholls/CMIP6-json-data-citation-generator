@@ -1,13 +1,14 @@
 from os import remove
 from os.path import isfile, basename
-import re
 import json
 
 
-import pytest
-
-
-from conftest import TEST_DATA_CMIP6_OUTPUT_STYLE, TEST_DATA_CMIP6_INPUT4MIPS_STYLE, TEST_VALID_INPUT_YAML, TEST_SPECIAL_CHAR_YAML
+from conftest import (
+    TEST_DATA_CMIP6_OUTPUT_STYLE,
+    TEST_DATA_CMIP6_INPUT4MIPS_STYLE,
+    TEST_VALID_INPUT_YAML,
+    TEST_SPECIAL_CHAR_YAML,
+)
 from cmip6_data_citation_generator import generate_jsons
 
 
@@ -55,10 +56,7 @@ def test_get_unique_subjects_in_dir_input4mips_style_with_regexp_False():
 
         written = json.loads(open(expected_file).read())
         subject = ".".join(basename(expected_file).split(".")[:-1])
-        assert (
-            written["subjects"][0]["subject"]
-            == subject
-        )
+        assert written["subjects"][0]["subject"] == subject
 
         remove(expected_file)
 
