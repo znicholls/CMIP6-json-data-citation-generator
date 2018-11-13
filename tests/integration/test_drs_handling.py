@@ -132,6 +132,6 @@ def test_get_unique_subjects_in_dir_cant_read_error():
 
 
 def test_get_unique_subjects_in_dir_no_drs_error():
-    error_msg = r"^" + re.escape("drs must be one of: ") + r".*$"
-    with pytest.raises(ValueError, match=error_msg):
+    error_msg = r"^.?" + re.escape("drs must be one of: ") + r".*$"
+    with pytest.raises(KeyError, match=error_msg):
         _get_unique_subjects_in_dir(TEST_DATA_CMIP6_INPUT4MIPS_STYLE, "junk")
