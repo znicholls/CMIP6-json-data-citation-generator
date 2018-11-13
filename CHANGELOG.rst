@@ -5,6 +5,12 @@ master
 ------
 
 
+v0.1.1
+------
+
+- Fix Python version id for PyPI
+
+
 v0.1.0
 ------
 
