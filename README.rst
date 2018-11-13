@@ -69,9 +69,9 @@ The CMIP6 Data Citation Generator can be installed with `pip <https://pypi.org/p
     :target: https://cmip6-json-data-citation-generator.readthedocs.io/en/latest/
 .. |Codecov| image:: https://img.shields.io/codecov/c/github/znicholls/CMIP6-json-data-citation-generator.svg
     :target: https://codecov.io/gh/znicholls/CMIP6-json-data-citation-generator
-.. |PyPI| image:: https://img.shields.io/pypi/v/CMIP6-json-data-citation-generator.svg
-    :target: https://pypi.org/project/CMIP6-json-data-citation-generator/
-.. |Python Versions| image:: https://img.shields.io/pypi/pyversions/CMIP6-json-data-citation-generator.svg
+.. |PyPI| image:: https://img.shields.io/pypi/v/cmip6-data-citation-generator.svg
+    :target: https://pypi.org/project/cmip6-data-citation-generator/
+.. |Python Versions| image:: https://img.shields.io/pypi/pyversions/cmip6-data-citation-generator.svg
     :target: https://pypi.org/project/CMIP6-json-data-citation-generator/
 .. |Latest Version| image:: https://img.shields.io/github/tag/znicholls/CMIP6-json-data-citation-generator.svg
     :target: https://github.com/znicholls/CMIP6-json-data-citation-generator/releases
@@ -81,8 +81,8 @@ The CMIP6 Data Citation Generator can be installed with `pip <https://pypi.org/p
     :target: https://github.com/znicholls/CMIP6-json-data-citation-generator/commits/master
 .. |Contributors| image:: https://img.shields.io/github/contributors/znicholls/CMIP6-json-data-citation-generator.svg
     :target: https://github.com/znicholls/CMIP6-json-data-citation-generator/graphs/contributors
-.. |Zenodo| image:: https://zenodo.org/badge/junk.svg
-    :target: https://zenodo.org/badge/latestdoi/junk
+.. |Zenodo| image:: https://zenodo.org/badge/137273695.svg
+    :target: https://zenodo.org/badge/latestdoi/137273695
 .. |License| image:: https://img.shields.io/github/license/znicholls/CMIP6-json-data-citation-generator.svg
     :target: https://github.com/znicholls/CMIP6-json-data-citation-generator/blob/master/LICENSE
 
