@@ -1,4 +1,5 @@
 import re
+from copy import deepcopy
 
 
 def deep_substitute(input_val, substitutions):
@@ -52,23 +53,24 @@ def deep_substitute(input_val, substitutions):
     >>> deep_substitute("<source_id>", {"activity_id": "21st Century runs"})
     KeyError: "No substitution provided for ['<source_id>']"
     """
-    if isinstance(input_val, list):
-        for i, val in enumerate(input_val):
-            input_val[i] = deep_substitute(val, substitutions)
-    elif isinstance(input_val, dict):
-        for key, value in input_val.items():
-            input_val[key] = deep_substitute(value, substitutions)
+    output_val = deepcopy(input_val)
+    if isinstance(output_val, list):
+        for i, val in enumerate(output_val):
+            output_val[i] = deep_substitute(val, substitutions)
+    elif isinstance(output_val, dict):
+        for key, value in output_val.items():
+            output_val[key] = deep_substitute(value, substitutions)
     else:
         for old_str, new_str in substitutions.items():
             replacement = "<{}>".format(old_str)
             try:
-                input_val = input_val.replace(replacement, new_str)
+                output_val = output_val.replace(replacement, new_str)
             except AttributeError:
-                return input_val
+                return output_val
 
-        if ("<" in input_val) or (">" in input_val):
-            unsubstituted_strings = re.findall("<[^<]*>", input_val)
+        if ("<" in output_val) or (">" in output_val):
+            unsubstituted_strings = re.findall("<[^<]*>", output_val)
             error_msg = "No substitution provided for {}".format(unsubstituted_strings)
             raise KeyError(error_msg)
 
-    return input_val
+    return output_val
