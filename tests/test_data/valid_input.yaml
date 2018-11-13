@@ -54,5 +54,5 @@ subjects:  # (compulsory)
 - subject: climate
 - subject: CMIP6
 titles:  # must already be in database (compulsory)
-- 'UoM-AIM-ssp370-lowNTCF-1-2-0: AIM-ssp370-lowNTCF GHG concentrations'
+- '<source_id> GHG concentrations'
 
