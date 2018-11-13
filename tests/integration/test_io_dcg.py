@@ -36,7 +36,8 @@ def test_validate_and_return_raw_dict_missing_optional_field(
 
 @pytest.mark.parametrize(
     # "field_to_delete", ["contributors", "creators", "subjects", "titles"]
-    "field_to_delete", ["subjects"]
+    "field_to_delete",
+    ["subjects"],
 )
 def test_validate_and_return_raw_dict_missing_compulsory_field(
     valid_yaml_dict, field_to_delete
@@ -49,9 +50,7 @@ def test_validate_and_return_raw_dict_missing_compulsory_field(
         validate_and_return_raw_dict(valid_yaml_dict)
 
 
-def test_validate_and_return_raw_dict_missing_subject_field(
-    valid_yaml_dict
-):
+def test_validate_and_return_raw_dict_missing_subject_field(valid_yaml_dict):
     del valid_yaml_dict["subjects"][0]
     error_msg = re.escape(
         "{'subjects': [\"^The first element under subjects should be autofilled by "
