@@ -38,12 +38,15 @@ def generate_jsons(input_dir, template_yaml, drs, output_dir, regexp=".*", keep=
         don't match ``regexp``.
     """
     if not isdir(output_dir):
-        print("\n{} does not exist, making it now\n".format(output_dir))
+        print("\nOutput directory {} does not exist, making it now".format(output_dir))
         makedirs(output_dir)
 
     template_yaml_dict = load_and_validate_yaml(template_yaml)
     subjects_written = []
 
+    header = "Writing citation files for"
+    print("\n\n{}".format(header))
+    print("{}\n".format("="*len(header)))
     for fp in _get_matching_paths_in_dir(input_dir, regexp=regexp, keep=keep):
         subject = _get_subject_path(fp, drs)
         if subject in subjects_written:
@@ -54,7 +57,7 @@ def generate_jsons(input_dir, template_yaml, drs, output_dir, regexp=".*", keep=
         json_dict = deep_substitute(template_yaml_dict, ids)
 
         output_path = join(output_dir, "{}.json".format(subject))
-        print("Writing citation file for {} to {}".format(subject, output_path))
+        print("- {} to {}".format(subject, output_path))
         write_json(json_dict, output_path)
         subjects_written.append(subject)
 
