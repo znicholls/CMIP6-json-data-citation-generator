@@ -19,10 +19,6 @@
 | Basics | |Python Versions| | |License| | |Docs| |
 +--------+-------------------+-----------+--------+
 
-+-----------+----------+
-| Citations | |Zenodo| |
-+-----------+----------+
-
 +-------------------+----------------+-----------+
 | Repository health | |Build Status| | |Codecov| |
 +-------------------+----------------+-----------+
@@ -43,7 +39,7 @@ License
 .. sec-begin-license
 
 The CMIP6 Data Citation Generator is free software under a BSD 2-Clause License, see `LICENSE <./LICENSE>`_.
-If you make any use of the CMIP6 Data Citation Generator, please cite the relevant [to do: Zenodo release] `Zenodo release <https://zenodo.org/search?page=1&size=20&q=cmip6-data-citation-generator>`_.
+If you make any use of the CMIP6 Data Citation Generator, please cite the relevant `Zenodo release <https://zenodo.org/search?page=1&size=20&q=cmip6-data-citation-generator>`_.
 
 .. sec-end-license
 
