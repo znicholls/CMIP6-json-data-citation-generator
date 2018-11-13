@@ -13,6 +13,7 @@ TEST_DATA_CMIP6_OUTPUT_STYLE = join(TEST_DATA_ROOT_DIR, "CMIP6output_like")
 TEST_DATA_FLATTISH_STYLE = join(TEST_DATA_ROOT_DIR, "flattish_files")
 
 TEST_VALID_INPUT_YAML = join(TEST_DATA_ROOT_DIR, "valid_input.yaml")
+TEST_SPECIAL_CHAR_YAML = join(TEST_DATA_ROOT_DIR, "special_char_input.yaml")
 
 
 @pytest.fixture(scope="session")
