@@ -71,14 +71,14 @@ def _get_matching_paths_in_dir(directory, regexp=".*", keep=True):
     """
     regexp = re.compile(regexp)
     matching_paths = []
-    for root, dirs, files in os.walk(directory):
+    for root, _, files in os.walk(directory):
         full_paths = [os.path.join(root, f) for f in files]
         if keep:
             mps = [fp for fp in full_paths if regexp.match(fp) and fp]
         else:
             mps = [fp for fp in full_paths if not regexp.match(fp) and fp]
         if mps:
-            [matching_paths.append(mp) for mp in mps]
+            matching_paths += mps
 
     return matching_paths
 

@@ -22,7 +22,7 @@ TEST_SPECIAL_CHAR_YAML = join(TEST_DATA_ROOT_DIR, "special_char_input.yaml")
 @pytest.fixture(scope="session")
 def base_valid_yaml_dict():
     with open(TEST_VALID_INPUT_YAML, "r") as stream:
-        yield yaml.load(stream)
+        yield yaml.safe_load(stream)
 
 
 @pytest.fixture(scope="function")

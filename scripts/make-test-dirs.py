@@ -2,7 +2,7 @@ from os import listdir, makedirs
 from os.path import join, dirname
 
 
-from netcdf_scm.iris_cube_wrappers import CMIP6Input4MIPsCube, CMIP6OutputCube
+from netcdf_scm.iris_cube_wrappers import CMIP6Input4MIPsCube
 from cmip6_data_citation_generator.utils import deep_substitute
 
 

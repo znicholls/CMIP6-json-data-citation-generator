@@ -40,7 +40,7 @@ def load_and_validate_yaml(yaml_to_read, schema=CitationSchema):
         Loaded dictionary which has been validated by ``schema``
     """
     with open(yaml_to_read, "r") as stream:
-        raw_dict = yaml.load(stream)
+        raw_dict = yaml.safe_load(stream)
 
     prepped_dict = _add_compulsory_subject(raw_dict)
 
