@@ -1,8 +1,6 @@
 {
   "plugins": [
     "remark-preset-lint-recommended",
+    ["remark-lint-list-item-indent", "space"]
   ]
-  "settings": {
-    "listItemIndent": "1",
-  }
 }
