@@ -4,28 +4,30 @@ about: Write a report to help us improve
 
 ---
 
-**Describe the bug**
+# Bug Report
+
+## Describe the bug
 
 A clear and concise description of what the bug is.
 
-**Failing Test**
+## Failing Test
 
 Please put the code (ideally in the form of a unit
 test) which fails below
 
-**Expected behavior**
+## Expected behavior
 
 A clear and concise description of what you expected to happen.
 
-**Screenshots**
+## Screenshots
 
 If applicable, add screenshots to help explain your problem.
 
-**System (please complete the following information):**
+## System (please complete the following information)
 
- - OS: [e.g. Windows, Linux, macOS]
- - Python version [e.g. Python 3.5] and output of `conda list --export` and `pip freeze` as applicable
+- OS: \[e.g. Windows, Linux, macOS]
+- Python version \[e.g. Python 3.5] and output of `conda list --export` and `pip freeze` as applicable
 
-**Additional context**
+## Additional context
 
 Add any other context about the problem here.

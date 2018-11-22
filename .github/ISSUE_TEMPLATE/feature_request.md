@@ -4,18 +4,22 @@ about: Suggest an idea for this project
 
 ---
 
-**Is your feature request related to a problem? Please describe.**
+# Feature Request
 
-A clear and concise description of what the problem is. Ex. It's annoying that I always have to [...]
+## Description
 
-**Describe the solution you'd like**
+**Is your feature request related to a problem? Please describe**
+
+A clear and concise description of what the problem is. Ex. It's annoying that I always have to ...
+
+## Solution
 
 A clear and concise description of the solution you would like to see.
 
-**Describe alternatives you've considered**
+## Alternatives
 
 A clear and concise description of any alternative solutions or features you've considered.
 
-**Additional context**
+## Additional context
 
 Add any other context or screenshots about the feature request here.
