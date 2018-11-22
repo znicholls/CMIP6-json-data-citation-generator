@@ -26,6 +26,7 @@ If applicable, add screenshots to help explain your problem.
 ## System (please complete the following information)
 
 - OS: \[e.g. Windows, Linux, macOS]
+
 - Python version \[e.g. Python 3.5] and output of `conda list --export` and
   `pip freeze` as applicable
 
