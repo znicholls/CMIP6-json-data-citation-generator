@@ -1,4 +1,7 @@
 {
+  "plugins": [
+    "remark-preset-lint-recommended",
+  ]
   "settings": {
     "listItemIndent": "1",
   }
