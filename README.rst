@@ -66,6 +66,12 @@ The CMIP6 Data Citation Generator can be installed with `pip <https://pypi.org/p
 
 .. sec-end-installation
 
+
+Documentation
+-------------
+
+Documentation can be found at `Read the Docs <https://cmip6-json-data-citation-generator.readthedocs.io/en/latest/>`_.
+
 .. sec-begin-links
 
 .. |Build Status| image:: https://travis-ci.org/znicholls/CMIP6-json-data-citation-generator.svg?branch=master
