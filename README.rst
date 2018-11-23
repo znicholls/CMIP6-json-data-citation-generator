@@ -70,7 +70,7 @@ The CMIP6 Data Citation Generator can be installed with `pip <https://pypi.org/p
 Documentation
 -------------
 
-Documentation can be found at `Read the Docs <https://cmip6-json-data-citation-generator.readthedocs.io/en/latest/>`_.
+Documentation can be found on our `documentation pages <https://cmip6-json-data-citation-generator.readthedocs.io/en/latest/>`_ (we are thankful to `Read the Docs <https://readthedocs.org/>`_ for hosting us).
 
 .. sec-begin-links
 
