@@ -4,6 +4,7 @@ Changelog
 master
 ------
 
+- (`#25 <https://github.com/znicholls/CMIP6-json-data-citation-generator/pull/25>`_) Add command line interface for generation as well as uploading code
 
 v0.2.0
 ------
