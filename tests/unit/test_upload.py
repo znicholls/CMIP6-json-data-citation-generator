@@ -2,7 +2,7 @@ from unittest.mock import patch, MagicMock
 import json
 
 
-from cmip6_data_citation_generator import upload_jsons
+from cmip6_data_citation_generator.upload import upload_jsons
 from conftest import TEST_VALID_OUTPUT_JSON, TEST_DATA_ROOT_DIR
 
 
@@ -16,7 +16,8 @@ def test_upload_file(mock_request, mock_add_credentials, mock_netrc):
     mock_netrc = MagicMock()
     mock_netrc.authenticators = MagicMock(return_value = (tlogin, "", tpassword))
 
-    upload_jsons(TEST_VALID_OUTPUT_JSON)
+    res = upload_jsons(TEST_VALID_OUTPUT_JSON)
+    assert res == 0
 
     mock_netrc.assert_called_with("cera")
     mock_add_credentials.assert_called_with(tlogin, tpassword)
@@ -38,7 +39,8 @@ def test_upload_dir(mock_request, mock_add_credentials, mock_netrc):
     mock_netrc = MagicMock()
     mock_netrc.authenticators = MagicMock(return_value = (tlogin, "", tpassword))
 
-    upload_jsons(TEST_DATA_ROOT_DIR, test=True)
+    res = upload_jsons(TEST_DATA_ROOT_DIR, test=True)
+    assert res == 0
 
     mock_netrc.assert_called_with("cera")
     mock_add_credentials.assert_called_with(tlogin, tpassword)

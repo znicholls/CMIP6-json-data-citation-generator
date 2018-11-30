@@ -3,6 +3,9 @@
 Usage
 -----
 
+Generating json files
+=====================
+
 Having cloned this repository, an example, marked up, yaml file is given in ``tests/test_data/valid_input.yaml``.
 
 An example of of how to use the generator is given in ``scripts/example-generation.py``.
@@ -25,4 +28,24 @@ Each example json file is based off the template file ``tests/test_data/valid_in
     Writing citation file for input4MIPs.CMIP6.ScenarioMIP.UoM.UoM-REMIND-MAGPIE-ssp585-1-2-0 to ./example-outputs/input4MIPs.CMIP6.ScenarioMIP.UoM.UoM-REMIND-MAGPIE-ssp585-1-2-0.json
 
 
+Uploading json files
+====================
 
+json files can be upload to the CMIP6 data citation server using the command line.
+
+To make this run, two vital steps must be taken:
+
+#. Produce valid json files to upload (see `Generating json files`_)
+#. Meet the preconditions specified in Section 2.1 of the `CMIP6 Citation Userguide <https://cera-www.dkrz.de/docs/pdf/CMIP6_Citation_Userguide.pdf>`_
+
+When installed, the upload client can be run with
+
+.. code-block:: console
+
+    upload-cmip6-citation-files input
+
+where ``input`` is either a single file or a folder of files to upload. Further help can be accessed with
+
+.. code-block:: console
+
+    upload-cmip6-citation-files -h
