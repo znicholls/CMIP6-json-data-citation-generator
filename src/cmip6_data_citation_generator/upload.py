@@ -14,13 +14,8 @@ def upload_jsons(inputs, test=False):
     else:
         jsons = glob(join(inputs, "*.json"))
 
-    import pdb
-
-    pdb.set_trace()
-    httplib2.debuglevel = 0
-
     info = netrc()
-    http = httplib2.Http()
+    http = Http()
 
     login, account, password = info.authenticators("cera")
     http.add_credentials(login, password)
@@ -30,6 +25,7 @@ def upload_jsons(inputs, test=False):
     if test:
         url = "{}?test=1".format(url)
 
+    errors = False
     for json_file in jsons:
         with open(json_file) as f:
             data = json.load(f)
@@ -38,4 +34,8 @@ def upload_jsons(inputs, test=False):
             url, "POST", json.dumps(data), headers={"Content-Type": content_type_header}
         )
 
-        print("{}\n{}".format(response.status, content))
+        print("{}, {}".format(response.status, content))
+
+        errors = errors or not content.startswith("SUCCESS")
+
+    return errors
