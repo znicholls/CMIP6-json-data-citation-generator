@@ -46,7 +46,7 @@ def generate_jsons(input_dir, template_yaml, drs, output_dir, regexp=".*", keep=
 
     header = "Writing citation files for"
     print("\n\n{}".format(header))
-    print("{}\n".format("="*len(header)))
+    print("{}\n".format("=" * len(header)))
     for fp in _get_matching_paths_in_dir(input_dir, regexp=regexp, keep=keep):
         subject = _get_subject_path(fp, drs)
         if subject in subjects_written:

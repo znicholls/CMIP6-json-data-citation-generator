@@ -63,9 +63,9 @@ setup(
         "deploy": ["twine", "setuptools", "wheel", "flake8", "black", "versioneer"],
     },
     cmdclass=cmdclass,
-    entry_points = {
-        'console_scripts': [
-            'upload-cmip6-citation-files=cmip6_data_citation_generator.cli:upload',
-        ],
+    entry_points={
+        "console_scripts": [
+            "upload-cmip6-citation-files=cmip6_data_citation_generator.cli:upload"
+        ]
     },
 )

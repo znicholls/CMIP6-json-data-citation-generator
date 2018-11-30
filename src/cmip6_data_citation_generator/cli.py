@@ -16,19 +16,11 @@ def upload():
         "upload-cmip6-citation-files will attempt to upload all `.json` files found "
         "in the folder."
     )
-    parser.add_argument(
-        "input",
-        help=input_help
-    )
-    parser.add_argument(
-        "-t", "--test", help="Do a test run", action="store_true"
-    )
+    parser.add_argument("input", help=input_help)
+    parser.add_argument("-t", "--test", help="Do a test run", action="store_true")
 
     args = parser.parse_args()
 
-    any_error = upload_jsons(
-        args.input,
-        test=args.test,
-    )
+    any_error = upload_jsons(args.input, test=args.test)
 
     sys.exit(any_error)
