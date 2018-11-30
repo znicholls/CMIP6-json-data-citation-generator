@@ -1,10 +1,9 @@
-from os.path import isfile, isdir, join
+from os.path import isfile, join
 from glob import glob
 import json
 
 
 from netrc import netrc
-import httplib2
 from httplib2 import Http
 
 
@@ -41,4 +40,4 @@ def upload_jsons(inputs, test=False):
 
         errors = errors or not content.startswith("SUCCESS")
 
-    return errors
+    return 1 if errors else 0
