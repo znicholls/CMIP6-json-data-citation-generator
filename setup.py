@@ -65,7 +65,8 @@ setup(
     cmdclass=cmdclass,
     entry_points={
         "console_scripts": [
-            "upload-cmip6-citation-files=cmip6_data_citation_generator.cli:upload"
+            "generate-cmip6-citation-files=cmip6_data_citation_generator.cli:generate",
+            "upload-cmip6-citation-files=cmip6_data_citation_generator.cli:upload",
         ]
     },
 )

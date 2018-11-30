@@ -60,5 +60,3 @@ def generate_jsons(input_dir, template_yaml, drs, output_dir, regexp=".*", keep=
         print("- {} to {}".format(subject, output_path))
         write_json(json_dict, output_path)
         subjects_written.append(subject)
-
-    return None
