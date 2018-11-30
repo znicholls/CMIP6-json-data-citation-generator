@@ -74,8 +74,8 @@ Documentation can be found on our `documentation pages <https://cmip6-json-data-
 
 .. sec-begin-links
 
-.. |Build Status| image:: https://travis-ci.org/znicholls/CMIP6-json-data-citation-generator.svg?branch=master
-    :target: https://travis-ci.org/znicholls/CMIP6-json-data-citation-generator
+.. |Build Status| image:: https://travis-ci.com/znicholls/CMIP6-json-data-citation-generator.svg?branch=master
+    :target: https://travis-ci.com/znicholls/CMIP6-json-data-citation-generator
 .. |Codacy| image:: https://api.codacy.com/project/badge/Grade/3158bf0edcd64a6e98fa58fb2a9ec290
     :target: https://www.codacy.com/app/znicholls/CMIP6-json-data-citation-generator?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=znicholls/CMIP6-json-data-citation-generator&amp;utm_campaign=Badge_Grade
 .. |Docs| image:: https://readthedocs.org/projects/cmip6-json-data-citation-generator/badge/?version=latest
