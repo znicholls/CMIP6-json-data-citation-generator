@@ -70,7 +70,7 @@ def upload():
         "in the folder."
     )
     parser.add_argument("input", help=input_help)
-    parser.add_argument("-t", "--test", help="Do a test run", action="store_true")
+    parser.add_argument("-t", "--test", help="Do a dry run", action="store_true")
 
     args = parser.parse_args()
 
