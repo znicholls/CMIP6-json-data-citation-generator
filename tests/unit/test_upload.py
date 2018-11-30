@@ -13,8 +13,11 @@ from conftest import TEST_VALID_OUTPUT_JSON, TEST_DATA_ROOT_DIR
 @patch("cmip6_data_citation_generator.upload.netrc")
 @patch("cmip6_data_citation_generator.upload.Http")
 @pytest.mark.parametrize(
-        "tinput,ttest,tcontent",
-        [(TEST_VALID_OUTPUT_JSON, False, "SUCCESS content"), (TEST_DATA_ROOT_DIR, True, "junk")],
+    "tinput,ttest,tcontent",
+    [
+        (TEST_VALID_OUTPUT_JSON, False, "SUCCESS content"),
+        (TEST_DATA_ROOT_DIR, True, "junk"),
+    ],
 )
 def test_upload_file(mock_Http, mock_netrc, tinput, ttest, tcontent):
     tlogin = "login"
