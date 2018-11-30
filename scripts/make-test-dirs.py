@@ -1,3 +1,5 @@
+# I fear this is broken due to upgrade to netcdf-scm...
+
 from os import listdir, makedirs
 from os.path import join, dirname
 
