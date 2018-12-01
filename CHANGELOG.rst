@@ -4,6 +4,11 @@ Changelog
 master
 ------
 
+v0.3.1
+------
+
+- Nothing new, just updating to get history and Zenodo citation right
+
 
 v0.3.0
 ------
