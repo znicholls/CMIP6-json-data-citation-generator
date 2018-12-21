@@ -16,7 +16,7 @@ def upload_jsons(inputs, test=False):
     info = netrc()
     http = Http()
 
-    login, account, password = info.authenticators("cera")
+    login, _, password = info.authenticators("cera")
     http.add_credentials(login, password)
 
     content_type_header = "application/json"
