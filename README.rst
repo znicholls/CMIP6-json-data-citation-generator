@@ -76,8 +76,8 @@ Documentation can be found on our `documentation pages <https://cmip6-json-data-
 
 .. |Build Status| image:: https://travis-ci.com/znicholls/CMIP6-json-data-citation-generator.svg?branch=master
     :target: https://travis-ci.com/znicholls/CMIP6-json-data-citation-generator
-.. |Codacy| image:: https://api.codacy.com/project/badge/Grade/3158bf0edcd64a6e98fa58fb2a9ec290
-    :target: https://www.codacy.com/app/znicholls/CMIP6-json-data-citation-generator?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=znicholls/CMIP6-json-data-citation-generator&amp;utm_campaign=Badge_Grade
+.. |Codacy| image:: https://api.codacy.com/project/badge/Grade/cd1da597cfee49c39d5dc26174ac1b7b
+    :target: https://www.codacy.com/app/znicholls/CMIP6-json-data-citation-generator?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=znicholls/CMIP6-json-data-citation-generator&amp;utm_campaign=Badge_Grade   
 .. |Docs| image:: https://readthedocs.org/projects/cmip6-json-data-citation-generator/badge/?version=latest
     :target: https://cmip6-json-data-citation-generator.readthedocs.io/en/latest/
 .. |Codecov| image:: https://img.shields.io/codecov/c/github/znicholls/CMIP6-json-data-citation-generator.svg
